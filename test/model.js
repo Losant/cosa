@@ -7,7 +7,7 @@ var expect = chai.expect;
 
 describe('Model', function () {
 
-  require('../lib/index').init(process.env.MONGO_URI);
+  require('../lib/index').init();
   var Model = require('../lib/model');
   var Immutable = require('../lib/immutable');
   var FullTestModel = require('./support/full-test-model');
@@ -117,7 +117,7 @@ describe('Model', function () {
     var _db;
 
     before(function (done) {
-      MongoClient.connect(process.env.MONGO_URI, function (err, db) {
+      MongoClient.connect(process.env.COSA_DB_URI, function (err, db) {
         if (err) { return done(err); }
         _db = db;
         done();
@@ -173,7 +173,7 @@ describe('Model', function () {
     var _db;
 
     before(function (done) {
-      MongoClient.connect(process.env.MONGO_URI, function (err, db) {
+      MongoClient.connect(process.env.COSA_DB_URI, function (err, db) {
         if (err) { return done(err); }
         _db = db;
         done();
@@ -216,7 +216,7 @@ describe('Model', function () {
     var _db;
 
     before(function (done) {
-      MongoClient.connect(process.env.MONGO_URI, function (err, db) {
+      MongoClient.connect(process.env.COSA_DB_URI, function (err, db) {
         if (err) { return done(err); }
         _db = db;
         done();
@@ -280,7 +280,7 @@ describe('Model', function () {
     var _db;
 
     before(function (done) {
-      MongoClient.connect(process.env.MONGO_URI, function (err, db) {
+      MongoClient.connect(process.env.COSA_DB_URI, function (err, db) {
         if (err) { return done(err); }
         _db = db;
         done();
@@ -364,7 +364,7 @@ describe('Model', function () {
         str: 'foo',
         obj: { prop1: 'bar' }
       });
-      MongoClient.connect(process.env.MONGO_URI, function (err, db) {
+      MongoClient.connect(process.env.COSA_DB_URI, function (err, db) {
         if (err) { return done(err); }
         _db = db;
         done();
@@ -469,7 +469,7 @@ describe('Model', function () {
         str: 'test string',
         obj: { prop1: 'bar' }
       });
-      MongoClient.connect(process.env.MONGO_URI, function (err, db) {
+      MongoClient.connect(process.env.COSA_DB_URI, function (err, db) {
         if (err) { return done(err); }
         _db = db;
         done();
@@ -515,7 +515,7 @@ describe('Model', function () {
         str: 'test string',
         obj: { prop1: 'bar' }
       });
-      MongoClient.connect(process.env.MONGO_URI, function (err, db) {
+      MongoClient.connect(process.env.COSA_DB_URI, function (err, db) {
         if (err) { return done(err); }
         _db = db;
         done();
@@ -554,7 +554,7 @@ describe('Model', function () {
         str: 'test string',
         obj: { prop1: 'bar' }
       });
-      MongoClient.connect(process.env.MONGO_URI, function (err, db) {
+      MongoClient.connect(process.env.COSA_DB_URI, function (err, db) {
         if (err) { return done(err); }
         _db = db;
         done();
@@ -593,7 +593,7 @@ describe('Model', function () {
         str: 'test string',
         obj: { prop1: 'bar' }
       });
-      MongoClient.connect(process.env.MONGO_URI, function (err, db) {
+      MongoClient.connect(process.env.COSA_DB_URI, function (err, db) {
         if (err) { return done(err); }
         _db = db;
         done();
@@ -640,7 +640,7 @@ describe('Model', function () {
     var _db;
 
     before(function (done) {
-      MongoClient.connect(process.env.MONGO_URI, function (err, db) {
+      MongoClient.connect(process.env.COSA_DB_URI, function (err, db) {
         if (err) { return done(err); }
         _db = db;
         q.all([
@@ -721,7 +721,7 @@ describe('Model', function () {
     var _db;
 
     before(function (done) {
-      MongoClient.connect(process.env.MONGO_URI, function (err, db) {
+      MongoClient.connect(process.env.COSA_DB_URI, function (err, db) {
         if (err) { return done(err); }
         _db = db;
         done();
@@ -765,7 +765,7 @@ describe('Model', function () {
     var _db;
 
     before(function (done) {
-      MongoClient.connect(process.env.MONGO_URI, function (err, db) {
+      MongoClient.connect(process.env.COSA_DB_URI, function (err, db) {
         if (err) { return done(err); }
         _db = db;
         done();
@@ -822,7 +822,7 @@ describe('Model', function () {
         str: 'test string',
         obj: { prop1: 'bar' }
       });
-      MongoClient.connect(process.env.MONGO_URI, function (err, db) {
+      MongoClient.connect(process.env.COSA_DB_URI, function (err, db) {
         if (err) { return done(err); }
         _db = db;
         done();
@@ -909,7 +909,7 @@ describe('Model', function () {
     var _db;
 
     before(function (done) {
-      MongoClient.connect(process.env.MONGO_URI, function (err, db) {
+      MongoClient.connect(process.env.COSA_DB_URI, function (err, db) {
         if (err) { return done(err); }
         _db = db;
         done();
@@ -957,7 +957,7 @@ describe('Model', function () {
     var _db;
 
     before(function (done) {
-      MongoClient.connect(process.env.MONGO_URI, function (err, db) {
+      MongoClient.connect(process.env.COSA_DB_URI, function (err, db) {
         if (err) { return done(err); }
         _db = db;
         done();
@@ -1009,7 +1009,7 @@ describe('Model', function () {
     var _db;
 
     before(function (done) {
-      MongoClient.connect(process.env.MONGO_URI, function (err, db) {
+      MongoClient.connect(process.env.COSA_DB_URI, function (err, db) {
         if (err) { return done(err); }
         _db = db;
         done();
@@ -1060,7 +1060,7 @@ describe('Model', function () {
     var _db;
 
     before(function (done) {
-      MongoClient.connect(process.env.MONGO_URI, function (err, db) {
+      MongoClient.connect(process.env.COSA_DB_URI, function (err, db) {
         if (err) { return done(err); }
         _db = db;
         done();
