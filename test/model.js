@@ -7,7 +7,6 @@ var expect = chai.expect;
 
 describe('Model', function () {
 
-  require('../lib/index').init();
   var Model = require('../lib/model');
   var Immutable = require('../lib/immutable');
   var FullTestModel = require('./support/full-test-model');
