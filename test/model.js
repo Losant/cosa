@@ -570,18 +570,38 @@ describe('Model', function () {
       });
     });
 
-    it('should return an array of objects', function (done) {
+    it('should return a cursor to retrieve objects', function (done) {
       model
         .save()
         .then(function (updatedModel) {
           return FullTestModel.find({ _id: updatedModel._id });
         })
-        .then(function (arr) {
-          expect(arr.length).to.equal(1);
+        .then(function (cursor) {
+          return q.all([ cursor.count(), cursor.next() ]);
+        })
+        .spread(function (count, obj) {
+          expect(count).to.equal(1);
+          expect(Immutable.isImmutableType(obj, 'FullTestModel')).to.be.true;
           done();
         })
         .done(null, done);
     });
+
+    it('should return an array if array option is given', function (done) {
+      model
+        .save()
+        .then(function (updatedModel) {
+          return FullTestModel.find({ _id: updatedModel._id }, { array: true });
+        })
+        .then(function (arr) {
+          expect(Array.isArray(arr)).to.be.true;
+          expect(arr.length).to.equal(1);
+          expect(Immutable.isImmutableType(arr[0], 'FullTestModel')).to.be.true;
+          done();
+        })
+        .done(null, done);
+    });
+
   });
 
   describe('.findOne()', function () {
@@ -687,6 +707,9 @@ describe('Model', function () {
           expect(result.matchedCount).to.equal(3);
           expect(result.modifiedCount).to.equal(3);
           return FullTestModel.find({});
+        })
+        .then(function (cursor) {
+          return cursor.toArray();
         })
         .then(function (docs) {
           expect(docs[0].str).to.equal('foo');
