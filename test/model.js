@@ -1129,4 +1129,44 @@ describe('Model', function () {
 
   });
 
+  describe('.project()', function () {
+    var _db;
+
+    before(function (done) {
+      MongoClient.connect(process.env.COSA_DB_URI, function (err, db) {
+        if (err) { return done(err); }
+        _db = db;
+        done();
+      })
+    })
+
+    after(function (done) {
+      _db.collection('mocha_test', function (err, collection) {
+        collection.deleteMany({}, function (err, result) {
+          if (err) { return done(err); }
+          _db.close();
+          done();
+        });
+      });
+    });
+
+    it('should return cursor of projected values', function (done) {
+      FullTestModel
+        .create({
+          str: 'test string',
+          obj: { prop1: 'bar' }
+        })
+        .save()
+        .then(function (model) {
+          return FullTestModel.project({}, { str: 1 }, { array: 1 });
+        })
+        .then(function (values) {
+          expect(values.length).to.equal(1);
+          expect(values[0].str).to.equal('test string');
+          done();
+        });
+    });
+
+  });
+
 });
