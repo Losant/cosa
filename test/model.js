@@ -972,6 +972,29 @@ describe('Model', function () {
         .done(null, done);
     });
 
+    it('should allow mutating model before saving', function (done) {
+      var HookedModel = Model.define({
+        name: 'HookedModel',
+        collection: 'mocha_test',
+        properties: {
+          str: { type: 'string' }
+        },
+        methods: {
+          beforeSave: function () {
+            this.str += ' bar';
+          }
+        }
+      });
+      var model = HookedModel.create({ str: 'foo' });
+      expect(model.beforeSave).to.exist;
+      model.save()
+        .then(function (model2) {
+          expect(model2.str).to.equal('foo bar');
+          done();
+        })
+        .done(null, done);
+    });
+
   });
 
 
