@@ -334,6 +334,7 @@ describe('Model', function () {
           },
           function (err) {
             expect(err).to.exist;
+            expect(err.statusCode).to.equal(400);
             done();
           })
         .done(null, done);
