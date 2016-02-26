@@ -13,7 +13,7 @@
   "maxdepth": 3,
   "maxstatements": 12,
   "maxparams": 4,
-  "maxcomplexity": 5,
+  "maxcomplexity": 20,
   "indent": 2,
   "undef": true,
   "strict": false,

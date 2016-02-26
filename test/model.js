@@ -356,6 +356,62 @@ describe('Model', function () {
 
   });
 
+  describe('db', function () {
+    var _db, db = require('../lib/db');
+
+    before(function (done) {
+      MongoClient.connect(process.env.COSA_DB_URI, function (err, db) {
+        if (err) { return done(err); }
+        _db = db;
+        _db.collection('mocha_test', function (err, collection) {
+          collection.deleteMany({}, function (err, result) {
+            if (err) { return done(err); }
+            done();
+          });
+        });
+      });
+    });
+
+    after(function (done) {
+      _db.collection('mocha_test', function (err, collection) {
+        collection.deleteMany({}, function (err, result) {
+          if (err) { return done(err); }
+          _db.close();
+          done();
+        });
+      });
+    });
+
+    it('should auto connect to db if connection lost', function (done) {
+      var model = FullTestModel.create({
+        str: 'foo',
+        obj: { prop1: 'bar' }
+      });
+      model
+        .save()
+        .then(function (updatedModel) {
+          return q.all([
+            updatedModel,
+            FullTestModel.count({ _id: updatedModel._id })
+          ]);
+        })
+        .spread(function (updatedModel, count) {
+          expect(count).to.equal(1);
+          db._db.close();
+          return updatedModel;
+        })
+        .then(function(updatedModel) {
+          return FullTestModel.count({ _id: updatedModel._id });
+        })
+        .then(function (count) {
+          expect(count).to.equal(1);
+          done();
+        })
+        .done(null, done);
+    });
+
+  });
+
   describe('.save()', function () {
     var _db, model;
 
@@ -367,8 +423,13 @@ describe('Model', function () {
       MongoClient.connect(process.env.COSA_DB_URI, function (err, db) {
         if (err) { return done(err); }
         _db = db;
-        done();
-      })
+        _db.collection('mocha_test', function (err, collection) {
+          collection.deleteMany({}, function (err, result) {
+            if (err) { return done(err); }
+            done();
+          });
+        });
+      });
     })
 
     after(function (done) {
