@@ -1083,6 +1083,7 @@ describe('Model', function () {
 
     it('should execute after a model is saved', function (done) {
       var strSaved = '';
+      var checkFunction;
       var HookedModel = Model.define({
         name: 'HookedModel',
         collection: 'mocha_test',
@@ -1091,19 +1092,35 @@ describe('Model', function () {
         },
         methods: {
           afterSave: function () {
+            checkFunction(this, arguments);
             strSaved = this.str;
           }
         }
       });
       var model = HookedModel.create({ str: 'foo' });
       expect(model.afterSave).to.exist;
+
+      var wasCalled;
+      checkFunction = function(instance, args){
+        expect(instance.str).to.equal('foo');
+        expect(args[0]).to.equal(null);
+        wasCalled = true;
+      }
+
       model
         .save()
         .then(function (m) {
-          expect(strSaved).to.equal('foo');
+          expect(wasCalled).to.equal(true);
+          wasCalled = false;
+          checkFunction = function(instance, args){
+            expect(instance.str).to.equal('bar');
+            expect(args[0].str).to.equal('foo');
+            wasCalled = true;
+          }
           return m.set('str', 'bar').save();
         })
         .then(function (m) {
+          expect(wasCalled).to.equal(true);
           expect(strSaved).to.equal('bar');
           done();
         })
