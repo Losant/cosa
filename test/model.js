@@ -1,6 +1,7 @@
 var chai = require('chai');
 var MongoClient = require('mongodb').MongoClient;
 var q = require('q');
+var bson = require('bson');
 
 chai.use(require('chai-datetime'));
 var expect = chai.expect;
@@ -283,8 +284,8 @@ describe('Model', function () {
         if (err) { return done(err); }
         _db = db;
         done();
-      })
-    })
+      });
+    });
 
     after(function (done) {
       _db.collection('mocha_test', function (err, collection) {
@@ -296,28 +297,52 @@ describe('Model', function () {
       });
     });
 
-    it('should except a virtuals option', function () {
-      var model = FullTestModel.create({
-        str: 'foo',
-        obj: { deep: { blah: 'blah' } }
+    it('should return valid json', function () {
+      var DeepArrayModel = Model.define({
+        collection: 'mocha_test',
+        properties: {
+          arr: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                oid: { type: 'objectid' }
+              }
+            }
+          }
+        }
       });
-      model
-        .save()
-        .then(function (newModel) {
-          // console.log(newModel.toJSON({ virtuals: true }));
-        });
+      var model = DeepArrayModel.create({
+        arr: [
+          { oid: bson.ObjectId('abdfabdfabdfabdfabdfabdf') },
+          { oid: bson.ObjectId('abdfabdfabdfabdfabdfabdf') }
+        ]
+      });
+      expect(JSON.stringify(model.toJSON())).to.equal("{\"arr\":[{\"oid\":{\"$oid\":\"abdfabdfabdfabdfabdfabdf\"}},{\"oid\":{\"$oid\":\"abdfabdfabdfabdfabdfabdf\"}}]}");
     });
 
     it('should except an extended option', function () {
-      var model = FullTestModel.create({
-        str: 'foo',
-        obj: { deep: { blah: 'blah' } }
+      var DeepArrayModel = Model.define({
+        collection: 'mocha_test',
+        properties: {
+          arr: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                oid: { type: 'objectid' }
+              }
+            }
+          }
+        }
       });
-      model
-        .save()
-        .then(function (newModel) {
-          // console.log(newModel.toJSON({ extended: false }));
-        });
+      var model = DeepArrayModel.create({
+        arr: [
+          { oid: bson.ObjectId('abdfabdfabdfabdfabdfabdf') },
+          { oid: bson.ObjectId('abdfabdfabdfabdfabdfabdf') }
+        ]
+      });
+      expect(JSON.stringify(model.toJSON({ extended: false }))).to.equal("{\"arr\":[{\"oid\":\"abdfabdfabdfabdfabdfabdf\"},{\"oid\":\"abdfabdfabdfabdfabdfabdf\"}]}");
     });
 
   });
