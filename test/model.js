@@ -516,7 +516,7 @@ describe('Model', function () {
         .save()
         .then(function (model) {
           newModel = model;
-          return newModel.set('str', 'test update').save();
+          return newModel.set('str', 'test update').set('num', 2).save();
         })
         .then(function (model) {
           var deferred = q.defer()
@@ -793,17 +793,17 @@ describe('Model', function () {
         .then(function (result) {
           expect(result.matchedCount).to.equal(3);
           expect(result.modifiedCount).to.equal(3);
-          return FullTestModel.find({});
+          return FullTestModel.find({}, { sort: { str: 1 } });
         })
         .then(function (cursor) {
           return cursor.toArray();
         })
         .then(function (docs) {
-          expect(docs[0].str).to.equal('foo');
+          expect(docs[0].str).to.equal('bar');
           expect(docs[0].any).to.equal('any');
-          expect(docs[1].str).to.equal('bar');
+          expect(docs[1].str).to.equal('blah');
           expect(docs[1].any).to.equal('any');
-          expect(docs[2].str).to.equal('blah');
+          expect(docs[2].str).to.equal('foo');
           expect(docs[2].any).to.equal('any');
           done();
         })
