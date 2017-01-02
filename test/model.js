@@ -516,7 +516,7 @@ describe('Model', function () {
         .save()
         .then(function (model) {
           newModel = model;
-          return newModel.set('str', 'test update').save();
+          return newModel.set('str', 'test update').set('num', 2).save();
         })
         .then(function (model) {
           var deferred = q.defer()
