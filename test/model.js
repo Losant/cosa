@@ -59,8 +59,6 @@ describe('Model', function () {
       });
       var model2 = model.set('obj.deep.blah', 'boo');
       expect(FullTestModel.isA(model2)).to.be.true;
-      var m = model.toObject();
-      var m2 = model2.toObject();
       expect(model.get('obj.deep.blah')).to.equal('blah');
       expect(model2.get('obj.deep.blah')).to.equal('boo');
     });
@@ -126,7 +124,7 @@ describe('Model', function () {
 
     after(function (done) {
       _db.collection('mocha_test', function (err, collection) {
-        collection.deleteMany({}, function (err, result) {
+        collection.deleteMany({}, function (err) {
           if (err) { return done(err); }
           _db.close();
           done();
@@ -182,7 +180,7 @@ describe('Model', function () {
 
     after(function (done) {
       _db.collection('mocha_test', function (err, collection) {
-        collection.deleteMany({}, function (err, result) {
+        collection.deleteMany({}, function (err) {
           if (err) { return done(err); }
           _db.close();
           done();
@@ -191,7 +189,6 @@ describe('Model', function () {
     });
 
     it('should return true if both objects reference the same doc and version', function (done) {
-      var obj = null;
       var modelA = Model.define({
         name: 'ModelA',
         collection: 'mocha_test',
@@ -212,7 +209,7 @@ describe('Model', function () {
 
   });
 
-  describe('.isNew()', function (done) {
+  describe('.isNew()', function () {
     var _db;
 
     before(function (done) {
@@ -225,7 +222,7 @@ describe('Model', function () {
 
     after(function (done) {
       _db.collection('mocha_test', function (err, collection) {
-        collection.deleteMany({}, function (err, result) {
+        collection.deleteMany({}, function (err) {
           if (err) { return done(err); }
           _db.close();
           done();
@@ -289,7 +286,7 @@ describe('Model', function () {
 
     after(function (done) {
       _db.collection('mocha_test', function (err, collection) {
-        collection.deleteMany({}, function (err, result) {
+        collection.deleteMany({}, function (err) {
           if (err) { return done(err); }
           _db.close();
           done();
@@ -345,6 +342,35 @@ describe('Model', function () {
       expect(JSON.stringify(model.toJSON({ extended: false }))).to.equal("{\"arr\":[{\"oid\":\"abdfabdfabdfabdfabdfabdf\"},{\"oid\":\"abdfabdfabdfabdfabdfabdf\"}]}");
     });
 
+    it('should except an exclude option', function () {
+      var model = FullTestModel.create({
+        str: 'test string',
+        obj: { prop1: 'bar' }
+      });
+      var json = model.toJSON({ exclude: ['str', 'date'] });
+      expect(JSON.stringify(json)).to.equal("{\"obj\":{\"prop1\":\"bar\",\"propv\":\"bar.undefined\"},\"num\":0,\"bool\":false,\"virt\":\"test string.virtual\"}");
+    });
+
+    it('should except an include option', function () {
+      var model = FullTestModel.create({
+        str: 'test string',
+        obj: { prop1: 'bar' }
+      });
+      var json = model.toJSON({ include: ['num', 'bool', 'virt'] });
+      expect(JSON.stringify(json)).to.equal("{\"num\":0,\"bool\":false,\"virt\":\"test string.virtual\"}");
+    });
+
+    it('should except a transform option', function () {
+      var model = FullTestModel.create({
+        str: 'test string'
+      });
+      var json = model.toJSON({ exclude: ['date'], transform: function (obj) {
+        obj.str += ' TRANSFORMED!';
+        return obj
+      } });
+      expect(JSON.stringify(json)).to.equal("{\"str\":\"test string TRANSFORMED!\",\"num\":0,\"bool\":false,\"virt\":\"test string.virtual\"}");
+    });
+
   });
 
   describe('.validate()', function () {
@@ -389,7 +415,7 @@ describe('Model', function () {
         if (err) { return done(err); }
         _db = db;
         _db.collection('mocha_test', function (err, collection) {
-          collection.deleteMany({}, function (err, result) {
+          collection.deleteMany({}, function (err) {
             if (err) { return done(err); }
             done();
           });
@@ -399,7 +425,7 @@ describe('Model', function () {
 
     after(function (done) {
       _db.collection('mocha_test', function (err, collection) {
-        collection.deleteMany({}, function (err, result) {
+        collection.deleteMany({}, function (err) {
           if (err) { return done(err); }
           _db.close();
           done();
@@ -449,7 +475,7 @@ describe('Model', function () {
         if (err) { return done(err); }
         _db = db;
         _db.collection('mocha_test', function (err, collection) {
-          collection.deleteMany({}, function (err, result) {
+          collection.deleteMany({}, function (err) {
             if (err) { return done(err); }
             done();
           });
@@ -459,7 +485,7 @@ describe('Model', function () {
 
     after(function (done) {
       _db.collection('mocha_test', function (err, collection) {
-        collection.deleteMany({}, function (err, result) {
+        collection.deleteMany({}, function (err) {
           if (err) { return done(err); }
           _db.close();
           done();
@@ -564,7 +590,7 @@ describe('Model', function () {
 
     after(function (done) {
       _db.collection('mocha_test', function (err, collection) {
-        collection.deleteMany({}, function (err, result) {
+        collection.deleteMany({}, function (err) {
           if (err) { return done(err); }
           _db.close();
           done();
@@ -578,7 +604,7 @@ describe('Model', function () {
         .then(function (updatedModel) {
           return updatedModel.remove();
         })
-        .then(function (result) {
+        .then(function () {
           _db.collection('mocha_test', function (err, collection) {
             if (err) { throw err; }
             collection.count({}, function (err, count) {
@@ -610,7 +636,7 @@ describe('Model', function () {
 
     after(function (done) {
       _db.collection('mocha_test', function (err, collection) {
-        collection.deleteMany({}, function (err, result) {
+        collection.deleteMany({}, function (err) {
           if (err) { return done(err); }
           _db.close();
           done();
@@ -649,7 +675,7 @@ describe('Model', function () {
 
     after(function (done) {
       _db.collection('mocha_test', function (err, collection) {
-        collection.deleteMany({}, function (err, result) {
+        collection.deleteMany({}, function (err) {
           if (err) { return done(err); }
           _db.close();
           done();
@@ -708,7 +734,7 @@ describe('Model', function () {
 
     after(function (done) {
       _db.collection('mocha_test', function (err, collection) {
-        collection.deleteMany({}, function (err, result) {
+        collection.deleteMany({}, function (err) {
           if (err) { return done(err); }
           _db.close();
           done();
@@ -754,7 +780,7 @@ describe('Model', function () {
           FullTestModel.create({ str: 'bar' }).save(),
           FullTestModel.create({ str: 'blah' }).save()
         ])
-        .then(function (models) {
+        .then(function () {
           done();
         })
         .catch(function (err) {
@@ -765,7 +791,7 @@ describe('Model', function () {
 
     after(function (done) {
       _db.collection('mocha_test', function (err, collection) {
-        collection.deleteMany({}, function (err, result) {
+        collection.deleteMany({}, function (err) {
           if (err) { return done(err); }
           _db.close();
           done();
@@ -839,7 +865,7 @@ describe('Model', function () {
 
     after(function (done) {
       _db.collection('mocha_test', function (err, collection) {
-        collection.deleteMany({}, function (err, result) {
+        collection.deleteMany({}, function (err) {
           if (err) { return done(err); }
           _db.close();
           done();
@@ -858,7 +884,7 @@ describe('Model', function () {
         str: 'test string'
       });
       q.all([model.save(), model2.save(), model3.save()])
-        .then(function (results) {
+        .then(function () {
           return FullTestModel.distinct('str');
         })
         .then(function (results) {
@@ -883,7 +909,7 @@ describe('Model', function () {
 
     after(function (done) {
       _db.collection('mocha_test', function (err, collection) {
-        collection.deleteMany({}, function (err, result) {
+        collection.deleteMany({}, function (err) {
           if (err) { return done(err); }
           _db.close();
           done();
@@ -902,7 +928,7 @@ describe('Model', function () {
         str: 'test string'
       });
       q.all([model.save(), model2.save(), model3.save()])
-        .then(function (results) {
+        .then(function () {
           return FullTestModel.aggregate([
             { $group: { _id: '$str', count: { $sum: 1 } } }
           ]);
@@ -940,7 +966,7 @@ describe('Model', function () {
 
     after(function (done) {
       _db.collection('mocha_test', function (err, collection) {
-        collection.deleteMany({}, function (err, result) {
+        collection.deleteMany({}, function (err) {
           if (err) { return done(err); }
           _db.close();
           done();
@@ -1027,7 +1053,7 @@ describe('Model', function () {
 
     after(function (done) {
       _db.collection('mocha_test', function (err, collection) {
-        collection.deleteMany({}, function (err, result) {
+        collection.deleteMany({}, function (err) {
           if (err) { return done(err); }
           _db.close();
           done();
@@ -1098,7 +1124,7 @@ describe('Model', function () {
 
     after(function (done) {
       _db.collection('mocha_test', function (err, collection) {
-        collection.deleteMany({}, function (err, result) {
+        collection.deleteMany({}, function (err) {
           if (err) { return done(err); }
           _db.close();
           done();
@@ -1144,7 +1170,7 @@ describe('Model', function () {
           }
           return m.set('str', 'bar').save();
         })
-        .then(function (m) {
+        .then(function () {
           expect(wasCalled).to.equal(true);
           expect(strSaved).to.equal('bar');
           done();
@@ -1167,7 +1193,7 @@ describe('Model', function () {
 
     after(function (done) {
       _db.collection('mocha_test', function (err, collection) {
-        collection.deleteMany({}, function (err, result) {
+        collection.deleteMany({}, function (err) {
           if (err) { return done(err); }
           _db.close();
           done();
@@ -1196,7 +1222,7 @@ describe('Model', function () {
         .then(function (m) {
           return m.remove();
         })
-        .then(function (r) {
+        .then(function () {
           expect(strRemoved).to.equal('foo');
           done();
         })
@@ -1218,7 +1244,7 @@ describe('Model', function () {
 
     after(function (done) {
       _db.collection('mocha_test', function (err, collection) {
-        collection.deleteMany({}, function (err, result) {
+        collection.deleteMany({}, function (err) {
           if (err) { return done(err); }
           _db.close();
           done();
@@ -1247,7 +1273,7 @@ describe('Model', function () {
         .then(function (m) {
           return m.remove();
         })
-        .then(function (r) {
+        .then(function () {
           expect(strRemoved).to.equal('foo');
           done();
         })
@@ -1269,7 +1295,7 @@ describe('Model', function () {
 
     after(function (done) {
       _db.collection('mocha_test', function (err, collection) {
-        collection.deleteMany({}, function (err, result) {
+        collection.deleteMany({}, function (err) {
           if (err) { return done(err); }
           _db.close();
           done();
@@ -1284,7 +1310,7 @@ describe('Model', function () {
           obj: { prop1: 'bar' }
         })
         .save()
-        .then(function (model) {
+        .then(function () {
           return FullTestModel.project({}, { str: 1 }, { array: 1 });
         })
         .then(function (values) {
