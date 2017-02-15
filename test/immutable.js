@@ -241,7 +241,7 @@ describe('Immutable', function () {
         expect(Immutable.isImmutableType(a, 'array')).to.be.true;
         expect(e).to.equal(arr[i]);
       });
-      var arr2 = arr.filter(function (e, i, a) {
+      var arr2 = arr.filter(function (e) {
         return e === 'b';
       });
       expect(Immutable.isImmutableType(arr2, 'array')).to.be.true;
