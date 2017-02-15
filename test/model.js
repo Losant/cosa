@@ -342,6 +342,35 @@ describe('Model', function () {
       expect(JSON.stringify(model.toJSON({ extended: false }))).to.equal("{\"arr\":[{\"oid\":\"abdfabdfabdfabdfabdfabdf\"},{\"oid\":\"abdfabdfabdfabdfabdfabdf\"}]}");
     });
 
+    it('should except an exclude option', function () {
+      var model = FullTestModel.create({
+        str: 'test string',
+        obj: { prop1: 'bar' }
+      });
+      var json = model.toJSON({ exclude: ['str', 'date'] });
+      expect(JSON.stringify(json)).to.equal("{\"obj\":{\"prop1\":\"bar\",\"propv\":\"bar.undefined\"},\"num\":0,\"bool\":false,\"virt\":\"test string.virtual\"}");
+    });
+
+    it('should except an include option', function () {
+      var model = FullTestModel.create({
+        str: 'test string',
+        obj: { prop1: 'bar' }
+      });
+      var json = model.toJSON({ include: ['num', 'bool', 'virt'] });
+      expect(JSON.stringify(json)).to.equal("{\"num\":0,\"bool\":false,\"virt\":\"test string.virtual\"}");
+    });
+
+    it('should except a transform option', function () {
+      var model = FullTestModel.create({
+        str: 'test string'
+      });
+      var json = model.toJSON({ exclude: ['date'], transform: function (obj) {
+        obj.str += ' TRANSFORMED!';
+        return obj
+      } });
+      expect(JSON.stringify(json)).to.equal("{\"str\":\"test string TRANSFORMED!\",\"num\":0,\"bool\":false,\"virt\":\"test string.virtual\"}");
+    });
+
   });
 
   describe('.validate()', function () {
