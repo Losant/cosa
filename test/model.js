@@ -306,16 +306,18 @@ describe('Model', function () {
                 oid: { type: 'objectid' }
               }
             }
-          }
+          },
+          nullVal: { type: '*' }
         }
       });
       var model = DeepArrayModel.create({
         arr: [
           { oid: bson.ObjectId('abdfabdfabdfabdfabdfabdf') },
           { oid: bson.ObjectId('abdfabdfabdfabdfabdfabdf') }
-        ]
+        ],
+        nullVal: null
       });
-      expect(JSON.stringify(model.toJSON())).to.equal("{\"arr\":[{\"oid\":{\"$oid\":\"abdfabdfabdfabdfabdfabdf\"}},{\"oid\":{\"$oid\":\"abdfabdfabdfabdfabdfabdf\"}}]}");
+      expect(JSON.stringify(model.toJSON())).to.equal("{\"arr\":[{\"oid\":{\"$oid\":\"abdfabdfabdfabdfabdfabdf\"}},{\"oid\":{\"$oid\":\"abdfabdfabdfabdfabdfabdf\"}}],\"nullVal\":null}");
     });
 
     it('should except an extended option', function () {
