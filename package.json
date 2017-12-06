@@ -3,7 +3,13 @@
   "version": "2.7.2",
   "description": "Cosa Models for MongoDB",
   "main": "lib/index.js",
+  "engines": {
+    "node": "8.9.0",
+    "yarn": "1.2.1"
+  },
   "scripts": {
+    "preinstall": "node -e 'if(!process.env.npm_execpath.includes(`yarn`)){console.error(`Use yarn!`);process.exit(1);}'",
+    "reinstall": "rm -rf node_modules && yarn install",
     "test": "mocha --require test/support/env",
     "test-debug": "mocha --debug-brk --require test/support/env",
     "test-cov": "istanbul cover _mocha -- --require test/support/env"
