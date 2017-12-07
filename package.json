@@ -1,10 +1,10 @@
 {
   "name": "cosa",
-  "version": "2.8.0",
+  "version": "2.8.1",
   "description": "Cosa Models for MongoDB",
   "main": "lib/index.js",
   "engines": {
-    "node": "8.9.0",
+    "node": ">=8.9.0",
     "yarn": ">=1.2.1"
   },
   "scripts": {
