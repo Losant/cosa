@@ -1,6 +1,6 @@
 {
   "name": "cosa",
-  "version": "2.8.1",
+  "version": "2.8.2",
   "description": "Cosa Models for MongoDB",
   "main": "lib/index.js",
   "engines": {
@@ -12,7 +12,8 @@
     "reinstall": "rm -rf node_modules && yarn install",
     "test": "mocha --require test/support/env",
     "test-debug": "mocha --debug-brk --require test/support/env",
-    "test-cov": "istanbul cover _mocha -- --require test/support/env"
+    "test-cov": "istanbul cover _mocha -- --require test/support/env",
+    "doc": "documentation build lib/index.js -f md --github > API.md"
   },
   "author": {
     "name": "Adam Daniel",
@@ -43,6 +44,7 @@
   "devDependencies": {
     "chai": "^4.1.2",
     "chai-datetime": "^1.5.0",
+    "documentation": "^5.3.5",
     "eslint": "^4.6.1",
     "eslint-plugin-mocha": "^4.8.0",
     "eslint-plugin-node": "^5.1.1",
