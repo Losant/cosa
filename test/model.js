@@ -1,4 +1,6 @@
 var chai = require('chai');
+const chaiPromise = require('chai-as-promised');
+chai.use(chaiPromise);
 var MongoClient = require('mongodb').MongoClient;
 var q = require('q');
 var bson = require('bson');
@@ -133,16 +135,16 @@ describe('Model', function () {
     });
 
     // TODO split this up into multiple tests
-    it('should return true if both objects reference the same doc', function (done) {
-      var obj = null;
-      var modelA = Model.define({
+    it('should return true if both objects reference the same doc', async function () {
+      const obj = null;
+      const modelA = Model.define({
         name: 'ModelA',
         collection: 'mocha_test',
         properties: {
           str: { type: 'string' }
         }
       }).create({ str: 'foo'});
-      var modelB = Model.define({
+      const modelB = Model.define({
         name: 'ModelB',
         collection: 'mocha_test',
         properties: {
@@ -151,18 +153,18 @@ describe('Model', function () {
       }).create({ str: 'foo'});
       expect(modelA.is(obj)).to.be.false;
       expect(modelA.is(modelB)).to.be.false;
-      var m = modelA;
+      let m = modelA;
       expect(modelA.is(m)).to.be.true;
       m = modelA.set('str', 'blah');
       expect(modelA.is(m)).to.be.false;
-      modelA.save()
-        .then(function (modelA2) {
-          expect(modelA.is(modelA2)).to.be.false;
-          var m2 = modelA2.set('str', 'bar');
-          expect(modelA2.is(m2)).to.be.true;
-          done();
-        })
-        .done(null, done);
+      const modelA2 = await modelA.save();
+      expect(modelA.is(modelA2)).to.be.false;
+      let m2 = modelA2.set('str', 'bar');
+      expect(modelA2.is(m2)).to.be.true;
+        // .then(function (modelA2) {
+        //   // done();
+        // })
+        // .done(null, done);
     });
 
   });
@@ -188,23 +190,21 @@ describe('Model', function () {
       });
     });
 
-    it('should return true if both objects reference the same doc and version', function (done) {
-      var modelA = Model.define({
+    it('should return true if both objects reference the same doc and version', async function () {
+      const modelA = Model.define({
         name: 'ModelA',
         collection: 'mocha_test',
         properties: {
           str: { type: 'string' }
         }
       }).create({ str: 'foo'});
-      var m = modelA.set('str', 'blah');
-      expect(modelA.equals(m)).to.be.false;
-      modelA.save()
-        .then(function (modelA2) {
-          var m2 = modelA2.set('num', 10);
-          expect(modelA2.equals(m2)).to.be.false;
-          done();
-        })
-        .done(null, done);
+      expect(modelA.equals(modelA.set('str', 'blah'))).to.be.false;
+      const modelA2 = await modelA.save();
+      expect(modelA2.equals(modelA2.set('num', 10))).to.be.false;
+        // .then(function (modelA2) {
+        //   done();
+        // })
+        // .done(null, done);
     });
 
   });
@@ -230,17 +230,13 @@ describe('Model', function () {
       });
     });
 
-    it('should return true if the model is new', function (done) {
+    it('should return true if the model is new', async function () {
       var model = FullTestModel.create({
         str: 'foo'
       });
       expect(model.isNew()).to.be.true;
-      model.save()
-        .then(function (model2) {
-          expect(model2.isNew()).to.be.false;
-          done();
-        })
-        .done(null, done);
+      const model2 = await model.save();
+      expect(model2.isNew()).to.be.false;
     });
 
   });
@@ -377,34 +373,16 @@ describe('Model', function () {
 
   describe('.validate()', function () {
 
-    it('should reject promise if validation fails', function (done) {
+    it('should reject promise if validation fails', () => {
       var model = FullTestModel.create({});
-      model
-        .validate()
-        .then(
-          function () {
-            expect(false).to.be.true;
-          },
-          function (err) {
-            expect(err).to.exist;
-            expect(err.statusCode).to.equal(400);
-            done();
-          })
-        .done(null, done);
+      return expect(model.validate()).to.be.eventually.rejectedWith({ statusCode: 400 });
     });
 
-    it('should resolve promise if validation succeeds', function (done) {
+    it('should resolve promise if validation succeeds', () => {
       var model = FullTestModel.create({ str: 'bar' });
-      model
-        .validate()
-        .then(function () {
+      return model.validate().then(() => {
           expect(true).to.be.true;
-          done();
-        })
-        .catch(function (err) {
-          expect(err).to.not.exist;
-        })
-        .done(null, done);
+        });
     });
 
   });
@@ -435,32 +413,17 @@ describe('Model', function () {
       });
     });
 
-    it('should auto connect to db if connection lost', function (done) {
+    it('should auto connect to db if connection lost', async function () {
       var model = FullTestModel.create({
         str: 'foo',
         obj: { prop1: 'bar' }
       });
-      model
-        .save()
-        .then(function (updatedModel) {
-          return q.all([
-            updatedModel,
-            FullTestModel.count({ _id: updatedModel._id })
-          ]);
-        })
-        .spread(function (updatedModel, count) {
-          expect(count).to.equal(1);
-          db._db.close();
-          return updatedModel;
-        })
-        .then(function(updatedModel) {
-          return FullTestModel.count({ _id: updatedModel._id });
-        })
-        .then(function (count) {
-          expect(count).to.equal(1);
-          done();
-        })
-        .done(null, done);
+      let updatedModel = await model.save();
+      let count = await FullTestModel.count({ _id: updatedModel._id });
+      expect(count).to.equal(1);
+      db._db.close();
+      count = await FullTestModel.count({ _id: updatedModel._id });
+      expect(count).to.equal(1);
     });
 
   });
@@ -495,9 +458,9 @@ describe('Model', function () {
       });
     });
 
-    it('should insert a new document', function (done) {
+    it('should insert a new document', function () {
       var updatedModel;
-      model
+      return model
         .save()
         .then(function (newModel) {
           var deferred = q.defer()
@@ -533,14 +496,12 @@ describe('Model', function () {
           expect(updatedModel.num).to.equal(doc.num);
           expect(updatedModel.obj.toObject()).to.eql(doc.obj);
           expect(updatedModel.str).to.equal(doc.str);
-          done();
-        })
-        .done(null, done);
+        });
     });
 
-    it('should update an existing document', function (done) {
+    it('should update an existing document', function () {
       var newModel, updatedModel;
-      model
+      return model
         .save()
         .then(function (model) {
           newModel = model;
@@ -568,9 +529,7 @@ describe('Model', function () {
           expect(updatedModel.num).to.equal(doc.num);
           expect(updatedModel.obj.toObject()).to.eql(doc.obj);
           expect(updatedModel.str).to.equal(doc.str);
-          done();
-        })
-        .done(null, done);
+        });
     });
 
   });
@@ -616,7 +575,8 @@ describe('Model', function () {
             });
           });
         })
-        .done(null, done);
+        .catch(done);
+        // .done(null, done);
     });
 
   });
@@ -656,7 +616,7 @@ describe('Model', function () {
           expect(count).to.equal(1);
           done();
         })
-        .done(null, done);
+        .catch(done);
     });
   });
 
@@ -692,14 +652,14 @@ describe('Model', function () {
           return FullTestModel.find({ _id: updatedModel._id });
         })
         .then(function (cursor) {
-          return q.all([ cursor.count(), cursor.next() ]);
+          return q.all([ cursor.count(), cursor.next() ])
+            .spread(function (count, obj) {
+              expect(count).to.equal(1);
+              expect(Immutable.isImmutableType(obj, 'FullTestModel')).to.be.true;
+              done();
+            })
         })
-        .spread(function (count, obj) {
-          expect(count).to.equal(1);
-          expect(Immutable.isImmutableType(obj, 'FullTestModel')).to.be.true;
-          done();
-        })
-        .done(null, done);
+        .catch(done);
     });
 
     it('should return an array if array option is given', function (done) {
@@ -714,7 +674,7 @@ describe('Model', function () {
           expect(Immutable.isImmutableType(arr[0], 'FullTestModel')).to.be.true;
           done();
         })
-        .done(null, done);
+        .catch(done);
     });
 
   });
@@ -755,17 +715,15 @@ describe('Model', function () {
           expect(Immutable.isImmutableType(doc, 'FullTestModel'));
           done();
         })
-        .done(null, done);
+        .catch(done);
     });
 
-    it('should return null if no document is found', function (done) {
-      FullTestModel
+    it('should return null if no document is found', function () {
+      return FullTestModel
         .findOne({ _id: 'asdfasdfasdf' })
         .then(function (doc) {
           expect(doc).to.not.exist;
-          done();
-        })
-        .done(null, done);
+        });
     });
 
   });
@@ -813,7 +771,7 @@ describe('Model', function () {
           expect(doc.any).to.equal('boo');
           done();
         })
-        .done(null, done);
+        .catch(done);
     });
 
     it('should partial update all docs', function (done) {
@@ -835,7 +793,7 @@ describe('Model', function () {
           expect(docs[2].any).to.equal('any');
           done();
         })
-        .done(null, done);
+        .catch(done);
     });
 
     it('should replace single doc', function (done) {
@@ -893,7 +851,7 @@ describe('Model', function () {
           expect(results).to.contain('test string', 'another test string');
           done();
         })
-        .done(null, done);
+        .catch(done);
     });
 
   });
@@ -999,7 +957,7 @@ describe('Model', function () {
           expect(count).to.equal(0);
           done();
         })
-        .done(null, done);
+        .catch(done);
     });
   });
 
@@ -1084,7 +1042,7 @@ describe('Model', function () {
           expect(strToSave).to.equal('foo');
           done();
         })
-        .done(null, done);
+        .catch(done);
     });
 
     it('should allow mutating model before saving', function (done) {
@@ -1107,7 +1065,7 @@ describe('Model', function () {
           expect(model2.str).to.equal('foo bar');
           done();
         })
-        .done(null, done);
+        .catch(done);
     });
 
   });
@@ -1136,7 +1094,12 @@ describe('Model', function () {
 
     it('should execute after a model is saved', function (done) {
       var strSaved = '';
-      var checkFunction;
+      let wasCalled = false;
+      let checkFunction = function(instance, args){
+        expect(instance.str).to.equal('foo');
+        expect(args[0]).to.equal(null);
+        wasCalled = true;
+      }
       var HookedModel = Model.define({
         name: 'HookedModel',
         collection: 'mocha_test',
@@ -1152,14 +1115,6 @@ describe('Model', function () {
       });
       var model = HookedModel.create({ str: 'foo' });
       expect(model.afterSave).to.exist;
-
-      var wasCalled;
-      checkFunction = function(instance, args){
-        expect(instance.str).to.equal('foo');
-        expect(args[0]).to.equal(null);
-        wasCalled = true;
-      }
-
       model
         .save()
         .then(function (m) {
@@ -1177,7 +1132,7 @@ describe('Model', function () {
           expect(strSaved).to.equal('bar');
           done();
         })
-        .done(null, done);
+        .catch(done);
     });
 
   });
@@ -1228,7 +1183,7 @@ describe('Model', function () {
           expect(strRemoved).to.equal('foo');
           done();
         })
-        .done(null, done);
+        .catch(done);
     });
 
   });
@@ -1279,7 +1234,7 @@ describe('Model', function () {
           expect(strRemoved).to.equal('foo');
           done();
         })
-        .done(null, done);
+        .catch(done);
     });
 
   });
@@ -1319,7 +1274,8 @@ describe('Model', function () {
           expect(values.length).to.equal(1);
           expect(values[0].str).to.equal('test string');
           done();
-        });
+        })
+        .catch(done);
     });
 
   });
