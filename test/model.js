@@ -1,6 +1,5 @@
 const { promisify }      = require('es6-promisify');
 const chai               = require('chai');
-const chaiPromise        = require('chai-as-promised');
 const MongoClient        = require('mongodb').MongoClient;
 const bson               = require('bson');
 chai.use(require('chai-as-promised'));
@@ -8,7 +7,7 @@ chai.use(require('chai-datetime'));
 const expect             = chai.expect;
 const MongoClientPromise = promisify(MongoClient.connect);
 
-const getMongoClient = () => MongoClient.connect(process.env.COSA_DB_URI);
+const getMongoClient = () => MongoClientPromise(process.env.COSA_DB_URI);
 const cleanUpDb = (db, close = true) => {
   return new Promise((resolve, reject) => {
     db.collection('mocha_test', function (err, collection) {
