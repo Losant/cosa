@@ -24,6 +24,17 @@ const cleanUpDb = (db, close = true) => {
 
 describe('Model', () => {
 
+  let _db;
+
+  beforeEach(async () => {
+    _db = await getMongoClient();
+    return cleanUpDb(_db, false);
+  });
+
+  afterEach(() => {
+    return cleanUpDb(_db);
+  });
+
   const Model = require('../lib/model');
   const Immutable = require('../lib/immutable');
   const FullTestModel = require('./support/full-test-model');
@@ -128,16 +139,6 @@ describe('Model', () => {
   });
 
   describe('.is()', function () {
-    let _db;
-
-    before(async () => {
-      _db = await getMongoClient();
-    });
-
-    after(() => {
-      return cleanUpDb(_db);
-    });
-
     // TODO split this up into multiple tests
     it('should return true if both objects reference the same doc', async () => {
       let obj = null;
@@ -170,15 +171,6 @@ describe('Model', () => {
   });
 
   describe('.equals()', function () {
-    let _db;
-
-    before(async () => {
-      _db = await getMongoClient();
-    });
-
-    after(() => {
-      return cleanUpDb(_db);
-    });
 
     it('should return true if both objects reference the same doc and version', async () => {
       const modelA = Model.define({
@@ -198,15 +190,6 @@ describe('Model', () => {
   });
 
   describe('.isNew()', function () {
-    let _db;
-
-    before(async () => {
-      _db = await getMongoClient();
-    });
-
-    after(() => {
-      return cleanUpDb(_db);
-    });
 
     it('should return true if the model is new', async () => {
       const model = FullTestModel.create({
@@ -248,15 +231,6 @@ describe('Model', () => {
   });
 
   describe('.toJSON()', () => {
-    let _db;
-
-    before(async () => {
-      _db = await getMongoClient();
-    });
-
-    after(() => {
-      return cleanUpDb(_db);
-    });
 
     it('should return valid json', () => {
       const DeepArrayModel = Model.define({
@@ -355,16 +329,7 @@ describe('Model', () => {
   });
 
   describe('db', function () {
-    var _db, db = require('../lib/db');
-
-    before(async () => {
-      _db = await getMongoClient();
-      return cleanUpDb(_db, false);
-    });
-
-    after(() => {
-      return cleanUpDb(_db);
-    });
+    const db = require('../lib/db');
 
     it('should auto connect to db if connection lost', async () => {
       const model = FullTestModel.create({
@@ -382,19 +347,13 @@ describe('Model', () => {
   });
 
   describe('.save()', function () {
-    let _db, model;
+    let model;
 
-    before(async () => {
+    before(() => {
       model = FullTestModel.create({
         str: 'foo',
         obj: { prop1: 'bar' }
       });
-      _db = await getMongoClient();
-      return cleanUpDb(_db, false);
-    });
-
-    after(() => {
-      return cleanUpDb(_db);
     });
 
     it('should insert a new document', async () => {
@@ -447,18 +406,13 @@ describe('Model', () => {
   });
 
   describe('.remove()', () => {
-    let _db, model;
+    let model;
 
     before(async () => {
       model = FullTestModel.create({
         str: 'test string',
         obj: { prop1: 'bar' }
       });
-      _db = await getMongoClient();
-    })
-
-    after(() => {
-      return cleanUpDb(_db);
     });
 
     it('should remove the document', async () => {
@@ -479,18 +433,13 @@ describe('Model', () => {
   });
 
   describe('.count()', () => {
-    let _db, model;
+    let model;
 
     before(async () => {
       model = FullTestModel.create({
         str: 'test string',
         obj: { prop1: 'bar' }
       });
-      _db = await getMongoClient();
-    })
-
-    after(() => {
-      return cleanUpDb(_db);
     });
 
     it('should return the count of objects', async () => {
@@ -501,18 +450,13 @@ describe('Model', () => {
   });
 
   describe('.find()', () => {
-    let _db, model;
+    let model;
 
     before(async () => {
       model = FullTestModel.create({
         str: 'test string',
         obj: { prop1: 'bar' }
       });
-      _db = await getMongoClient();
-    });
-
-    after(() => {
-      return cleanUpDb(_db);
     });
 
     it('should return a cursor to retrieve objects', async () => {
@@ -535,18 +479,13 @@ describe('Model', () => {
   });
 
   describe('.findOne()', () => {
-    let _db, model;
+    let model;
 
     before(async () => {
       model = FullTestModel.create({
         str: 'test string',
         obj: { prop1: 'bar' }
       });
-      _db = await getMongoClient();
-    })
-
-    after(() => {
-      return cleanUpDb(_db);
     });
 
     it('should return an object', async () => {
@@ -564,19 +503,11 @@ describe('Model', () => {
   });
 
   describe('.update()', function () {
-    let _db;
 
-    before(async () => {
-      _db = await getMongoClient();
-      return Promise.all([
-        FullTestModel.create({ str: 'foo' }).save(),
-        FullTestModel.create({ str: 'bar' }).save(),
-        FullTestModel.create({ str: 'blah' }).save()
-      ]);
-    });
-
-    after(() => {
-      return cleanUpDb(_db);
+    beforeEach(async () => {
+      await FullTestModel.create({ str: 'foo' }).save();
+      await FullTestModel.create({ str: 'bar' }).save();
+      return FullTestModel.create({ str: 'blah' }).save();
     });
 
     it('should partial update a single doc', async () => {
@@ -612,15 +543,6 @@ describe('Model', () => {
   });
 
   describe('.distinct()', () => {
-    let _db;
-
-    before(async () => {
-      _db = await getMongoClient();
-    });
-
-    after(() => {
-      return cleanUpDb(_db);
-    });
 
     it('should return distinct key values', async () => {
       var model = FullTestModel.create({
@@ -640,15 +562,6 @@ describe('Model', () => {
   });
 
   describe('.aggregate()', () => {
-    let _db;
-
-    before(async () => {
-      _db = await getMongoClient();
-    });
-
-    after(() => {
-      return cleanUpDb(_db);
-    });
 
     it('should return results of aggregate pipeline', async () => {
       var model = FullTestModel.create({
@@ -677,18 +590,13 @@ describe('Model', () => {
   });
 
   describe('.remove() [static]', () => {
-    let _db, model;
+    let model;
 
     before(async () => {
       model = FullTestModel.create({
         str: 'test string',
         obj: { prop1: 'bar' }
       });
-      _db = await getMongoClient()
-    });
-
-    after(() => {
-      return cleanUpDb(_db);
     });
 
     it('should remove a document', async () => {
@@ -748,15 +656,6 @@ describe('Model', () => {
   });
 
   describe('.beforeSave()', () => {
-    let _db;
-
-    before(async () => {
-      _db = await getMongoClient();
-    });
-
-    after(() => {
-      return cleanUpDb(_db);
-    });
 
     it('should execute before a model is saved', async () => {
       let strToSave = '';
@@ -801,15 +700,6 @@ describe('Model', () => {
 
 
   describe('.afterSave()', () => {
-    let _db;
-
-    before(async () => {
-      _db = await getMongoClient();
-    });
-
-    after(() => {
-      return cleanUpDb(_db);
-    });
 
     it('should execute after a model is saved', async () => {
       let strSaved = '';
@@ -853,15 +743,6 @@ describe('Model', () => {
   });
 
   describe('.beforeRemove()', () => {
-    let _db;
-
-    before(async () => {
-      _db = await getMongoClient();
-    });
-
-    after(() => {
-      return cleanUpDb(_db);
-    });
 
     it('should execute before a model is removed', async () => {
       let strRemoved = '';
@@ -887,15 +768,6 @@ describe('Model', () => {
   });
 
   describe('.afterRemove()', () => {
-    let _db;
-
-    before(async () => {
-      _db = await getMongoClient();
-    });
-
-    after(() => {
-      return cleanUpDb(_db);
-    });
 
     it('should execute after a model is removed', async () => {
       let strRemoved = '';
@@ -921,15 +793,6 @@ describe('Model', () => {
   });
 
   describe('.project()', () => {
-    let _db;
-
-    before(async () => {
-      _db = await getMongoClient(); 
-    });
-
-    after(() => {
-      return cleanUpDb(_db);
-    });
 
     it('should return cursor of projected values', async () => {
       await FullTestModel.create({
