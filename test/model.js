@@ -18,7 +18,7 @@ const cleanUpDb = (db, close = true) => {
       });
     });
   });
-};
+}
 
 describe('Model', () => {
 
