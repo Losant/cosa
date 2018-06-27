@@ -33,6 +33,7 @@
     "debug": "^3.0.1",
     "defaults": "^1.0.3",
     "error": "^7.0.2",
+    "es6-promisify": "^6.0.0",
     "etag": "^1.8.1",
     "joi": "^10.6.0",
     "mongodb": "~2.2.31",
@@ -43,6 +44,7 @@
   },
   "devDependencies": {
     "chai": "^4.1.2",
+    "chai-as-promised": "^7.1.1",
     "chai-datetime": "^1.5.0",
     "documentation": "^5.3.5",
     "eslint": "^4.6.1",

@@ -1,21 +1,37 @@
-var chai = require('chai');
-var MongoClient = require('mongodb').MongoClient;
-var q = require('q');
-var bson = require('bson');
-
+const { promisify } = require('es6-promisify');
+const chai          = require('chai');
+const chaiPromise   = require('chai-as-promised');
+const MongoClient   = require('mongodb').MongoClient;
+const q             = require('q');
+const bson          = require('bson');
+chai.use(require('chai-as-promised'));
 chai.use(require('chai-datetime'));
-var expect = chai.expect;
+const expect        = chai.expect;
+const MongoClientPromise = promisify(MongoClient.connect);
 
-describe('Model', function () {
+const getMongoClient = () => MongoClient.connect(process.env.COSA_DB_URI);
+const cleanUpDb = (db, close = true) => {
+  return new Promise((resolve, reject) => {
+    db.collection('mocha_test', function (err, collection) {
+      collection.deleteMany({}, function (err) {
+        if (err) { return reject(err); }
+        if (close) db.close();
+        return resolve();
+      });
+    });
+  });
+}
 
-  var Model = require('../lib/model');
-  var Immutable = require('../lib/immutable');
-  var FullTestModel = require('./support/full-test-model');
+describe('Model', () => {
 
-  describe('.define()', function () {
+  const Model = require('../lib/model');
+  const Immutable = require('../lib/immutable');
+  const FullTestModel = require('./support/full-test-model');
 
-    it('should return a model definition', function () {
-      var ModelA = Model.define({
+  describe('.define()', () => {
+
+    it('should return a model definition', () => {
+      const ModelA = Model.define({
         collection: 'mocha_test',
         properties: {
           _type: { type: 'string', enum: ['A', 'B'], default: 'A'},
@@ -27,20 +43,20 @@ describe('Model', function () {
           }
         }
       });
-      expect(ModelA.create).to.exist;
-      expect(ModelA.extend).to.exist;
-      expect(ModelA.count).to.exist;
-      expect(ModelA.find).to.exist;
-      expect(ModelA.findOne).to.exist;
-      expect(ModelA.remove).to.exist;
+      expect(ModelA.create).to.be.a('function');
+      expect(ModelA.extend).to.be.a('function');
+      expect(ModelA.count).to.be.a('function');
+      expect(ModelA.find).to.be.a('function');
+      expect(ModelA.findOne).to.be.a('function');
+      expect(ModelA.remove).to.be.a('function');
     });
 
   });
 
-  describe('.get()', function () {
+  describe('.get()', () => {
 
-    it('should return a value at the given path', function () {
-      var model = FullTestModel.create({
+    it('should return a value at the given path', () => {
+      const model = FullTestModel.create({
         str: 'foo',
         obj: { deep: { blah: 'blah' } }
       });
@@ -50,22 +66,22 @@ describe('Model', function () {
 
   });
 
-  describe('.set()', function () {
+  describe('.set()', () => {
 
-    it('should except a path and value and return a new model', function () {
-      var model = FullTestModel.create({
+    it('should except a path and value and return a new model', () => {
+      const model = FullTestModel.create({
         str: 'foo',
         obj: { deep: { blah: 'blah' } }
       });
-      var model2 = model.set('obj.deep.blah', 'boo');
+      const model2 = model.set('obj.deep.blah', 'boo');
       expect(FullTestModel.isA(model2)).to.be.true;
       expect(model.get('obj.deep.blah')).to.equal('blah');
       expect(model2.get('obj.deep.blah')).to.equal('boo');
     });
 
-    it('should except an object of values to assign and return a new model', function () {
-      var model = FullTestModel.create({});
-      var model2 = model.set({
+    it('should except an object of values to assign and return a new model', () => {
+      const model = FullTestModel.create({});
+      const model2 = model.set({
         str: 'foo',
         obj: { deep: { blah: 'blah' } }
       });
@@ -79,15 +95,15 @@ describe('Model', function () {
 
   });
 
-  describe('.del()', function () {
+  describe('.del()', () => {
 
-    it('should delete the var at the given path and return a new model', function () {
-      var model = FullTestModel.create({
+    it('should delete the var at the given path and return a new model', () => {
+      const model = FullTestModel.create({
         str: 'foo',
         obj: { deep: { blah: 'blah' } }
       });
-      var model2 = model.del('str');
-      var model3 = model.del('obj.deep.blah');
+      const model2 = model.del('str');
+      const model3 = model.del('obj.deep.blah');
       expect(FullTestModel.isA(model2)).to.be.true;
       expect(FullTestModel.isA(model3)).to.be.true;
       expect(model.get('str')).to.equal('foo');
@@ -98,10 +114,10 @@ describe('Model', function () {
 
   });
 
-  describe('.has()', function () {
+  describe('.has()', () => {
 
-    it('should return true if the model contains a value at the given path', function () {
-      var model = FullTestModel.create({
+    it('should return true if the model contains a value at the given path', () => {
+      const model = FullTestModel.create({
         str: 'foo',
         obj: { deep: { blah: 'blah' } }
       });
@@ -112,37 +128,27 @@ describe('Model', function () {
   });
 
   describe('.is()', function () {
-    var _db;
+    let _db;
 
-    before(function (done) {
-      MongoClient.connect(process.env.COSA_DB_URI, function (err, db) {
-        if (err) { return done(err); }
-        _db = db;
-        done();
-      })
-    })
+    before(async () => {
+      _db = await getMongoClient();
+    });
 
-    after(function (done) {
-      _db.collection('mocha_test', function (err, collection) {
-        collection.deleteMany({}, function (err) {
-          if (err) { return done(err); }
-          _db.close();
-          done();
-        });
-      });
+    after(() => {
+      return cleanUpDb(_db);
     });
 
     // TODO split this up into multiple tests
-    it('should return true if both objects reference the same doc', function (done) {
-      var obj = null;
-      var modelA = Model.define({
+    it('should return true if both objects reference the same doc', async () => {
+      let obj = null;
+      const modelA = Model.define({
         name: 'ModelA',
         collection: 'mocha_test',
         properties: {
           str: { type: 'string' }
         }
       }).create({ str: 'foo'});
-      var modelB = Model.define({
+      const modelB = Model.define({
         name: 'ModelB',
         collection: 'mocha_test',
         properties: {
@@ -151,151 +157,109 @@ describe('Model', function () {
       }).create({ str: 'foo'});
       expect(modelA.is(obj)).to.be.false;
       expect(modelA.is(modelB)).to.be.false;
-      var m = modelA;
+      let m = modelA;
       expect(modelA.is(m)).to.be.true;
       m = modelA.set('str', 'blah');
       expect(modelA.is(m)).to.be.false;
-      modelA.save()
-        .then(function (modelA2) {
-          expect(modelA.is(modelA2)).to.be.false;
-          var m2 = modelA2.set('str', 'bar');
-          expect(modelA2.is(m2)).to.be.true;
-          done();
-        })
-        .done(null, done);
+      const modelA2 = await modelA.save();
+      expect(modelA.is(modelA2)).to.be.false;
+      const m2 = modelA2.set('str', 'bar');
+      expect(modelA2.is(m2)).to.be.true;
     });
 
   });
 
   describe('.equals()', function () {
-    var _db;
+    let _db;
 
-    before(function (done) {
-      MongoClient.connect(process.env.COSA_DB_URI, function (err, db) {
-        if (err) { return done(err); }
-        _db = db;
-        done();
-      })
-    })
-
-    after(function (done) {
-      _db.collection('mocha_test', function (err, collection) {
-        collection.deleteMany({}, function (err) {
-          if (err) { return done(err); }
-          _db.close();
-          done();
-        });
-      });
+    before(async () => {
+      _db = await getMongoClient();
     });
 
-    it('should return true if both objects reference the same doc and version', function (done) {
-      var modelA = Model.define({
+    after(() => {
+      return cleanUpDb(_db);
+    });
+
+    it('should return true if both objects reference the same doc and version', async () => {
+      const modelA = Model.define({
         name: 'ModelA',
         collection: 'mocha_test',
         properties: {
           str: { type: 'string' }
         }
       }).create({ str: 'foo'});
-      var m = modelA.set('str', 'blah');
+      const m = modelA.set('str', 'blah');
       expect(modelA.equals(m)).to.be.false;
-      modelA.save()
-        .then(function (modelA2) {
-          var m2 = modelA2.set('num', 10);
-          expect(modelA2.equals(m2)).to.be.false;
-          done();
-        })
-        .done(null, done);
+      const modelA2 = await modelA.save()
+      const m2 = modelA2.set('num', 10);
+      expect(modelA2.equals(m2)).to.be.false;
     });
 
   });
 
   describe('.isNew()', function () {
-    var _db;
+    let _db;
 
-    before(function (done) {
-      MongoClient.connect(process.env.COSA_DB_URI, function (err, db) {
-        if (err) { return done(err); }
-        _db = db;
-        done();
-      })
-    })
-
-    after(function (done) {
-      _db.collection('mocha_test', function (err, collection) {
-        collection.deleteMany({}, function (err) {
-          if (err) { return done(err); }
-          _db.close();
-          done();
-        });
-      });
+    before(async () => {
+      _db = await getMongoClient();
     });
 
-    it('should return true if the model is new', function (done) {
-      var model = FullTestModel.create({
+    after(() => {
+      return cleanUpDb(_db);
+    });
+
+    it('should return true if the model is new', async () => {
+      const model = FullTestModel.create({
         str: 'foo'
       });
       expect(model.isNew()).to.be.true;
-      model.save()
-        .then(function (model2) {
-          expect(model2.isNew()).to.be.false;
-          done();
-        })
-        .done(null, done);
+      const model2 = await model.save()
+      expect(model2.isNew()).to.be.false;
     });
 
   });
 
-  describe('.isModified()', function () {
+  describe('.isModified()', () => {
 
-    it('should return true if the given path is modified', function () {
-      var model = FullTestModel.create({
+    it('should return true if the given path is modified', () => {
+      const model = FullTestModel.create({
         str: 'foo',
         obj: { deep: { blah: 'blah' } }
       });
-      var m = model.set('arr', [1, 2, 3]);
+      const m = model.set('arr', [1, 2, 3]);
       expect(m.isModified('arr')).to.be.true;
       expect(m.isModified('str')).to.be.false;
-      var m2 = model.set('obj.deep.blah', 'boo');
+      const m2 = model.set('obj.deep.blah', 'boo');
       expect(m2.isModified('obj')).to.be.true;
       expect(m2.isModified('obj.deep')).to.be.true;
       expect(m2.isModified('obj.deep.blah')).to.be.true;
     });
 
-    it('should return true if no path is given and the object has been modified', function () {
-      var model = FullTestModel.create({
+    it('should return true if no path is given and the object has been modified', () => {
+      const model = FullTestModel.create({
         str: 'foo',
         obj: { deep: { blah: 'blah' } }
       });
       expect(model.isModified()).to.be.false;
-      var m = model.set('arr', [1, 2, 3]);
+      const m = model.set('arr', [1, 2, 3]);
       expect(m.isModified()).to.be.true;
     });
 
   });
 
-  describe('.toJSON()', function () {
-    var _db;
+  describe('.toJSON()', () => {
+    let _db;
 
-    before(function (done) {
-      MongoClient.connect(process.env.COSA_DB_URI, function (err, db) {
-        if (err) { return done(err); }
-        _db = db;
-        done();
-      });
+    before(async () => {
+      _db = await getMongoClient();
     });
 
-    after(function (done) {
-      _db.collection('mocha_test', function (err, collection) {
-        collection.deleteMany({}, function (err) {
-          if (err) { return done(err); }
-          _db.close();
-          done();
-        });
-      });
+    after(() => {
+      return cleanUpDb(_db);
     });
 
-    it('should return valid json', function () {
-      var DeepArrayModel = Model.define({
+    it('should return valid json', () => {
+      const DeepArrayModel = Model.define({
         collection: 'mocha_test',
         properties: {
           arr: {
@@ -310,7 +274,7 @@ describe('Model', function () {
           nullVal: { type: '*' }
         }
       });
-      var model = DeepArrayModel.create({
+      const model = DeepArrayModel.create({
         arr: [
           { oid: bson.ObjectId('abdfabdfabdfabdfabdfabdf') },
           { oid: bson.ObjectId('abdfabdfabdfabdfabdfabdf') }
@@ -320,8 +284,8 @@ describe('Model', function () {
       expect(JSON.stringify(model.toJSON())).to.equal("{\"arr\":[{\"oid\":{\"$oid\":\"abdfabdfabdfabdfabdfabdf\"}},{\"oid\":{\"$oid\":\"abdfabdfabdfabdfabdfabdf\"}}],\"nullVal\":null}");
     });
 
-    it('should except an extended option', function () {
-      var DeepArrayModel = Model.define({
+    it('should except an extended option', () => {
+      const DeepArrayModel = Model.define({
         collection: 'mocha_test',
         properties: {
           arr: {
@@ -335,7 +299,7 @@ describe('Model', function () {
           }
         }
       });
-      var model = DeepArrayModel.create({
+      const model = DeepArrayModel.create({
         arr: [
           { oid: bson.ObjectId('abdfabdfabdfabdfabdfabdf') },
           { oid: bson.ObjectId('abdfabdfabdfabdfabdfabdf') }
@@ -344,29 +308,29 @@ describe('Model', function () {
       expect(JSON.stringify(model.toJSON({ extended: false }))).to.equal("{\"arr\":[{\"oid\":\"abdfabdfabdfabdfabdfabdf\"},{\"oid\":\"abdfabdfabdfabdfabdfabdf\"}]}");
     });
 
-    it('should except an exclude option', function () {
-      var model = FullTestModel.create({
+    it('should except an exclude option', () => {
+      const model = FullTestModel.create({
         str: 'test string',
         obj: { prop1: 'bar' }
       });
-      var json = model.toJSON({ exclude: ['str', 'date'] });
+      const json = model.toJSON({ exclude: ['str', 'date'] });
       expect(JSON.stringify(json)).to.equal("{\"obj\":{\"prop1\":\"bar\",\"propv\":\"bar.undefined\"},\"num\":0,\"bool\":false,\"virt\":\"test string.virtual\"}");
     });
 
-    it('should except an include option', function () {
-      var model = FullTestModel.create({
+    it('should except an include option', () => {
+      const model = FullTestModel.create({
         str: 'test string',
         obj: { prop1: 'bar' }
       });
-      var json = model.toJSON({ include: ['num', 'bool', 'virt'] });
+      const json = model.toJSON({ include: ['num', 'bool', 'virt'] });
       expect(JSON.stringify(json)).to.equal("{\"num\":0,\"bool\":false,\"virt\":\"test string.virtual\"}");
     });
 
-    it('should except a transform option', function () {
-      var model = FullTestModel.create({
+    it('should except a transform option', () => {
+      const model = FullTestModel.create({
         str: 'test string'
       });
-      var json = model.toJSON({ exclude: ['date'], transform: function (obj) {
+      const json = model.toJSON({ exclude: ['date'], transform: function (obj) {
         obj.str += ' TRANSFORMED!';
         return obj
       } });
@@ -375,36 +339,17 @@ describe('Model', function () {
 
   });
 
-  describe('.validate()', function () {
+  describe('.validate()', () => {
 
-    it('should reject promise if validation fails', function (done) {
-      var model = FullTestModel.create({});
-      model
-        .validate()
-        .then(
-          function () {
-            expect(false).to.be.true;
-          },
-          function (err) {
-            expect(err).to.exist;
-            expect(err.statusCode).to.equal(400);
-            done();
-          })
-        .done(null, done);
+    it('should reject promise if validation fails', () => {
+      const model = FullTestModel.create({});
+      expect(model.validate()).to.be.eventually.rejectedWith({ statusCode: 400 });
     });
 
-    it('should resolve promise if validation succeeds', function (done) {
-      var model = FullTestModel.create({ str: 'bar' });
-      model
-        .validate()
-        .then(function () {
-          expect(true).to.be.true;
-          done();
-        })
-        .catch(function (err) {
-          expect(err).to.not.exist;
-        })
-        .done(null, done);
+    it('should resolve promise if validation succeeds', async () => {
+      const model = FullTestModel.create({ str: 'bar' });
+      const result = await model.validate();
+      expect(result).to.exist.and.to.be.an('object');
     });
 
   });
@@ -412,470 +357,272 @@ describe('Model', function () {
   describe('db', function () {
     var _db, db = require('../lib/db');
 
-    before(function (done) {
-      MongoClient.connect(process.env.COSA_DB_URI, function (err, db) {
-        if (err) { return done(err); }
-        _db = db;
-        _db.collection('mocha_test', function (err, collection) {
-          collection.deleteMany({}, function (err) {
-            if (err) { return done(err); }
-            done();
-          });
-        });
-      });
+    before(async () => {
+      _db = await getMongoClient();
+      return cleanUpDb(_db, false);
     });
 
-    after(function (done) {
-      _db.collection('mocha_test', function (err, collection) {
-        collection.deleteMany({}, function (err) {
-          if (err) { return done(err); }
-          _db.close();
-          done();
-        });
-      });
+    after(() => {
+      return cleanUpDb(_db);
     });
 
-    it('should auto connect to db if connection lost', function (done) {
-      var model = FullTestModel.create({
+    it('should auto connect to db if connection lost', async () => {
+      const model = FullTestModel.create({
         str: 'foo',
         obj: { prop1: 'bar' }
       });
-      model
-        .save()
-        .then(function (updatedModel) {
-          return q.all([
-            updatedModel,
-            FullTestModel.count({ _id: updatedModel._id })
-          ]);
-        })
-        .spread(function (updatedModel, count) {
-          expect(count).to.equal(1);
-          db._db.close();
-          return updatedModel;
-        })
-        .then(function(updatedModel) {
-          return FullTestModel.count({ _id: updatedModel._id });
-        })
-        .then(function (count) {
-          expect(count).to.equal(1);
-          done();
-        })
-        .done(null, done);
+      const updatedModel = await model.save();
+      let count = await FullTestModel.count({ _id: updatedModel._id });
+      expect(count).to.equal(1);
+      db._db.close();
+      count = await FullTestModel.count({ _id: updatedModel._id });
+      expect(count).to.equal(1);
     });
 
   });
 
   describe('.save()', function () {
-    var _db, model;
+    let _db, model;
 
-    before(function (done) {
+    before(async () => {
       model = FullTestModel.create({
         str: 'foo',
         obj: { prop1: 'bar' }
       });
-      MongoClient.connect(process.env.COSA_DB_URI, function (err, db) {
-        if (err) { return done(err); }
-        _db = db;
+      _db = await getMongoClient();
+      return cleanUpDb(_db, false);
+    });
+
+    after(() => {
+      return cleanUpDb(_db);
+    });
+
+    it('should insert a new document', async () => {
+      const updatedModel = await model.save();
+      expect(updatedModel._id).to.exist;
+      expect(updatedModel._etag).to.exist;
+      const count = await FullTestModel.count({ _id: updatedModel._id });
+      expect(count).to.equal(1);
+      const doc = await new Promise((resolve, reject) => {
         _db.collection('mocha_test', function (err, collection) {
-          collection.deleteMany({}, function (err) {
-            if (err) { return done(err); }
-            done();
+          if (err) { return reject(err); }
+          collection.findOne({ _id: updatedModel._id }, function (err, doc) {
+            if (err) { return reject(err); }
+            return resolve(doc);
           });
         });
       });
-    })
+      expect(updatedModel._etag).to.equal(doc._etag);
+      expect(updatedModel._id.toObject().toString()).to.equal(doc._id.toString());
+      expect(updatedModel.bool).to.equal(doc.bool);
+      expect(updatedModel.date).to.equalDate(doc.date);
+      expect(updatedModel.num).to.equal(doc.num);
+      expect(updatedModel.obj.toObject()).to.eql(doc.obj);
+      expect(updatedModel.str).to.equal(doc.str);
+    });
 
-    after(function (done) {
-      _db.collection('mocha_test', function (err, collection) {
-        collection.deleteMany({}, function (err) {
-          if (err) { return done(err); }
-          _db.close();
-          done();
+    it('should update an existing document', async () => {
+      let newModel = await model.save();
+      let updatedModel = await newModel.set('str', 'test update').set('num', 2).save();;
+      expect(updatedModel._id.toString()).to.equal(newModel._id.toString());
+      expect(updatedModel._etag).to.not.equal(newModel._etag);
+      const doc = await new Promise((resolve, reject) => {
+       _db.collection('mocha_test', function (err, collection) {
+          if (err) { return reject(err); }
+          collection.findOne({ _id: updatedModel._id }, function (err, doc) {
+            if (err) { return reject(err); }
+            return resolve(doc);
+          });
         });
       });
-    });
-
-    it('should insert a new document', function (done) {
-      var updatedModel;
-      model
-        .save()
-        .then(function (newModel) {
-          var deferred = q.defer()
-          updatedModel = newModel;
-          expect(updatedModel._id).to.exist;
-          expect(updatedModel._etag).to.exist;
-          _db.collection('mocha_test', function (err, collection) {
-            if (err) { return deferred.reject(err); }
-            collection.count({}, function (err, count) {
-              if (err) { return deferred.reject(err); }
-              return deferred.resolve(count);
-            });
-          });
-          return deferred.promise;
-        })
-        .then(function (count) {
-          var deferred = q.defer()
-          expect(count).to.equal(1);
-          _db.collection('mocha_test', function (err, collection) {
-            if (err) { return deferred.reject(err); }
-            collection.findOne({ _id: updatedModel._id }, function (err, doc) {
-              if (err) { return deferred.reject(err); }
-              return deferred.resolve(doc);
-            });
-          });
-          return deferred.promise;
-        })
-        .then(function (doc) {
-          expect(updatedModel._etag).to.equal(doc._etag);
-          expect(updatedModel._id.toObject().toString()).to.equal(doc._id.toString());
-          expect(updatedModel.bool).to.equal(doc.bool);
-          expect(updatedModel.date).to.equalDate(doc.date);
-          expect(updatedModel.num).to.equal(doc.num);
-          expect(updatedModel.obj.toObject()).to.eql(doc.obj);
-          expect(updatedModel.str).to.equal(doc.str);
-          done();
-        })
-        .done(null, done);
-    });
-
-    it('should update an existing document', function (done) {
-      var newModel, updatedModel;
-      model
-        .save()
-        .then(function (model) {
-          newModel = model;
-          return newModel.set('str', 'test update').set('num', 2).save();
-        })
-        .then(function (model) {
-          var deferred = q.defer()
-          updatedModel = model;
-          expect(updatedModel._id.toString()).to.equal(newModel._id.toString());
-          expect(updatedModel._etag).to.not.equal(newModel._etag);
-          _db.collection('mocha_test', function (err, collection) {
-            if (err) { return deferred.reject(err); }
-            collection.findOne({ _id: updatedModel._id }, function (err, doc) {
-              if (err) { return deferred.reject(err); }
-              return deferred.resolve(doc);
-            });
-          });
-          return deferred.promise;
-        })
-        .then(function (doc) {
-          expect(updatedModel._etag).to.equal(doc._etag);
-          expect(updatedModel._id.toObject().toString()).to.equal(doc._id.toString());
-          expect(updatedModel.bool).to.equal(doc.bool);
-          expect(updatedModel.date).to.equalDate(doc.date);
-          expect(updatedModel.num).to.equal(doc.num);
-          expect(updatedModel.obj.toObject()).to.eql(doc.obj);
-          expect(updatedModel.str).to.equal(doc.str);
-          done();
-        })
-        .done(null, done);
+      expect(updatedModel._etag).to.equal(doc._etag);
+      expect(updatedModel._id.toObject().toString()).to.equal(doc._id.toString());
+      expect(updatedModel.bool).to.equal(doc.bool);
+      expect(updatedModel.date).to.equalDate(doc.date);
+      expect(updatedModel.num).to.equal(doc.num);
+      expect(updatedModel.obj.toObject()).to.eql(doc.obj);
+      expect(updatedModel.str).to.equal(doc.str);
     });
 
   });
 
-  describe('.remove()', function () {
-    var _db, model;
+  describe('.remove()', () => {
+    let _db, model;
 
-    before(function (done) {
+    before(async () => {
       model = FullTestModel.create({
         str: 'test string',
         obj: { prop1: 'bar' }
       });
-      MongoClient.connect(process.env.COSA_DB_URI, function (err, db) {
-        if (err) { return done(err); }
-        _db = db;
-        done();
-      })
+      _db = await getMongoClient();
     })
 
-    after(function (done) {
-      _db.collection('mocha_test', function (err, collection) {
-        collection.deleteMany({}, function (err) {
-          if (err) { return done(err); }
-          _db.close();
-          done();
-        });
-      });
+    after(() => {
+      return cleanUpDb(_db);
     });
 
-    it('should remove the document', function (done) {
-      model
-        .save()
-        .then(function (updatedModel) {
-          return updatedModel.remove();
-        })
-        .then(function () {
-          _db.collection('mocha_test', function (err, collection) {
-            if (err) { throw err; }
-            collection.count({}, function (err, count) {
-              if (err) { throw err; }
-              expect(count).to.equal(0);
-              done();
-            });
+    it('should remove the document', async () => {
+      const updatedModel = await model.save();
+      await updatedModel.remove();
+      const count = await new Promise((resolve, reject) => {
+        _db.collection('mocha_test', (err, collection) => {
+          if (err) { return reject(err); }
+          collection.count({}, (err, count) => {
+            if (err) { return reject(err); }
+            resolve(count);
           });
-        })
-        .done(null, done);
+        });
+      });
+      expect(count).to.equal(0);
     });
 
   });
 
-  describe('.count()', function () {
-    var _db, model;
+  describe('.count()', () => {
+    let _db, model;
 
-    before(function (done) {
+    before(async () => {
       model = FullTestModel.create({
         str: 'test string',
         obj: { prop1: 'bar' }
       });
-      MongoClient.connect(process.env.COSA_DB_URI, function (err, db) {
-        if (err) { return done(err); }
-        _db = db;
-        done();
-      })
+      _db = await getMongoClient();
     })
 
-    after(function (done) {
-      _db.collection('mocha_test', function (err, collection) {
-        collection.deleteMany({}, function (err) {
-          if (err) { return done(err); }
-          _db.close();
-          done();
-        });
-      });
+    after(() => {
+      return cleanUpDb(_db);
     });
 
-    it('should return the count of objects', function (done) {
-      model
-        .save()
-        .then(function (updatedModel) {
-          return FullTestModel.count({ _id: updatedModel._id });
-        })
-        .then(function (count) {
-          expect(count).to.equal(1);
-          done();
-        })
-        .done(null, done);
+    it('should return the count of objects', async () => {
+      const updatedModel = await model.save();
+      const count = await FullTestModel.count({ _id: updatedModel._id });
+      expect(count).to.equal(1);
     });
   });
 
-  describe('.find()', function () {
-    var _db, model;
+  describe('.find()', () => {
+    let _db, model;
 
-    before(function (done) {
+    before(async () => {
       model = FullTestModel.create({
         str: 'test string',
         obj: { prop1: 'bar' }
       });
-      MongoClient.connect(process.env.COSA_DB_URI, function (err, db) {
-        if (err) { return done(err); }
-        _db = db;
-        done();
-      })
-    })
-
-    after(function (done) {
-      _db.collection('mocha_test', function (err, collection) {
-        collection.deleteMany({}, function (err) {
-          if (err) { return done(err); }
-          _db.close();
-          done();
-        });
-      });
+      _db = await getMongoClient();
     });
 
-    it('should return a cursor to retrieve objects', function (done) {
-      model
-        .save()
-        .then(function (updatedModel) {
-          return FullTestModel.find({ _id: updatedModel._id });
-        })
-        .then(function (cursor) {
-          return q.all([ cursor.count(), cursor.next() ]);
-        })
-        .spread(function (count, obj) {
-          expect(count).to.equal(1);
-          expect(Immutable.isImmutableType(obj, 'FullTestModel')).to.be.true;
-          done();
-        })
-        .done(null, done);
+    after(() => {
+      return cleanUpDb(_db);
     });
 
-    it('should return an array if array option is given', function (done) {
-      model
-        .save()
-        .then(function (updatedModel) {
-          return FullTestModel.find({ _id: updatedModel._id }, { array: true });
-        })
-        .then(function (arr) {
-          expect(Array.isArray(arr)).to.be.true;
-          expect(arr.length).to.equal(1);
-          expect(Immutable.isImmutableType(arr[0], 'FullTestModel')).to.be.true;
-          done();
-        })
-        .done(null, done);
+    it('should return a cursor to retrieve objects', async () => {
+      const updatedModel = await model.save();
+      const cursor = await FullTestModel.find({ _id: updatedModel._id });
+      const count = await cursor.count();
+      const obj = await cursor.next();
+      expect(count).to.equal(1);
+      expect(Immutable.isImmutableType(obj, 'FullTestModel')).to.be.true;
+    });
+
+    it('should return an array if array option is given', async () => {
+      const updatedModel = await model.save();
+      const arr = await FullTestModel.find({ _id: updatedModel._id }, { array: true });
+      expect(Array.isArray(arr)).to.be.true;
+      expect(arr.length).to.equal(1);
+      expect(Immutable.isImmutableType(arr[0], 'FullTestModel')).to.be.true;
     });
 
   });
 
-  describe('.findOne()', function () {
-    var _db, model;
+  describe('.findOne()', () => {
+    let _db, model;
 
-    before(function (done) {
+    before(async () => {
       model = FullTestModel.create({
         str: 'test string',
         obj: { prop1: 'bar' }
       });
-      MongoClient.connect(process.env.COSA_DB_URI, function (err, db) {
-        if (err) { return done(err); }
-        _db = db;
-        done();
-      })
+      _db = await getMongoClient();
     })
 
-    after(function (done) {
-      _db.collection('mocha_test', function (err, collection) {
-        collection.deleteMany({}, function (err) {
-          if (err) { return done(err); }
-          _db.close();
-          done();
-        });
-      });
+    after(() => {
+      return cleanUpDb(_db);
     });
 
-    it('should return an object', function (done) {
-      model
-        .save()
-        .then(function (updatedModel) {
-          return FullTestModel.findOne({ _id: updatedModel._id });
-        })
-        .then(function (doc) {
-          expect(doc).to.exist;
-          expect(Immutable.isImmutableType(doc, 'FullTestModel'));
-          done();
-        })
-        .done(null, done);
+    it('should return an object', async () => {
+      const updatedModel = await model.save();
+      const doc = await FullTestModel.findOne({ _id: updatedModel._id });
+      expect(doc).to.exist;
+      expect(Immutable.isImmutableType(doc, 'FullTestModel'));
     });
 
-    it('should return null if no document is found', function (done) {
-      FullTestModel
-        .findOne({ _id: 'asdfasdfasdf' })
-        .then(function (doc) {
-          expect(doc).to.not.exist;
-          done();
-        })
-        .done(null, done);
+    it('should return null if no document is found', async () => {
+      const doc = await FullTestModel.findOne({ _id: 'asdfasdfasdf' });
+      expect(doc).to.not.exist;
     });
 
   });
 
   describe('.update()', function () {
-    var _db;
+    let _db;
 
-    before(function (done) {
-      MongoClient.connect(process.env.COSA_DB_URI, function (err, db) {
-        if (err) { return done(err); }
-        _db = db;
-        q.all([
-          FullTestModel.create({ str: 'foo' }).save(),
-          FullTestModel.create({ str: 'bar' }).save(),
-          FullTestModel.create({ str: 'blah' }).save()
-        ])
-        .then(function () {
-          done();
-        })
-        .catch(function (err) {
-          done(err);
-        });
-      })
-    })
-
-    after(function (done) {
-      _db.collection('mocha_test', function (err, collection) {
-        collection.deleteMany({}, function (err) {
-          if (err) { return done(err); }
-          _db.close();
-          done();
-        });
-      });
+    before(async () => {
+      _db = await getMongoClient();
+      return Promise.all([
+        FullTestModel.create({ str: 'foo' }).save(),
+        FullTestModel.create({ str: 'bar' }).save(),
+        FullTestModel.create({ str: 'blah' }).save()
+      ]);
     });
 
-    it('should partial update a single doc', function (done) {
-      FullTestModel.update({}, { any: 'boo' })
-        .then(function (result) {
-          expect(result.matchedCount).to.equal(1);
-          expect(result.modifiedCount).to.equal(1);
-          return FullTestModel.findOne({ str: 'foo' });
-        })
-        .then(function (doc) {
-          expect(doc.str).to.equal('foo');
-          expect(doc.any).to.equal('boo');
-          done();
-        })
-        .done(null, done);
+    after(() => {
+      return cleanUpDb(_db);
     });
 
-    it('should partial update all docs', function (done) {
-      FullTestModel.update({}, { any: 'any' }, { multiple: true })
-        .then(function (result) {
-          expect(result.matchedCount).to.equal(3);
-          expect(result.modifiedCount).to.equal(3);
-          return FullTestModel.find({}, { sort: { str: 1 } });
-        })
-        .then(function (cursor) {
-          return cursor.toArray();
-        })
-        .then(function (docs) {
-          expect(docs[0].str).to.equal('bar');
-          expect(docs[0].any).to.equal('any');
-          expect(docs[1].str).to.equal('blah');
-          expect(docs[1].any).to.equal('any');
-          expect(docs[2].str).to.equal('foo');
-          expect(docs[2].any).to.equal('any');
-          done();
-        })
-        .done(null, done);
+    it('should partial update a single doc', async () => {
+      const result = await FullTestModel.update({}, { any: 'boo' });
+      expect(result.matchedCount).to.equal(1);
+      expect(result.modifiedCount).to.equal(1);
+      const doc = await FullTestModel.findOne({ str: 'foo' });
+      expect(doc.str).to.equal('foo');
+      expect(doc.any).to.equal('boo');
     });
 
-    it('should replace single doc', function (done) {
-      FullTestModel.update({}, { arr: ['a', 'b', 'c'] }, { autoSet: false })
-        .then(function (result) {
-          expect(result.matchedCount).to.equal(1);
-          expect(result.modifiedCount).to.equal(1);
-          return FullTestModel.find({ arr: ['a', 'b', 'c']});
-        })
-        .then(function (doc) {
-          expect(doc.str).to.not.exist;
-          done();
-        })
-        .done(null, done);
+    it('should partial update all docs', async () => {
+      const result = await FullTestModel.update({}, { any: 'any' }, { multiple: true });
+      expect(result.matchedCount).to.equal(3);
+      expect(result.modifiedCount).to.equal(3);
+      const docs = await FullTestModel.find({}, { sort: { str: 1 }, array: true });
+      expect(docs[0].str).to.equal('bar');
+      expect(docs[0].any).to.equal('any');
+      expect(docs[1].str).to.equal('blah');
+      expect(docs[1].any).to.equal('any');
+      expect(docs[2].str).to.equal('foo');
+      expect(docs[2].any).to.equal('any');
+    });
+
+    it('should replace single doc', async () => {
+      const result = await FullTestModel.update({}, { arr: ['a', 'b', 'c'] }, { autoSet: false })
+      expect(result.matchedCount).to.equal(1);
+      expect(result.modifiedCount).to.equal(1);
+      const doc = await FullTestModel.find({ arr: ['a', 'b', 'c']});
+      expect(doc.str).to.not.exist;
     });
 
   });
 
-  describe('.distinct()', function () {
-    var _db;
+  describe('.distinct()', () => {
+    let _db;
 
-    before(function (done) {
-      MongoClient.connect(process.env.COSA_DB_URI, function (err, db) {
-        if (err) { return done(err); }
-        _db = db;
-        done();
-      })
-    })
-
-    after(function (done) {
-      _db.collection('mocha_test', function (err, collection) {
-        collection.deleteMany({}, function (err) {
-          if (err) { return done(err); }
-          _db.close();
-          done();
-        });
-      });
+    before(async () => {
+      _db = await getMongoClient();
     });
 
-    it('should return distinct key values', function (done) {
+    after(() => {
+      return cleanUpDb(_db);
+    });
+
+    it('should return distinct key values', async () => {
       var model = FullTestModel.create({
         str: 'test string'
       });
@@ -885,41 +632,25 @@ describe('Model', function () {
       var model3 = FullTestModel.create({
         str: 'test string'
       });
-      q.all([model.save(), model2.save(), model3.save()])
-        .then(function () {
-          return FullTestModel.distinct('str');
-        })
-        .then(function (results) {
-          expect(results).to.contain('test string', 'another test string');
-          done();
-        })
-        .done(null, done);
+      await Promise.all([ model.save(), model2.save(), model3.save() ]);
+      const results = await FullTestModel.distinct('str');
+      expect(results).to.contain('test string', 'another test string');
     });
 
   });
 
-  describe('.aggregate()', function () {
-    var _db;
+  describe('.aggregate()', () => {
+    let _db;
 
-    before(function (done) {
-      MongoClient.connect(process.env.COSA_DB_URI, function (err, db) {
-        if (err) { return done(err); }
-        _db = db;
-        done();
-      })
-    })
-
-    after(function (done) {
-      _db.collection('mocha_test', function (err, collection) {
-        collection.deleteMany({}, function (err) {
-          if (err) { return done(err); }
-          _db.close();
-          done();
-        });
-      });
+    before(async () => {
+      _db = await getMongoClient();
     });
 
-    it('should return results of aggregate pipeline', function (done) {
+    after(() => {
+      return cleanUpDb(_db);
+    });
+
+    it('should return results of aggregate pipeline', async () => {
       var model = FullTestModel.create({
         str: 'test string'
       });
@@ -929,84 +660,58 @@ describe('Model', function () {
       var model3 = FullTestModel.create({
         str: 'test string'
       });
-      q.all([model.save(), model2.save(), model3.save()])
-        .then(function () {
-          return FullTestModel.aggregate([
-            { $group: { _id: '$str', count: { $sum: 1 } } }
-          ]);
-        })
-        .then(function (results) {
-          expect(results.length).to.equal(2);
-          results.forEach(function (item) {
-            expect(item).to.contain.all.keys('_id', 'count');
-            expect(item).to.satisfy(function (val) {
-              return (val._id === 'test string' && val.count === 2) ||
-                (val._id === 'another test string' && val.count === 1);
-            });
-          });
-          done();
-        })
-        .done(null, done);
+      await Promise.all([ model.save(), model2.save(), model3.save() ]);
+      const results = await FullTestModel.aggregate([
+        { $group: { _id: '$str', count: { $sum: 1 } } }
+      ]);
+      expect(results.length).to.equal(2);
+      results.forEach(function (item) {
+        expect(item).to.contain.all.keys('_id', 'count');
+        expect(item).to.satisfy(function (val) {
+          return (val._id === 'test string' && val.count === 2) ||
+            (val._id === 'another test string' && val.count === 1);
+        });
+      });
     });
 
   });
 
-  describe('.remove() [static]', function () {
-    var _db, model;
+  describe('.remove() [static]', () => {
+    let _db, model;
 
-    before(function (done) {
+    before(async () => {
       model = FullTestModel.create({
         str: 'test string',
         obj: { prop1: 'bar' }
       });
-      MongoClient.connect(process.env.COSA_DB_URI, function (err, db) {
-        if (err) { return done(err); }
-        _db = db;
-        done();
-      })
-    })
-
-    after(function (done) {
-      _db.collection('mocha_test', function (err, collection) {
-        collection.deleteMany({}, function (err) {
-          if (err) { return done(err); }
-          _db.close();
-          done();
-        });
-      });
+      _db = await getMongoClient()
     });
 
-    it('should remove a document', function (done) {
-      var id;
-      model
-        .save()
-        .then(function (updatedModel) {
-          id = updatedModel._id;
-          return FullTestModel.remove({ _id: updatedModel._id });
-        })
-        .then(function () {
-          var deferred = q.defer();
-          _db.collection('mocha_test', function (err, collection) {
-            if (err) { return deferred.reject(err); }
-            collection.count({ _id: id }, function (err, count) {
-              if (err) { return deferred.reject(err); }
-              return deferred.resolve(count);
-            });
+    after(() => {
+      return cleanUpDb(_db);
+    });
+
+    it('should remove a document', async () => {
+      const updatedModel = await model.save();
+      const id = updatedModel._id;
+      await FullTestModel.remove({ _id: updatedModel._id });
+      const count = await new Promise((resolve, reject) => {
+        _db.collection('mocha_test', function (err, collection) {
+          if (err) { return reject(err); }
+          collection.count({ _id: id }, function (err, count) {
+            if (err) { return reject(err); }
+            return resolve(count);
           });
-          return deferred.promise;
-        })
-        .then(function (count) {
-          expect(count).to.equal(0);
-          done();
-        })
-        .done(null, done);
+        });
+      });
+      expect(count).to.equal(0);
     });
   });
 
-  describe('.extend()', function () {
+  describe('.extend()', () => {
 
-    it('should allow extending of a model', function () {
-      var ModelA = Model.define({
+    it('should allow extending of a model', () => {
+      const ModelA = Model.define({
         name: 'ModelA',
         abstract: true,
         collection: 'mocha_test',
@@ -1020,7 +725,7 @@ describe('Model', function () {
           }
         }
       });
-      var ModelB = ModelA.extend({
+      const ModelB = ModelA.extend({
         name: 'ModelB',
         where: { _type: 'B' },
         properties: {
@@ -1028,10 +733,10 @@ describe('Model', function () {
           strB: { type: 'string', default: 'B' }
         }
       });
-      var myModelA = ModelA.create({});
+      const myModelA = ModelA.create({});
       expect(myModelA.strA).to.equal('A');
       expect(myModelA.strB).to.not.exist;
-      var myModelB = ModelB.create({
+      const myModelB = ModelB.create({
         strA: 'abc',
         strB: '123'
       });
@@ -1042,170 +747,125 @@ describe('Model', function () {
 
   });
 
-  describe('.beforeSave()', function () {
-    var _db;
+  describe('.beforeSave()', () => {
+    let _db;
 
-    before(function (done) {
-      MongoClient.connect(process.env.COSA_DB_URI, function (err, db) {
-        if (err) { return done(err); }
-        _db = db;
-        done();
-      })
-    })
-
-    after(function (done) {
-      _db.collection('mocha_test', function (err, collection) {
-        collection.deleteMany({}, function (err) {
-          if (err) { return done(err); }
-          _db.close();
-          done();
-        });
-      });
+    before(async () => {
+      _db = await getMongoClient();
     });
 
-    it('should execute before a model is saved', function (done) {
-      var strToSave = '';
-      var HookedModel = Model.define({
+    after(() => {
+      return cleanUpDb(_db);
+    });
+
+    it('should execute before a model is saved', async () => {
+      let strToSave = '';
+      const HookedModel = Model.define({
         name: 'HookedModel',
         collection: 'mocha_test',
         properties: {
           str: { type: 'string' }
         },
         methods: {
-          beforeSave: function () {
+          beforeSave: function() {
             strToSave = this.str;
           }
         }
       });
-      var model = HookedModel.create({ str: 'foo' });
+      let model = HookedModel.create({ str: 'foo' });
       expect(model.beforeSave).to.exist;
-      model.save()
-        .then(function () {
-          expect(strToSave).to.equal('foo');
-          done();
-        })
-        .done(null, done);
+      await model.save();
+      expect(strToSave).to.equal('foo');
     });
 
-    it('should allow mutating model before saving', function (done) {
-      var HookedModel = Model.define({
+    it('should allow mutating model before saving', async () => {
+      const HookedModel = Model.define({
         name: 'HookedModel',
         collection: 'mocha_test',
         properties: {
           str: { type: 'string' }
         },
         methods: {
-          beforeSave: function () {
+          beforeSave: function() {
             this.str += ' bar';
           }
         }
       });
-      var model = HookedModel.create({ str: 'foo' });
+      const model = HookedModel.create({ str: 'foo' });
       expect(model.beforeSave).to.exist;
-      model.save()
-        .then(function (model2) {
-          expect(model2.str).to.equal('foo bar');
-          done();
-        })
-        .done(null, done);
+      const model2 = await model.save()
+      expect(model2.str).to.equal('foo bar');
     });
 
   });
 
 
-  describe('.afterSave()', function () {
-    var _db;
+  describe('.afterSave()', () => {
+    let _db;
 
-    before(function (done) {
-      MongoClient.connect(process.env.COSA_DB_URI, function (err, db) {
-        if (err) { return done(err); }
-        _db = db;
-        done();
-      })
-    })
-
-    after(function (done) {
-      _db.collection('mocha_test', function (err, collection) {
-        collection.deleteMany({}, function (err) {
-          if (err) { return done(err); }
-          _db.close();
-          done();
-        });
-      });
+    before(async () => {
+      _db = await getMongoClient();
     });
 
-    it('should execute after a model is saved', function (done) {
-      var strSaved = '';
-      var checkFunction;
-      var HookedModel = Model.define({
+    after(() => {
+      return cleanUpDb(_db);
+    });
+
+    it('should execute after a model is saved', async () => {
+      let strSaved = '';
+      let checkFunction;
+      const HookedModel = Model.define({
         name: 'HookedModel',
         collection: 'mocha_test',
         properties: {
           str: { type: 'string' }
         },
         methods: {
-          afterSave: function () {
+          afterSave: function() {
             checkFunction(this, arguments);
             strSaved = this.str;
           }
         }
       });
-      var model = HookedModel.create({ str: 'foo' });
+      const model = HookedModel.create({ str: 'foo' });
       expect(model.afterSave).to.exist;
 
-      var wasCalled;
-      checkFunction = function(instance, args){
+      let wasCalled = false;
+      checkFunction = function(instance, args) {
         expect(instance.str).to.equal('foo');
         expect(args[0]).to.equal(null);
         wasCalled = true;
-      }
+      };
 
-      model
-        .save()
-        .then(function (m) {
-          expect(wasCalled).to.equal(true);
-          wasCalled = false;
-          checkFunction = function(instance, args){
-            expect(instance.str).to.equal('bar');
-            expect(args[0].str).to.equal('foo');
-            wasCalled = true;
-          }
-          return m.set('str', 'bar').save();
-        })
-        .then(function () {
-          expect(wasCalled).to.equal(true);
-          expect(strSaved).to.equal('bar');
-          done();
-        })
-        .done(null, done);
+      const m = await model.save()
+      expect(wasCalled).to.equal(true);
+      wasCalled = false;
+      checkFunction = function(instance, args){
+        expect(instance.str).to.equal('bar');
+        expect(args[0].str).to.equal('foo');
+        wasCalled = true;
+      }
+      await m.set('str', 'bar').save();
+      expect(wasCalled).to.equal(true);
+      expect(strSaved).to.equal('bar');
     });
 
   });
 
-  describe('.beforeRemove()', function () {
-    var _db;
+  describe('.beforeRemove()', () => {
+    let _db;
 
-    before(function (done) {
-      MongoClient.connect(process.env.COSA_DB_URI, function (err, db) {
-        if (err) { return done(err); }
-        _db = db;
-        done();
-      })
-    })
-
-    after(function (done) {
-      _db.collection('mocha_test', function (err, collection) {
-        collection.deleteMany({}, function (err) {
-          if (err) { return done(err); }
-          _db.close();
-          done();
-        });
-      });
+    before(async () => {
+      _db = await getMongoClient();
     });
 
-    it('should execute before a model is removed', function (done) {
-      var strRemoved = '';
-      var HookedModel = Model.define({
+    after(() => {
+      return cleanUpDb(_db);
+    });
+
+    it('should execute before a model is removed', async () => {
+      let strRemoved = '';
+      const HookedModel = Model.define({
         name: 'HookedModel',
         collection: 'mocha_test',
         properties: {
@@ -1217,46 +877,29 @@ describe('Model', function () {
           }
         }
       });
-      var model = HookedModel.create({ str: 'foo' });
+      const model = HookedModel.create({ str: 'foo' });
       expect(model.beforeRemove).to.exist;
-      model
-        .save()
-        .then(function (m) {
-          return m.remove();
-        })
-        .then(function () {
-          expect(strRemoved).to.equal('foo');
-          done();
-        })
-        .done(null, done);
+      const m = await model.save();
+      await m.remove();
+      expect(strRemoved).to.equal('foo');
     });
 
   });
 
-  describe('.afterRemove()', function () {
-    var _db;
+  describe('.afterRemove()', () => {
+    let _db;
 
-    before(function (done) {
-      MongoClient.connect(process.env.COSA_DB_URI, function (err, db) {
-        if (err) { return done(err); }
-        _db = db;
-        done();
-      })
-    })
-
-    after(function (done) {
-      _db.collection('mocha_test', function (err, collection) {
-        collection.deleteMany({}, function (err) {
-          if (err) { return done(err); }
-          _db.close();
-          done();
-        });
-      });
+    before(async () => {
+      _db = await getMongoClient();
     });
 
-    it('should execute after a model is removed', function (done) {
-      var strRemoved = '';
-      var HookedModel = Model.define({
+    after(() => {
+      return cleanUpDb(_db);
+    });
+
+    it('should execute after a model is removed', async () => {
+      let strRemoved = '';
+      const HookedModel = Model.define({
         name: 'HookedModel',
         collection: 'mocha_test',
         properties: {
@@ -1268,58 +911,34 @@ describe('Model', function () {
           }
         }
       });
-      var model = HookedModel.create({ str: 'foo' });
+      const model = HookedModel.create({ str: 'foo' });
       expect(model.afterRemove).to.exist;
-      model
-        .save()
-        .then(function (m) {
-          return m.remove();
-        })
-        .then(function () {
-          expect(strRemoved).to.equal('foo');
-          done();
-        })
-        .done(null, done);
+      const m = await model.save()
+      await m.remove();
+      expect(strRemoved).to.equal('foo');
     });
 
   });
 
-  describe('.project()', function () {
-    var _db;
+  describe('.project()', () => {
+    let _db;
 
-    before(function (done) {
-      MongoClient.connect(process.env.COSA_DB_URI, function (err, db) {
-        if (err) { return done(err); }
-        _db = db;
-        done();
-      })
-    })
-
-    after(function (done) {
-      _db.collection('mocha_test', function (err, collection) {
-        collection.deleteMany({}, function (err) {
-          if (err) { return done(err); }
-          _db.close();
-          done();
-        });
-      });
+    before(async () => {
+      _db = await getMongoClient(); 
     });
 
-    it('should return cursor of projected values', function (done) {
-      FullTestModel
-        .create({
+    after(() => {
+      return cleanUpDb(_db);
+    });
+
+    it('should return cursor of projected values', async () => {
+      await FullTestModel.create({
           str: 'test string',
           obj: { prop1: 'bar' }
-        })
-        .save()
-        .then(function () {
-          return FullTestModel.project({}, { str: 1 }, { array: 1 });
-        })
-        .then(function (values) {
-          expect(values.length).to.equal(1);
-          expect(values[0].str).to.equal('test string');
-          done();
-        });
+        }).save();
+      const values = await FullTestModel.project({}, { str: 1 }, { array: 1 });
+      expect(values.length).to.equal(1);
+      expect(values[0].str).to.equal('test string');
     });
 
   });
