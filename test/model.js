@@ -1,12 +1,11 @@
-const { promisify } = require('es6-promisify');
-const chai          = require('chai');
-const chaiPromise   = require('chai-as-promised');
-const MongoClient   = require('mongodb').MongoClient;
-const q             = require('q');
-const bson          = require('bson');
+const { promisify }      = require('es6-promisify');
+const chai               = require('chai');
+const chaiPromise        = require('chai-as-promised');
+const MongoClient        = require('mongodb').MongoClient;
+const bson               = require('bson');
 chai.use(require('chai-as-promised'));
 chai.use(require('chai-datetime'));
-const expect        = chai.expect;
+const expect             = chai.expect;
 const MongoClientPromise = promisify(MongoClient.connect);
 
 const getMongoClient = () => MongoClient.connect(process.env.COSA_DB_URI);
