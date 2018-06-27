@@ -380,7 +380,7 @@ describe('Model', () => {
 
     it('should update an existing document', async () => {
       let newModel = await model.save();
-      let updatedModel = await newModel.set('str', 'test update').set('num', 2).save();;
+      let updatedModel = await newModel.set('str', 'test update').set('num', 2).save();
       expect(updatedModel._id.toString()).to.equal(newModel._id.toString());
       expect(updatedModel._etag).to.not.equal(newModel._etag);
       const doc = await new Promise((resolve, reject) => {
