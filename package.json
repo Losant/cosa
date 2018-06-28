@@ -43,7 +43,8 @@
     "mongodb-extended-json": "~1.10.0",
     "object-assign": "^4.1.1",
     "object-path": "^0.11.4",
-    "q": "^1.5.0"
+    "q": "^1.5.0",
+    "ramda": "^0.25.0"
   },
   "devDependencies": {
     "@losant/eslint-config-losant": "^1.3.3",
@@ -64,7 +65,12 @@
   "eslintIgnore": [
     "packages/*/node_modules",
     "scripts/node_modules",
-    "lib/",
+    "lib/array.js",
+    "lib/cursor.js",
+    "lib/date.js",
+    "lib/defined-object.js",
+    "lib/immutable.js",
+    "lib/object.js",
     "test/support",
     "test/immutable.js",
     "test/mocha.opts"
