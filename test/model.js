@@ -10,15 +10,16 @@ const MongoClientPromise = promisify(MongoClient.connect);
 const getMongoClient = () => MongoClientPromise(process.env.COSA_DB_URI);
 const cleanUpDb = (db, close = true) => {
   return new Promise((resolve, reject) => {
-    db.collection('mocha_test', function (err, collection) {
-      collection.deleteMany({}, function (err) {
+    db.collection('mocha_test', function(err, collection) {
+      if (err) { return reject(err); }
+      collection.deleteMany({}, function(err) {
         if (err) { return reject(err); }
-        if (close) db.close();
+        if (close) { db.close(); }
         return resolve();
       });
     });
   });
-}
+};
 
 describe('Model', () => {
 
@@ -43,11 +44,11 @@ describe('Model', () => {
       const ModelA = Model.define({
         collection: 'mocha_test',
         properties: {
-          _type: { type: 'string', enum: ['A', 'B'], default: 'A'},
+          _type: { type: 'string', enum: ['A', 'B'], default: 'A' },
           strA: { type: 'string' }
         },
         methods: {
-          blah: function () {
+          blah: function() {
             return 'blah';
           }
         }
@@ -83,7 +84,7 @@ describe('Model', () => {
         obj: { deep: { blah: 'blah' } }
       });
       const model2 = model.set('obj.deep.blah', 'boo');
-      expect(FullTestModel.isA(model2)).to.be.true;
+      expect(FullTestModel.isA(model2)).to.equal(true);
       expect(model.get('obj.deep.blah')).to.equal('blah');
       expect(model2.get('obj.deep.blah')).to.equal('boo');
     });
@@ -94,10 +95,10 @@ describe('Model', () => {
         str: 'foo',
         obj: { deep: { blah: 'blah' } }
       });
-      expect(FullTestModel.isA(model2)).to.be.true;
+      expect(FullTestModel.isA(model2)).to.equal(true);
       expect(model2.fooString('str is set to {str}')).to.equal('str is set to foo');
-      expect(model.get('str')).to.not.exist;
-      expect(model.get('obj.deep.blah')).to.not.exist;
+      expect(model.get('str')).to.be.oneOf([ null, undefined ]);
+      expect(model.get('obj.deep.blah')).to.be.oneOf([ null, undefined ]);
       expect(model2.get('str')).to.equal('foo');
       expect(model2.get('obj.deep.blah')).to.equal('blah');
     });
@@ -113,12 +114,12 @@ describe('Model', () => {
       });
       const model2 = model.del('str');
       const model3 = model.del('obj.deep.blah');
-      expect(FullTestModel.isA(model2)).to.be.true;
-      expect(FullTestModel.isA(model3)).to.be.true;
+      expect(FullTestModel.isA(model2)).to.equal(true);
+      expect(FullTestModel.isA(model3)).to.equal(true);
       expect(model.get('str')).to.equal('foo');
-      expect(model2.get('str')).to.not.exist;
+      expect(model2.get('str')).to.be.oneOf([ null, undefined ]);
       expect(model.get('obj.deep.blah')).to.equal('blah');
-      expect(model3.get('obj.deep.blah')).to.not.exist;
+      expect(model3.get('obj.deep.blah')).to.be.oneOf([ null, undefined ]);
     });
 
   });
@@ -130,45 +131,45 @@ describe('Model', () => {
         str: 'foo',
         obj: { deep: { blah: 'blah' } }
       });
-      expect(model.has('str')).to.be.true;
-      expect(model.has('obj.deep.blah')).to.be.true;
+      expect(model.has('str')).to.equal(true);
+      expect(model.has('obj.deep.blah')).to.equal(true);
     });
 
   });
 
-  describe('.is()', function () {
+  describe('.is()', function() {
     // TODO split this up into multiple tests
     it('should return true if both objects reference the same doc', async () => {
-      let obj = null;
+      const obj = null;
       const modelA = Model.define({
         name: 'ModelA',
         collection: 'mocha_test',
         properties: {
           str: { type: 'string' }
         }
-      }).create({ str: 'foo'});
+      }).create({ str: 'foo' });
       const modelB = Model.define({
         name: 'ModelB',
         collection: 'mocha_test',
         properties: {
           str: { type: 'string' }
         }
-      }).create({ str: 'foo'});
-      expect(modelA.is(obj)).to.be.false;
-      expect(modelA.is(modelB)).to.be.false;
+      }).create({ str: 'foo' });
+      expect(modelA.is(obj)).to.equal(false);
+      expect(modelA.is(modelB)).to.equal(false);
       let m = modelA;
-      expect(modelA.is(m)).to.be.true;
+      expect(modelA.is(m)).to.equal(true);
       m = modelA.set('str', 'blah');
-      expect(modelA.is(m)).to.be.false;
+      expect(modelA.is(m)).to.equal(false);
       const modelA2 = await modelA.save();
-      expect(modelA.is(modelA2)).to.be.false;
+      expect(modelA.is(modelA2)).to.equal(false);
       const m2 = modelA2.set('str', 'bar');
-      expect(modelA2.is(m2)).to.be.true;
+      expect(modelA2.is(m2)).to.equal(true);
     });
 
   });
 
-  describe('.equals()', function () {
+  describe('.equals()', function() {
 
     it('should return true if both objects reference the same doc and version', async () => {
       const modelA = Model.define({
@@ -177,25 +178,25 @@ describe('Model', () => {
         properties: {
           str: { type: 'string' }
         }
-      }).create({ str: 'foo'});
+      }).create({ str: 'foo' });
       const m = modelA.set('str', 'blah');
-      expect(modelA.equals(m)).to.be.false;
-      const modelA2 = await modelA.save()
+      expect(modelA.equals(m)).to.equal(false);
+      const modelA2 = await modelA.save();
       const m2 = modelA2.set('num', 10);
-      expect(modelA2.equals(m2)).to.be.false;
+      expect(modelA2.equals(m2)).to.equal(false);
     });
 
   });
 
-  describe('.isNew()', function () {
+  describe('.isNew()', function() {
 
     it('should return true if the model is new', async () => {
       const model = FullTestModel.create({
         str: 'foo'
       });
-      expect(model.isNew()).to.be.true;
-      const model2 = await model.save()
-      expect(model2.isNew()).to.be.false;
+      expect(model.isNew()).to.equal(true);
+      const model2 = await model.save();
+      expect(model2.isNew()).to.equal(false);
     });
 
   });
@@ -208,12 +209,12 @@ describe('Model', () => {
         obj: { deep: { blah: 'blah' } }
       });
       const m = model.set('arr', [1, 2, 3]);
-      expect(m.isModified('arr')).to.be.true;
-      expect(m.isModified('str')).to.be.false;
+      expect(m.isModified('arr')).to.equal(true);
+      expect(m.isModified('str')).to.equal(false);
       const m2 = model.set('obj.deep.blah', 'boo');
-      expect(m2.isModified('obj')).to.be.true;
-      expect(m2.isModified('obj.deep')).to.be.true;
-      expect(m2.isModified('obj.deep.blah')).to.be.true;
+      expect(m2.isModified('obj')).to.equal(true);
+      expect(m2.isModified('obj.deep')).to.equal(true);
+      expect(m2.isModified('obj.deep.blah')).to.equal(true);
     });
 
     it('should return true if no path is given and the object has been modified', () => {
@@ -221,9 +222,9 @@ describe('Model', () => {
         str: 'foo',
         obj: { deep: { blah: 'blah' } }
       });
-      expect(model.isModified()).to.be.false;
+      expect(model.isModified()).to.equal(false);
       const m = model.set('arr', [1, 2, 3]);
-      expect(m.isModified()).to.be.true;
+      expect(m.isModified()).to.equal(true);
     });
 
   });
@@ -253,7 +254,7 @@ describe('Model', () => {
         ],
         nullVal: null
       });
-      expect(JSON.stringify(model.toJSON())).to.equal("{\"arr\":[{\"oid\":{\"$oid\":\"abdfabdfabdfabdfabdfabdf\"}},{\"oid\":{\"$oid\":\"abdfabdfabdfabdfabdfabdf\"}}],\"nullVal\":null}");
+      expect(JSON.stringify(model.toJSON())).to.equal('{"arr":[{"oid":{"$oid":"abdfabdfabdfabdfabdfabdf"}},{"oid":{"$oid":"abdfabdfabdfabdfabdfabdf"}}],"nullVal":null}');
     });
 
     it('should except an extended option', () => {
@@ -277,7 +278,7 @@ describe('Model', () => {
           { oid: bson.ObjectId('abdfabdfabdfabdfabdfabdf') }
         ]
       });
-      expect(JSON.stringify(model.toJSON({ extended: false }))).to.equal("{\"arr\":[{\"oid\":\"abdfabdfabdfabdfabdfabdf\"},{\"oid\":\"abdfabdfabdfabdfabdfabdf\"}]}");
+      expect(JSON.stringify(model.toJSON({ extended: false }))).to.equal('{"arr":[{"oid":"abdfabdfabdfabdfabdfabdf"},{"oid":"abdfabdfabdfabdfabdfabdf"}]}');
     });
 
     it('should except an exclude option', () => {
@@ -286,7 +287,7 @@ describe('Model', () => {
         obj: { prop1: 'bar' }
       });
       const json = model.toJSON({ exclude: ['str', 'date'] });
-      expect(JSON.stringify(json)).to.equal("{\"obj\":{\"prop1\":\"bar\",\"propv\":\"bar.undefined\"},\"num\":0,\"bool\":false,\"virt\":\"test string.virtual\"}");
+      expect(JSON.stringify(json)).to.equal('{"obj":{"prop1":"bar","propv":"bar.undefined"},"num":0,"bool":false,"virt":"test string.virtual"}');
     });
 
     it('should except an include option', () => {
@@ -295,18 +296,21 @@ describe('Model', () => {
         obj: { prop1: 'bar' }
       });
       const json = model.toJSON({ include: ['num', 'bool', 'virt'] });
-      expect(JSON.stringify(json)).to.equal("{\"num\":0,\"bool\":false,\"virt\":\"test string.virtual\"}");
+      expect(JSON.stringify(json)).to.equal('{"num":0,"bool":false,"virt":"test string.virtual"}');
     });
 
     it('should except a transform option', () => {
       const model = FullTestModel.create({
         str: 'test string'
       });
-      const json = model.toJSON({ exclude: ['date'], transform: function (obj) {
-        obj.str += ' TRANSFORMED!';
-        return obj
-      } });
-      expect(JSON.stringify(json)).to.equal("{\"str\":\"test string TRANSFORMED!\",\"num\":0,\"bool\":false,\"virt\":\"test string.virtual\"}");
+      const json = model.toJSON({
+        exclude: ['date'],
+        transform: function(obj) {
+          obj.str += ' TRANSFORMED!';
+          return obj;
+        }
+      });
+      expect(JSON.stringify(json)).to.equal('{"str":"test string TRANSFORMED!","num":0,"bool":false,"virt":"test string.virtual"}');
     });
 
   });
@@ -326,7 +330,7 @@ describe('Model', () => {
 
   });
 
-  describe('db', function () {
+  describe('db', function() {
     const db = require('../lib/db');
 
     it('should auto connect to db if connection lost', async () => {
@@ -344,7 +348,7 @@ describe('Model', () => {
 
   });
 
-  describe('.save()', function () {
+  describe('.save()', function() {
     let model;
 
     before(() => {
@@ -356,14 +360,14 @@ describe('Model', () => {
 
     it('should insert a new document', async () => {
       const updatedModel = await model.save();
-      expect(updatedModel._id).to.exist;
-      expect(updatedModel._etag).to.exist;
+      expect(updatedModel._id).to.be.a('object');
+      expect(updatedModel._etag).to.be.a('string');
       const count = await FullTestModel.count({ _id: updatedModel._id });
       expect(count).to.equal(1);
       const doc = await new Promise((resolve, reject) => {
-        _db.collection('mocha_test', function (err, collection) {
+        _db.collection('mocha_test', function(err, collection) {
           if (err) { return reject(err); }
-          collection.findOne({ _id: updatedModel._id }, function (err, doc) {
+          collection.findOne({ _id: updatedModel._id }, function(err, doc) {
             if (err) { return reject(err); }
             return resolve(doc);
           });
@@ -379,14 +383,14 @@ describe('Model', () => {
     });
 
     it('should update an existing document', async () => {
-      let newModel = await model.save();
-      let updatedModel = await newModel.set('str', 'test update').set('num', 2).save();
+      const newModel = await model.save();
+      const updatedModel = await newModel.set('str', 'test update').set('num', 2).save();
       expect(updatedModel._id.toString()).to.equal(newModel._id.toString());
       expect(updatedModel._etag).to.not.equal(newModel._etag);
       const doc = await new Promise((resolve, reject) => {
-       _db.collection('mocha_test', function (err, collection) {
+        _db.collection('mocha_test', function(err, collection) {
           if (err) { return reject(err); }
-          collection.findOne({ _id: updatedModel._id }, function (err, doc) {
+          collection.findOne({ _id: updatedModel._id }, function(err, doc) {
             if (err) { return reject(err); }
             return resolve(doc);
           });
@@ -463,15 +467,15 @@ describe('Model', () => {
       const count = await cursor.count();
       const obj = await cursor.next();
       expect(count).to.equal(1);
-      expect(Immutable.isImmutableType(obj, 'FullTestModel')).to.be.true;
+      expect(Immutable.isImmutableType(obj, 'FullTestModel')).to.equal(true);
     });
 
     it('should return an array if array option is given', async () => {
       const updatedModel = await model.save();
       const arr = await FullTestModel.find({ _id: updatedModel._id }, { array: true });
-      expect(Array.isArray(arr)).to.be.true;
+      expect(Array.isArray(arr)).to.equal(true);
       expect(arr.length).to.equal(1);
-      expect(Immutable.isImmutableType(arr[0], 'FullTestModel')).to.be.true;
+      expect(Immutable.isImmutableType(arr[0], 'FullTestModel')).to.equal(true);
     });
 
   });
@@ -489,18 +493,18 @@ describe('Model', () => {
     it('should return an object', async () => {
       const updatedModel = await model.save();
       const doc = await FullTestModel.findOne({ _id: updatedModel._id });
-      expect(doc).to.exist;
+      expect(doc).to.be.a('object');
       expect(Immutable.isImmutableType(doc, 'FullTestModel'));
     });
 
     it('should return null if no document is found', async () => {
       const doc = await FullTestModel.findOne({ _id: 'asdfasdfasdf' });
-      expect(doc).to.not.exist;
+      expect(doc).to.be.oneOf([ null, undefined ]);
     });
 
   });
 
-  describe('.update()', function () {
+  describe('.update()', function() {
 
     beforeEach(async () => {
       await FullTestModel.create({ str: 'foo' }).save();
@@ -531,11 +535,11 @@ describe('Model', () => {
     });
 
     it('should replace single doc', async () => {
-      const result = await FullTestModel.update({}, { arr: ['a', 'b', 'c'] }, { autoSet: false })
+      const result = await FullTestModel.update({}, { arr: ['a', 'b', 'c'] }, { autoSet: false });
       expect(result.matchedCount).to.equal(1);
       expect(result.modifiedCount).to.equal(1);
-      const doc = await FullTestModel.find({ arr: ['a', 'b', 'c']});
-      expect(doc.str).to.not.exist;
+      const doc = await FullTestModel.find({ arr: ['a', 'b', 'c'] });
+      expect(doc.str).to.be.oneOf([ null, undefined ]);
     });
 
   });
@@ -543,13 +547,13 @@ describe('Model', () => {
   describe('.distinct()', () => {
 
     it('should return distinct key values', async () => {
-      var model = FullTestModel.create({
+      const model = FullTestModel.create({
         str: 'test string'
       });
-      var model2 = FullTestModel.create({
+      const model2 = FullTestModel.create({
         str: 'another test string'
       });
-      var model3 = FullTestModel.create({
+      const model3 = FullTestModel.create({
         str: 'test string'
       });
       await Promise.all([ model.save(), model2.save(), model3.save() ]);
@@ -562,13 +566,13 @@ describe('Model', () => {
   describe('.aggregate()', () => {
 
     it('should return results of aggregate pipeline', async () => {
-      var model = FullTestModel.create({
+      const model = FullTestModel.create({
         str: 'test string'
       });
-      var model2 = FullTestModel.create({
+      const model2 = FullTestModel.create({
         str: 'another test string'
       });
-      var model3 = FullTestModel.create({
+      const model3 = FullTestModel.create({
         str: 'test string'
       });
       await Promise.all([ model.save(), model2.save(), model3.save() ]);
@@ -576,9 +580,9 @@ describe('Model', () => {
         { $group: { _id: '$str', count: { $sum: 1 } } }
       ]);
       expect(results.length).to.equal(2);
-      results.forEach(function (item) {
+      results.forEach(function(item) {
         expect(item).to.contain.all.keys('_id', 'count');
-        expect(item).to.satisfy(function (val) {
+        expect(item).to.satisfy(function(val) {
           return (val._id === 'test string' && val.count === 2) ||
             (val._id === 'another test string' && val.count === 1);
         });
@@ -602,9 +606,9 @@ describe('Model', () => {
       const id = updatedModel._id;
       await FullTestModel.remove({ _id: updatedModel._id });
       const count = await new Promise((resolve, reject) => {
-        _db.collection('mocha_test', function (err, collection) {
+        _db.collection('mocha_test', function(err, collection) {
           if (err) { return reject(err); }
-          collection.count({ _id: id }, function (err, count) {
+          collection.count({ _id: id }, function(err, count) {
             if (err) { return reject(err); }
             return resolve(count);
           });
@@ -622,11 +626,11 @@ describe('Model', () => {
         abstract: true,
         collection: 'mocha_test',
         properties: {
-          _type: { type: 'string', enum: ['A', 'B'], default: 'A'},
+          _type: { type: 'string', enum: ['A', 'B'], default: 'A' },
           strA: { type: 'string', default: 'A' }
         },
         methods: {
-          blah: function () {
+          blah: function() {
             return 'blah';
           }
         }
@@ -641,7 +645,7 @@ describe('Model', () => {
       });
       const myModelA = ModelA.create({});
       expect(myModelA.strA).to.equal('A');
-      expect(myModelA.strB).to.not.exist;
+      expect(myModelA.strB).to.be.oneOf([ null, undefined ]);
       const myModelB = ModelB.create({
         strA: 'abc',
         strB: '123'
@@ -669,8 +673,8 @@ describe('Model', () => {
           }
         }
       });
-      let model = HookedModel.create({ str: 'foo' });
-      expect(model.beforeSave).to.exist;
+      const model = HookedModel.create({ str: 'foo' });
+      expect(model.beforeSave).to.be.a('function');
       await model.save();
       expect(strToSave).to.equal('foo');
     });
@@ -689,7 +693,7 @@ describe('Model', () => {
         }
       });
       const model = HookedModel.create({ str: 'foo' });
-      expect(model.beforeSave).to.exist;
+      expect(model.beforeSave).to.be.a('function');
       const model2 = await model.save();
       expect(model2.str).to.equal('foo bar');
     });
@@ -709,14 +713,14 @@ describe('Model', () => {
           str: { type: 'string' }
         },
         methods: {
-          afterSave: function() {
-            checkFunction(this, arguments);
+          afterSave: function(...args) {
+            checkFunction(this, args);
             strSaved = this.str;
           }
         }
       });
       const model = HookedModel.create({ str: 'foo' });
-      expect(model.afterSave).to.exist;
+      expect(model.afterSave).to.be.a('function');
       let wasCalled = false;
       checkFunction = function(instance, args) {
         expect(instance.str).to.equal('foo');
@@ -724,14 +728,14 @@ describe('Model', () => {
         wasCalled = true;
       };
 
-      const m = await model.save()
+      const m = await model.save();
       expect(wasCalled).to.equal(true);
       wasCalled = false;
-      checkFunction = function(instance, args){
+      checkFunction = function(instance, args) {
         expect(instance.str).to.equal('bar');
         expect(args[0].str).to.equal('foo');
         wasCalled = true;
-      }
+      };
       await m.set('str', 'bar').save();
       expect(wasCalled).to.equal(true);
       expect(strSaved).to.equal('bar');
@@ -750,13 +754,13 @@ describe('Model', () => {
           str: { type: 'string' }
         },
         methods: {
-          beforeRemove: function () {
+          beforeRemove: function() {
             strRemoved = this.str;
           }
         }
       });
       const model = HookedModel.create({ str: 'foo' });
-      expect(model.beforeRemove).to.exist;
+      expect(model.beforeRemove).to.be.a('function');
       const m = await model.save();
       await m.remove();
       expect(strRemoved).to.equal('foo');
@@ -775,15 +779,15 @@ describe('Model', () => {
           str: { type: 'string' }
         },
         methods: {
-          afterRemove: function () {
+          afterRemove: function() {
             strRemoved = this.str;
           }
         }
       });
       const model = HookedModel.create({ str: 'foo' });
-      expect(model.afterRemove).to.exist;
+      expect(model.afterRemove).to.be.a('function');
 
-      const m = await model.save()
+      const m = await model.save();
       await m.remove();
       expect(strRemoved).to.equal('foo');
     });
@@ -794,9 +798,9 @@ describe('Model', () => {
 
     it('should return cursor of projected values', async () => {
       await FullTestModel.create({
-          str: 'test string',
-          obj: { prop1: 'bar' }
-        }).save();
+        str: 'test string',
+        obj: { prop1: 'bar' }
+      }).save();
       const values = await FullTestModel.project({}, { str: 1 }, { array: 1 });
       expect(values.length).to.equal(1);
       expect(values[0].str).to.equal('test string');
