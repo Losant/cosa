@@ -138,9 +138,31 @@ describe('Model', () => {
   });
 
   describe('.is()', function() {
-    // TODO split this up into multiple tests
-    it('should return true if both objects reference the same doc', async () => {
+    it('should return false if one object is null and the other is a model', () => {
       const obj = null;
+      const modelA = Model.define({
+        name: 'ModelA',
+        collection: 'mocha_test',
+        properties: {
+          str: { type: 'string' }
+        }
+      }).create({ str: 'foo' });
+      expect(modelA.is(obj)).to.equal(false);
+    });
+    it('should return true if both objects reference the same doc', () => {
+      const modelA = Model.define({
+        name: 'ModelA',
+        collection: 'mocha_test',
+        properties: {
+          str: { type: 'string' }
+        }
+      }).create({ str: 'foo' });
+      let m = modelA;
+      expect(modelA.is(m)).to.equal(true);
+      m = modelA.set('str', 'blah');
+      expect(modelA.is(m)).to.equal(false);
+    });
+    it('should return false if the documents do not match, and should return true when the do', async () => {
       const modelA = Model.define({
         name: 'ModelA',
         collection: 'mocha_test',
@@ -155,12 +177,7 @@ describe('Model', () => {
           str: { type: 'string' }
         }
       }).create({ str: 'foo' });
-      expect(modelA.is(obj)).to.equal(false);
       expect(modelA.is(modelB)).to.equal(false);
-      let m = modelA;
-      expect(modelA.is(m)).to.equal(true);
-      m = modelA.set('str', 'blah');
-      expect(modelA.is(m)).to.equal(false);
       const modelA2 = await modelA.save();
       expect(modelA.is(modelA2)).to.equal(false);
       const m2 = modelA2.set('str', 'bar');
