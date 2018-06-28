@@ -66,7 +66,6 @@
     "packages/*/node_modules",
     "scripts/node_modules",
     "lib/array.js",
-    "lib/cursor.js",
     "lib/date.js",
     "lib/defined-object.js",
     "lib/immutable.js",
