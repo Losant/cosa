@@ -7,11 +7,11 @@ chai.use(require('chai-datetime'));
 const expect             = chai.expect;
 const MongoClientPromise = promisify(MongoClient.connect);
 
-const getMongoClient = () => MongoClientPromise(process.env.COSA_DB_URI);
-const cleanUpDb = async (db, close = true) => {
+const getMongoClient = () => MongoClientPromise(process.env.COSA_DB_URI, { useNewUrlParser: true });
+const cleanUpDb = async (client, db, close = true) => {
   const collection = db.collection('mocha_test');
   await collection.deleteMany();
-  if (close) { db.close(); }
+  if (close) { client.close(); }
 };
 
 describe('Model', () => {
