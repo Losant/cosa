@@ -8,17 +8,10 @@ const expect             = chai.expect;
 const MongoClientPromise = promisify(MongoClient.connect);
 
 const getMongoClient = () => MongoClientPromise(process.env.COSA_DB_URI);
-const cleanUpDb = (db, close = true) => {
-  return new Promise((resolve, reject) => {
-    db.collection('mocha_test', function(err, collection) {
-      if (err) { return reject(err); }
-      collection.deleteMany({}, function(err) {
-        if (err) { return reject(err); }
-        if (close) { db.close(); }
-        return resolve();
-      });
-    });
-  });
+const cleanUpDb = async (db, close = true) => {
+  const collection = db.collection('mocha_test');
+  await collection.deleteMany();
+  if (close) { db.close(); }
 };
 
 describe('Model', () => {
@@ -381,15 +374,8 @@ describe('Model', () => {
       expect(updatedModel._etag).to.be.a('string');
       const count = await FullTestModel.count({ _id: updatedModel._id });
       expect(count).to.equal(1);
-      const doc = await new Promise((resolve, reject) => {
-        _db.collection('mocha_test', function(err, collection) {
-          if (err) { return reject(err); }
-          collection.findOne({ _id: updatedModel._id }, function(err, doc) {
-            if (err) { return reject(err); }
-            return resolve(doc);
-          });
-        });
-      });
+      const collection = _db.collection('mocha_test');
+      const doc = await collection.findOne({ _id: updatedModel._id });
       expect(updatedModel._etag).to.equal(doc._etag);
       expect(updatedModel._id.toObject().toString()).to.equal(doc._id.toString());
       expect(updatedModel.bool).to.equal(doc.bool);
@@ -404,15 +390,8 @@ describe('Model', () => {
       const updatedModel = await newModel.set('str', 'test update').set('num', 2).save();
       expect(updatedModel._id.toString()).to.equal(newModel._id.toString());
       expect(updatedModel._etag).to.not.equal(newModel._etag);
-      const doc = await new Promise((resolve, reject) => {
-        _db.collection('mocha_test', function(err, collection) {
-          if (err) { return reject(err); }
-          collection.findOne({ _id: updatedModel._id }, function(err, doc) {
-            if (err) { return reject(err); }
-            return resolve(doc);
-          });
-        });
-      });
+      const collection = _db.collection('mocha_test');
+      const doc = await collection.findOne({ _id: updatedModel._id });
       expect(updatedModel._etag).to.equal(doc._etag);
       expect(updatedModel._id.toObject().toString()).to.equal(doc._id.toString());
       expect(updatedModel.bool).to.equal(doc.bool);
@@ -437,15 +416,8 @@ describe('Model', () => {
     it('should remove the document', async () => {
       const updatedModel = await model.save();
       await updatedModel.remove();
-      const count = await new Promise((resolve, reject) => {
-        _db.collection('mocha_test', (err, collection) => {
-          if (err) { return reject(err); }
-          collection.count({}, (err, count) => {
-            if (err) { return reject(err); }
-            resolve(count);
-          });
-        });
-      });
+      const collection = _db.collection('mocha_test');
+      const count = await collection.count();
       expect(count).to.equal(0);
     });
 
@@ -622,15 +594,8 @@ describe('Model', () => {
       const updatedModel = await model.save();
       const id = updatedModel._id;
       await FullTestModel.remove({ _id: updatedModel._id });
-      const count = await new Promise((resolve, reject) => {
-        _db.collection('mocha_test', function(err, collection) {
-          if (err) { return reject(err); }
-          collection.count({ _id: id }, function(err, count) {
-            if (err) { return reject(err); }
-            return resolve(count);
-          });
-        });
-      });
+      const collection = _db.collection('mocha_test');
+      const count = await collection.count({ _id: id })
       expect(count).to.equal(0);
     });
   });
