@@ -7,14 +7,14 @@ chai.use(require('chai-datetime'));
 const expect             = chai.expect;
 const MongoClientPromise = promisify(MongoClient.connect);
 
-const getMongoClient = () => MongoClientPromise(process.env.COSA_DB_URI);
-const cleanUpDb = (db, close = true) => {
+const getMongoClient = () => MongoClientPromise(process.env.COSA_DB_URI, { useNewUrlParser: true });
+const cleanUpDb = (client, db, close = true) => {
   return new Promise((resolve, reject) => {
     db.collection('mocha_test', function(err, collection) {
       if (err) { return reject(err); }
       collection.deleteMany({}, function(err) {
         if (err) { return reject(err); }
-        if (close) { db.close(); }
+        if (close) { client.close(); }
         return resolve();
       });
     });
@@ -23,15 +23,16 @@ const cleanUpDb = (db, close = true) => {
 
 describe('Model', () => {
 
-  let _db;
+  let _db, client;
 
   beforeEach(async () => {
-    _db = await getMongoClient();
-    return cleanUpDb(_db, false);
+    client = await getMongoClient();
+    _db = await client.db('test');
+    return cleanUpDb(client, _db, false);
   });
 
   afterEach(() => {
-    return cleanUpDb(_db);
+    return cleanUpDb(client, _db);
   });
 
   const Model = require('../lib/model');
@@ -358,7 +359,7 @@ describe('Model', () => {
       const updatedModel = await model.save();
       let count = await FullTestModel.count({ _id: updatedModel._id });
       expect(count).to.equal(1);
-      db._db.close();
+      db._client.close();
       count = await FullTestModel.count({ _id: updatedModel._id });
       expect(count).to.equal(1);
     });
@@ -437,15 +438,8 @@ describe('Model', () => {
     it('should remove the document', async () => {
       const updatedModel = await model.save();
       await updatedModel.remove();
-      const count = await new Promise((resolve, reject) => {
-        _db.collection('mocha_test', (err, collection) => {
-          if (err) { return reject(err); }
-          collection.count({}, (err, count) => {
-            if (err) { return reject(err); }
-            resolve(count);
-          });
-        });
-      });
+      const collection = _db.collection('mocha_test');
+      const count = await collection.countDocuments();
       expect(count).to.equal(0);
     });
 
@@ -552,7 +546,7 @@ describe('Model', () => {
     });
 
     it('should replace single doc', async () => {
-      const result = await FullTestModel.update({}, { arr: ['a', 'b', 'c'] }, { autoSet: false });
+      const result = await FullTestModel.update({}, { $set: { arr: ['a', 'b', 'c'] }}, { autoSet: false });
       expect(result.matchedCount).to.equal(1);
       expect(result.modifiedCount).to.equal(1);
       const doc = await FullTestModel.find({ arr: ['a', 'b', 'c'] });
@@ -593,9 +587,10 @@ describe('Model', () => {
         str: 'test string'
       });
       await Promise.all([ model.save(), model2.save(), model3.save() ]);
-      const results = await FullTestModel.aggregate([
+      const cursor = await FullTestModel.aggregate([
         { $group: { _id: '$str', count: { $sum: 1 } } }
       ]);
+      const results = await cursor.toArray();
       expect(results.length).to.equal(2);
       results.forEach(function(item) {
         expect(item).to.contain.all.keys('_id', 'count');
@@ -622,15 +617,8 @@ describe('Model', () => {
       const updatedModel = await model.save();
       const id = updatedModel._id;
       await FullTestModel.remove({ _id: updatedModel._id });
-      const count = await new Promise((resolve, reject) => {
-        _db.collection('mocha_test', function(err, collection) {
-          if (err) { return reject(err); }
-          collection.count({ _id: id }, function(err, count) {
-            if (err) { return reject(err); }
-            return resolve(count);
-          });
-        });
-      });
+      const collection = _db.collection('mocha_test');
+      const count = await collection.countDocuments({ _id: id });
       expect(count).to.equal(0);
     });
   });
