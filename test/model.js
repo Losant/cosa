@@ -593,7 +593,7 @@ describe('Model', () => {
       const id = updatedModel._id;
       await FullTestModel.remove({ _id: updatedModel._id });
       const collection = _db.collection('mocha_test');
-      const count = await collection.count({ _id: id })
+      const count = await collection.count({ _id: id });
       expect(count).to.equal(0);
     });
   });
