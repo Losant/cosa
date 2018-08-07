@@ -36,13 +36,13 @@
     "debug": "^3.0.1",
     "defaults": "^1.0.3",
     "error": "^7.0.2",
-    "es6-promisify": "^6.0.0",
     "etag": "^1.8.1",
     "joi": "^10.6.0",
     "mongodb": "~2.2.31",
     "mongodb-extended-json": "~1.10.0",
     "object-assign": "^4.1.1",
     "object-path": "^0.11.4",
+    "omnibelt": "^1.2.0",
     "q": "^1.5.0"
   },
   "devDependencies": {
@@ -51,9 +51,6 @@
     "chai-as-promised": "^7.1.1",
     "chai-datetime": "^1.5.0",
     "documentation": "^5.3.5",
-    "eslint": "^4.6.1",
-    "eslint-plugin-mocha": "^4.8.0",
-    "eslint-plugin-node": "^5.1.1",
     "istanbul": "^0.4.5",
     "mocha": "^3.5.3",
     "string-template": "^1.0.0"
@@ -64,7 +61,12 @@
   "eslintIgnore": [
     "packages/*/node_modules",
     "scripts/node_modules",
-    "lib/",
+    "lib/array.js",
+    "lib/bson-objectId.js",
+    "lib/date.js",
+    "lib/defined-object.js",
+    "lib/immutable.js",
+    "lib/object.js",
     "test/support",
     "test/immutable.js",
     "test/mocha.opts"
