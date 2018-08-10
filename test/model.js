@@ -1,11 +1,9 @@
-const { promisify }      = require('es6-promisify');
 const chai               = require('chai');
 const MongoClient        = require('mongodb').MongoClient;
 const bson               = require('bson');
 chai.use(require('chai-as-promised'));
 chai.use(require('chai-datetime'));
 const expect             = chai.expect;
-const MongoClientPromise = promisify(MongoClient.connect);
 
 const getMongoClient = () => MongoClientPromise(process.env.COSA_DB_URI, { useNewUrlParser: true });
 const cleanUpDb = async (client, db, close = true) => {
