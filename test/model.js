@@ -511,7 +511,6 @@ describe('Model', () => {
 
     it('should partial update all docs', async () => {
       const result = await FullTestModel.update({}, { any: 'any' }, { multiple: true });
-      console.log(result);
       expect(result.matchedCount).to.equal(3);
       expect(result.modifiedCount).to.equal(3);
       const docs = await FullTestModel.find({}, { sort: { str: 1 }, array: true });
