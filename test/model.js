@@ -523,7 +523,7 @@ describe('Model', () => {
     });
 
     it('should replace single doc', async () => {
-      const result = await FullTestModel.update({}, { $set: { arr: ['a', 'b', 'c'] }}, { autoSet: false });
+      const result = await FullTestModel.update({}, { $set: { arr: ['a', 'b', 'c'] } }, { autoSet: false });
       expect(result.matchedCount).to.equal(1);
       expect(result.modifiedCount).to.equal(1);
       const doc = await FullTestModel.find({ arr: ['a', 'b', 'c'] });
