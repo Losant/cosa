@@ -1,7 +1,7 @@
-var format = require('string-template');
-var Model = require('../../lib/model');
+const format = require('string-template');
+const Model = require('../../lib/model');
 
-var FullTestModel = Model.define({
+const FullTestModel = Model.define({
   name: 'FullTestModel',
   collection: 'mocha_test',
   properties: {
