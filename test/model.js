@@ -4,25 +4,30 @@ const bson               = require('bson');
 chai.use(require('chai-as-promised'));
 chai.use(require('chai-datetime'));
 const expect             = chai.expect;
+const Model = require('../lib/model');
+const { sleep } = require('omnibelt');
 
-const getMongoClient = () => MongoClient.connect(process.env.COSA_DB_URI);
-const cleanUpDb = async (db, close = true) => {
-  const collection = db.collection('mocha_test');
-  await collection.deleteMany();
-  if (close) { db.close(); }
+const getMongoClient = () => MongoClient.connect(process.env.COSA_DB_URI, { useNewUrlParser: true });
+const cleanUpDb = async (client, db, close = true) => {
+  await Promise.all([ 'mocha_test', 'mocha_save_test', 'mocha_remove_test' ].map((cName) => {
+    const collection = db.collection(cName);
+    return collection.deleteMany();
+  }));
+  if (close) { client.close(); }
 };
 
 describe('Model', () => {
 
-  let _db;
+  let _db, client;
 
   beforeEach(async () => {
-    _db = await getMongoClient();
-    return cleanUpDb(_db, false);
+    client = await getMongoClient();
+    _db = await client.db('test');
+    return cleanUpDb(client, _db, false);
   });
 
   afterEach(() => {
-    return cleanUpDb(_db);
+    return cleanUpDb(client, _db);
   });
 
   const Model = require('../lib/model');
@@ -349,7 +354,7 @@ describe('Model', () => {
       const updatedModel = await model.save();
       let count = await FullTestModel.count({ _id: updatedModel._id });
       expect(count).to.equal(1);
-      db._db.close();
+      db._client.close();
       count = await FullTestModel.count({ _id: updatedModel._id });
       expect(count).to.equal(1);
     });
@@ -399,6 +404,28 @@ describe('Model', () => {
       expect(updatedModel.str).to.equal(doc.str);
     });
 
+    it('should wait for the after save', async () => {
+      let afterSaveCalled = false;
+      const afterSaveModel = Model.define({
+        name: 'RemoveTest',
+        collection: 'mocha_save_test',
+        properties: {
+          str: { type: 'string', required: true }
+        },
+        waitAfterSave: true,
+        methods: {
+          afterSave: async function () {
+            await sleep(150);
+            afterSaveCalled = true;
+          }
+        }
+      });
+      const testModel = await afterSaveModel.create({ str: 'hello' }).save({ waitAfterSave: true });
+      const collection = _db.collection('mocha_save_test');
+      const count = await collection.countDocuments();
+      expect(count).to.equal(1);
+    });
+
   });
 
   describe('.remove()', () => {
@@ -415,10 +442,45 @@ describe('Model', () => {
       const updatedModel = await model.save();
       await updatedModel.remove();
       const collection = _db.collection('mocha_test');
-      const count = await collection.count();
+      const count = await collection.countDocuments();
       expect(count).to.equal(0);
     });
 
+    it('should wait for the after remove', async () => {
+      let afterRemoveCalled = false;
+      const afterRemoveModel = Model.define({
+        name: 'RemoveTest',
+        collection: 'mocha_remove_test',
+        properties: {
+          str: { type: 'string', required: true }
+        },
+        methods: {
+          afterRemove: async function () {
+            await sleep(150);
+            afterRemoveCalled = true;
+          }
+        }
+      });
+      const testModel = await afterRemoveModel.create({ str: 'hello' }).save();
+      await testModel.remove({ waitAfterRemove: true });
+      expect(afterRemoveCalled).to.equal(true);
+      const collection = _db.collection('mocha_remove_test');
+      const count = await collection.countDocuments();
+      expect(count).to.equal(0);
+    });
+
+  });
+
+  describe('.reload', async () => {
+    it('should reload a model', async () => {
+      const model = FullTestModel.create({
+        str: 'test string',
+        obj: { prop1: 'bar' }
+      });
+      const updatedModel = await model.save();
+      const reloadedModel = await updatedModel.reload();
+      expect(reloadedModel).to.deep.equal(updatedModel);
+    });
   });
 
   describe('.count()', () => {
@@ -522,7 +584,7 @@ describe('Model', () => {
     });
 
     it('should replace single doc', async () => {
-      const result = await FullTestModel.update({}, { arr: ['a', 'b', 'c'] }, { autoSet: false });
+      const result = await FullTestModel.update({}, { $set: { arr: ['a', 'b', 'c'] } }, { autoSet: false });
       expect(result.matchedCount).to.equal(1);
       expect(result.modifiedCount).to.equal(1);
       const doc = await FullTestModel.find({ arr: ['a', 'b', 'c'] });
@@ -563,9 +625,10 @@ describe('Model', () => {
         str: 'test string'
       });
       await Promise.all([ model.save(), model2.save(), model3.save() ]);
-      const results = await FullTestModel.aggregate([
+      const cursor = await FullTestModel.aggregate([
         { $group: { _id: '$str', count: { $sum: 1 } } }
       ]);
+      const results = await cursor.toArray();
       expect(results.length).to.equal(2);
       results.forEach(function(item) {
         expect(item).to.contain.all.keys('_id', 'count');
@@ -593,7 +656,7 @@ describe('Model', () => {
       const id = updatedModel._id;
       await FullTestModel.remove({ _id: updatedModel._id });
       const collection = _db.collection('mocha_test');
-      const count = await collection.count({ _id: id });
+      const count = await collection.countDocuments({ _id: id });
       expect(count).to.equal(0);
     });
   });
