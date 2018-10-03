@@ -30,7 +30,6 @@ describe('Model', () => {
     return cleanUpDb(client, _db);
   });
 
-  const Model = require('../lib/model');
   const Immutable = require('../lib/immutable');
   const FullTestModel = require('./support/full-test-model');
 
@@ -407,20 +406,20 @@ describe('Model', () => {
     it('should wait for the after save', async () => {
       let afterSaveCalled = false;
       const afterSaveModel = Model.define({
-        name: 'RemoveTest',
+        name: 'SaveTest',
         collection: 'mocha_save_test',
         properties: {
           str: { type: 'string', required: true }
         },
-        waitAfterSave: true,
         methods: {
-          afterSave: async function () {
+          afterSave: async function() {
             await sleep(150);
             afterSaveCalled = true;
           }
         }
       });
-      const testModel = await afterSaveModel.create({ str: 'hello' }).save({ waitAfterSave: true });
+      await afterSaveModel.create({ str: 'hello' }).save({ waitAfterSave: true });
+      expect(afterSaveCalled).to.equal(true);
       const collection = _db.collection('mocha_save_test');
       const count = await collection.countDocuments();
       expect(count).to.equal(1);
@@ -455,7 +454,7 @@ describe('Model', () => {
           str: { type: 'string', required: true }
         },
         methods: {
-          afterRemove: async function () {
+          afterRemove: async function() {
             await sleep(150);
             afterRemoveCalled = true;
           }
