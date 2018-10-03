@@ -2,566 +2,816 @@
 
 ### Table of Contents
 
--   [cosa](#cosa)
-    -   [db](#db)
-    -   [init](#init)
--   [Model](#model)
-    -   [define](#define)
--   [Cursor](#cursor)
-    -   [forEach](#foreach)
-    -   [count](#count)
-    -   [close](#close)
-    -   [isClosed](#isclosed)
-    -   [filter](#filter)
-    -   [limit](#limit)
-    -   [map](#map)
-    -   [max](#max)
-    -   [min](#min)
-    -   [next](#next)
-    -   [serialForEach](#serialforeach)
-    -   [skip](#skip)
-    -   [sort](#sort)
-    -   [toArray](#toarray)
--   [errors](#errors)
-    -   [Conflict](#conflict)
-    -   [Validation](#validation)
--   [ImmutableDefinedObject](#immutabledefinedobject)
--   [ImmutableArray](#immutablearray)
--   [ImmutableDate](#immutabledate)
--   [ImmutableBSONObjectID](#immutablebsonobjectid)
--   [ImmutableObject](#immutableobject)
--   [Immutable](#immutable)
-    -   [use](#use)
-    -   [isImmutable](#isimmutable)
-    -   [isImmutableType](#isimmutabletype)
-    -   [create](#create)
--   [Database](#database)
-    -   [init](#init-1)
-    -   [collection](#collection)
-    -   [find](#find)
-    -   [insert](#insert)
-    -   [update](#update)
-    -   [remove](#remove)
-    -   [aggregate](#aggregate)
-    -   [distinct](#distinct)
+-   [cosa][1]
+    -   [db][2]
+    -   [init][3]
+-   [Model][4]
+    -   [define][5]
+-   [Cursor][6]
+    -   [forEach][7]
+    -   [count][8]
+    -   [close][9]
+    -   [isClosed][10]
+    -   [filter][11]
+    -   [limit][12]
+    -   [map][13]
+    -   [max][14]
+    -   [min][15]
+    -   [next][16]
+    -   [serialForEach][17]
+    -   [skip][18]
+    -   [sort][19]
+    -   [toArray][20]
+-   [errors][21]
+    -   [Conflict][22]
+    -   [Validation][23]
+-   [ImmutableDefinedObject][24]
+-   [ImmutableArray][25]
+-   [ImmutableDate][26]
+-   [ImmutableBSONObjectID][27]
+-   [ImmutableObject][28]
+-   [Immutable][29]
+    -   [use][30]
+    -   [isImmutable][31]
+    -   [isImmutableType][32]
+    -   [create][33]
+-   [Database][34]
+    -   [init][35]
+    -   [collection][36]
+    -   [find][37]
+    -   [insert][38]
+    -   [update][39]
+    -   [remove][40]
+    -   [aggregate][41]
+    -   [distinct][42]
 
 ## cosa
 
-[lib/index.js:9-33](https://github.com/acdaniel/cosa/blob/8df5d192c3594d747fe41554a47947356770a5db/lib/index.js#L9-L33 "Source code on GitHub")
+[lib/index.js:9-34][43]
 
 Main module that provides access to library classes and functions.
 
 ### db
 
-[lib/index.js:19-19](https://github.com/acdaniel/cosa/blob/8df5d192c3594d747fe41554a47947356770a5db/lib/index.js#L19-L19 "Source code on GitHub")
+[lib/index.js:19-19][44]
 
--   **See: [Database](#database)**
+-   **See: [Database][34]**
 
 Database connection instance.
 
 ### init
 
-[lib/index.js:29-32](https://github.com/acdaniel/cosa/blob/8df5d192c3594d747fe41554a47947356770a5db/lib/index.js#L29-L32 "Source code on GitHub")
+[lib/index.js:30-33][45]
 
-Initialize cosa and connect to the database. Explicitly calling the 
+Initialize cosa and connect to the database. Explicitly calling the
 function is not needed if `process.env.COSA_DB_URI` is properly set.
 
 **Parameters**
 
--   `uri` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** URI to the database. If no URI is provided, the value 
-       of `process.env.COSA_DB_URI` is used. See 
-       <https://docs.mongodb.com/manual/reference/connection-string/> for
+-   `uri` **[string][46]?** URI to the database. If no URI is provided, the value
+       of `process.env.COSA_DB_URI` is used. See
+       [https://docs.mongodb.com/manual/reference/connection-string/][47] for
        information on the URI format.
+
+Returns **[Promise][48]** db.init promise
 
 ## Model
 
-[lib/model.js:31-169](https://github.com/acdaniel/cosa/blob/8df5d192c3594d747fe41554a47947356770a5db/lib/model.js#L31-L169 "Source code on GitHub")
+[lib/model.js:325-450][49]
 
 Static class for working with Models
 
 ### define
 
-[lib/model.js:31-169](https://github.com/acdaniel/cosa/blob/8df5d192c3594d747fe41554a47947356770a5db/lib/model.js#L31-L169 "Source code on GitHub")
+[lib/model.js:325-450][49]
 
 **Parameters**
 
--   `definition`  
+-   `definition` **[Object][50]** the model in object form, properties, methods, virtuals
+
+Returns **[Object][50]** an instance of Model
 
 ## Cursor
 
-[lib/cursor.js:9-12](https://github.com/acdaniel/cosa/blob/8df5d192c3594d747fe41554a47947356770a5db/lib/cursor.js#L9-L12 "Source code on GitHub")
+[lib/cursor.js:7-172][51]
 
-Wrapper arround MongoDB Cursor to convert results to Models.
+Wrapper around MongoDB Cursor to convert results to Models.
 
 **Parameters**
 
--   `cursor` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** MongoDB cursor object
--   `factory` **[function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** Factory function used to create Models based on document from cursor.
+-   `cursor` **[object][50]** MongoDB cursor object
+-   `factory` **[function][52]** Factory function used to create Models based on document from cursor.
 
 ### forEach
 
-[lib/cursor.js:20-32](https://github.com/acdaniel/cosa/blob/8df5d192c3594d747fe41554a47947356770a5db/lib/cursor.js#L20-L32 "Source code on GitHub")
+[lib/cursor.js:19-28][53]
 
--   **See: <http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#forEach>**
+-   **See: [http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#forEach][54]**
 
 Iterates over cursor and executes the iterator for each model returned.
 
 **Parameters**
 
--   `iterator` **[function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** 
+-   `iterator` **[function][52]** a function that will be called for each doc
 
-Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)** 
+Returns **[Promise][48]** resolves when list is exhausted.
 
 ### count
 
-[lib/cursor.js:40-42](https://github.com/acdaniel/cosa/blob/8df5d192c3594d747fe41554a47947356770a5db/lib/cursor.js#L40-L42 "Source code on GitHub")
+[lib/cursor.js:37-39][55]
 
--   **See: <http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#count>**
+-   **See: [http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#count][56]**
 
 Returns the count of documents on the cursor.
 
 **Parameters**
 
--   `applySkipLimit` **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** 
--   `options` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
+-   `applySkipLimit` **[boolean][57]** the number of docs to skip over in the count
+-   `options` **[object][50]** mongo cursor count options
+
+Returns **[number][58]** the count of items in the list
 
 ### close
 
-[lib/cursor.js:48-50](https://github.com/acdaniel/cosa/blob/8df5d192c3594d747fe41554a47947356770a5db/lib/cursor.js#L48-L50 "Source code on GitHub")
+[lib/cursor.js:46-48][59]
 
--   **See: <http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#close>**
+-   **See: [http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#close][60]**
 
-Closed the underlying MongoDB cursor.
+Close the underlying MongoDB cursor.
+
+Returns **[boolean][57]** `true` if cursor is successfully closed
 
 ### isClosed
 
-[lib/cursor.js:57-59](https://github.com/acdaniel/cosa/blob/8df5d192c3594d747fe41554a47947356770a5db/lib/cursor.js#L57-L59 "Source code on GitHub")
+[lib/cursor.js:55-57][61]
 
--   **See: <http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#isClosed>**
+-   **See: [http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#isClosed][62]**
 
 Returns `true` if the cursor is closed.
 
-Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** 
+Returns **[boolean][57]** `true` if the cursor is closed.
 
 ### filter
 
-[lib/cursor.js:67-70](https://github.com/acdaniel/cosa/blob/8df5d192c3594d747fe41554a47947356770a5db/lib/cursor.js#L67-L70 "Source code on GitHub")
+[lib/cursor.js:65-68][63]
 
--   **See: <http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#filter>**
+-   **See: [http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#filter][64]**
 
 Sets the cursor query filter.
 
 **Parameters**
 
--   `filter` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
+-   `filter` **[object][50]** The filter object used for the cursor.
 
-Returns **[Cursor](#cursor)** 
+Returns **[Cursor][65]** the cursor instance
 
 ### limit
 
-[lib/cursor.js:78-81](https://github.com/acdaniel/cosa/blob/8df5d192c3594d747fe41554a47947356770a5db/lib/cursor.js#L78-L81 "Source code on GitHub")
+[lib/cursor.js:76-79][66]
 
--   **See: <http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#limit>**
+-   **See: [http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#limit][67]**
 
 Sets the cursor limit.
 
 **Parameters**
 
--   `limit` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** 
+-   `limit` **[number][58]** A number to limit the cursor by.
 
-Returns **[Cursor](#cursor)** 
+Returns **[Cursor][65]** the cursor instance
 
 ### map
 
-[lib/cursor.js:89-93](https://github.com/acdaniel/cosa/blob/8df5d192c3594d747fe41554a47947356770a5db/lib/cursor.js#L89-L93 "Source code on GitHub")
+[lib/cursor.js:87-91][68]
 
--   **See: <http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#map>**
+-   **See: [http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#map][69]**
 
-Maps cursor results using the provided function .
+Maps cursor results using the provided function.
 
 **Parameters**
 
--   `transform` **[function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** 
+-   `transform` **[function][52]** A function that will be called by each document in the cursor.
 
-Returns **[Cursor](#cursor)** 
+Returns **[Cursor][65]** the cursor instance
 
 ### max
 
-[lib/cursor.js:101-104](https://github.com/acdaniel/cosa/blob/8df5d192c3594d747fe41554a47947356770a5db/lib/cursor.js#L101-L104 "Source code on GitHub")
+[lib/cursor.js:99-102][70]
 
--   **See: <http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#max>**
+-   **See: [http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#max][71]**
 
 Sets the cursor max.
 
 **Parameters**
 
--   `max` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** 
+-   `max` **[number][58]** Specify a $max value to specify the exclusive upper bound for a specific index in order to constrain the results of find().
 
-Returns **[Cursor](#cursor)** 
+Returns **[Cursor][65]** the cursor instance
 
 ### min
 
-[lib/cursor.js:112-115](https://github.com/acdaniel/cosa/blob/8df5d192c3594d747fe41554a47947356770a5db/lib/cursor.js#L112-L115 "Source code on GitHub")
+[lib/cursor.js:110-113][72]
 
--   **See: <http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#min>**
+-   **See: [http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#min][73]**
 
 Sets the cursor min.
 
 **Parameters**
 
--   `min` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** 
+-   `min` **[number][58]** Specify a $min value to specify the inclusive lower bound for a specific index in order to constrain the results of find().
 
-Returns **[Cursor](#cursor)** 
+Returns **[Cursor][65]** the cursor instance
 
 ### next
 
-[lib/cursor.js:122-128](https://github.com/acdaniel/cosa/blob/8df5d192c3594d747fe41554a47947356770a5db/lib/cursor.js#L122-L128 "Source code on GitHub")
+[lib/cursor.js:120-123][74]
 
--   **See: <http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#next>**
+-   **See: [http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#next][75]**
 
 Get the next available document from the cursor.
 
-Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)** 
+Returns **[Promise][48]** resolves with the next document from the cursor.
 
 ### serialForEach
 
-[lib/cursor.js:136-145](https://github.com/acdaniel/cosa/blob/8df5d192c3594d747fe41554a47947356770a5db/lib/cursor.js#L136-L145 "Source code on GitHub")
+[lib/cursor.js:131-139][76]
 
--   **See: <http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#forEach>**
+-   **See: [http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#forEach][54]**
 
 Like `Cursor.forEach` but guarantees non-parallel execution of iterator.
 
 **Parameters**
 
--   `iterator` **[function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** 
+-   `iterator` **[function][52]** the function that will be called by each document serially.
 
-Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)** 
+Returns **[Promise][48]** resolves when each item in the cursor has been passed to the iterator function
 
 ### skip
 
-[lib/cursor.js:153-156](https://github.com/acdaniel/cosa/blob/8df5d192c3594d747fe41554a47947356770a5db/lib/cursor.js#L153-L156 "Source code on GitHub")
+[lib/cursor.js:147-150][77]
 
--   **See: <http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#skip>**
+-   **See: [http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#skip][78]**
 
 Sets the cursor skip.
 
 **Parameters**
 
--   `value`  
--   `skip` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** 
+-   `value` **[number][58]** The skip for the cursor query.
 
-Returns **[Cursor](#cursor)** 
+Returns **[Cursor][65]** the cursor instance
 
 ### sort
 
-[lib/cursor.js:164-167](https://github.com/acdaniel/cosa/blob/8df5d192c3594d747fe41554a47947356770a5db/lib/cursor.js#L164-L167 "Source code on GitHub")
+[lib/cursor.js:159-162][79]
 
--   **See: <http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#sort>**
+-   **See: [http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#sort][80]**
 
 Sets the cursor sort.
 
 **Parameters**
 
--   `sortOrList`  
--   `direction`  
--   `sort` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** 
+-   `sortOrList` **([string][46] \| [Array][81])** The key or keys set for the sort.
+-   `direction` **[number][58]** `1` or `-1` for ascending or descending
 
-Returns **[Cursor](#cursor)** 
+Returns **[Cursor][65]** the cursor instance
 
 ### toArray
 
-[lib/cursor.js:174-184](https://github.com/acdaniel/cosa/blob/8df5d192c3594d747fe41554a47947356770a5db/lib/cursor.js#L174-L184 "Source code on GitHub")
+[lib/cursor.js:169-171][82]
 
--   **See: <http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#toArray>**
+-   **See: [http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#toArray][83]**
 
 Returns the cursor results as an array.
 
-Returns **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)** 
+Returns **[Promise][48]** that resolves into an array from the cursor
 
 ## errors
 
-[lib/errors.js:19-39](https://github.com/acdaniel/cosa/blob/8df5d192c3594d747fe41554a47947356770a5db/lib/errors.js#L19-L39 "Source code on GitHub")
+[lib/errors.js:19-39][84]
 
 Custom errors.
 
 ### Conflict
 
-[lib/errors.js:24-28](https://github.com/acdaniel/cosa/blob/8df5d192c3594d747fe41554a47947356770a5db/lib/errors.js#L24-L28 "Source code on GitHub")
+[lib/errors.js:24-28][85]
 
 Error used when an action results in a conflict between documents.
 
 ### Validation
 
-[lib/errors.js:33-37](https://github.com/acdaniel/cosa/blob/8df5d192c3594d747fe41554a47947356770a5db/lib/errors.js#L33-L37 "Source code on GitHub")
+[lib/errors.js:33-37][86]
 
 Error used when validation of a document fails.
 
 ## ImmutableDefinedObject
 
-[lib/defined-object.js:15-58](https://github.com/acdaniel/cosa/blob/8df5d192c3594d747fe41554a47947356770a5db/lib/defined-object.js#L15-L58 "Source code on GitHub")
+[lib/defined-object.js:15-58][87]
 
 Immutable handler used to create an immutable object based on definition 
 describing the object properties and methods.
 
 **Parameters**
 
--   `data` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
--   `builder` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
--   `options` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
-    -   `options.definition` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
-        -   `options.definition.properties` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)?** Describes the properties of the immutable object.
-        -   `options.definition.virtuals` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)?** Describes the virtual properties of the immutable object.
-        -   `options.definition.methods` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)?** Describes the methods of the immutable object.
+-   `data` **[object][50]** 
+-   `builder` **[object][50]** 
+-   `options` **[object][50]** 
+    -   `options.definition` **[object][50]** 
+        -   `options.definition.properties` **[object][50]?** Describes the properties of the immutable object.
+        -   `options.definition.virtuals` **[object][50]?** Describes the virtual properties of the immutable object.
+        -   `options.definition.methods` **[object][50]?** Describes the methods of the immutable object.
 
 ## ImmutableArray
 
-[lib/array.js:11-84](https://github.com/acdaniel/cosa/blob/8df5d192c3594d747fe41554a47947356770a5db/lib/array.js#L11-L84 "Source code on GitHub")
+[lib/array.js:11-84][88]
 
 Immutable handler used to wrap a javascript array.
 
 **Parameters**
 
--   `data` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
--   `builder` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
--   `options` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
+-   `data` **[object][50]** 
+-   `builder` **[object][50]** 
+-   `options` **[object][50]** 
 
 ## ImmutableDate
 
-[lib/date.js:10-50](https://github.com/acdaniel/cosa/blob/8df5d192c3594d747fe41554a47947356770a5db/lib/date.js#L10-L50 "Source code on GitHub")
+[lib/date.js:10-50][89]
 
 Immutable handler used to wrap javascript Dates.
 
 **Parameters**
 
--   `data` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
--   `builder` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
--   `options` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
+-   `data` **[object][50]** 
+-   `builder` **[object][50]** 
+-   `options` **[object][50]** 
 
 ## ImmutableBSONObjectID
 
-[lib/bson-objectId.js:8-34](https://github.com/acdaniel/cosa/blob/8df5d192c3594d747fe41554a47947356770a5db/lib/bson-objectId.js#L8-L34 "Source code on GitHub")
+[lib/bson-objectId.js:8-34][90]
 
 Immutable handler used to wrap bson ObjectID.
 
 **Parameters**
 
--   `data` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
--   `builder` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
+-   `data` **[object][50]** the object id
+-   `builder` **[object][50]** the immutable handler to wrapper the object id.
+
+Returns **[undefined][91]** this adds methods on to the builder.
 
 ## ImmutableObject
 
-[lib/object.js:9-25](https://github.com/acdaniel/cosa/blob/8df5d192c3594d747fe41554a47947356770a5db/lib/object.js#L9-L25 "Source code on GitHub")
+[lib/object.js:19-23][92]
 
 Immutable handler used to wrap a simple javascript object.
 
 **Parameters**
 
--   `data` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
--   `builder` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
+-   `data` **[object][50]** 
+-   `builder` **[object][50]** 
 
 ## Immutable
 
-[lib/immutable.js:13-108](https://github.com/acdaniel/cosa/blob/8df5d192c3594d747fe41554a47947356770a5db/lib/immutable.js#L13-L108 "Source code on GitHub")
+[lib/immutable.js:13-108][93]
 
 Static class for working with immutable data types.
 
 ### use
 
-[lib/immutable.js:21-30](https://github.com/acdaniel/cosa/blob/8df5d192c3594d747fe41554a47947356770a5db/lib/immutable.js#L21-L30 "Source code on GitHub")
+[lib/immutable.js:21-30][94]
 
 Registers an immutable handler for the given data type. Handlers are used 
 to wrap specific data types. For example BSON ObjectIds or Dates.
 
 **Parameters**
 
--   `type` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)**  (optional, default `*`)
--   `handler` **[function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** 
+-   `type` **[string][46]**  (optional, default `*`)
+-   `handler` **[function][52]** 
 
 ### isImmutable
 
-[lib/immutable.js:37-40](https://github.com/acdaniel/cosa/blob/8df5d192c3594d747fe41554a47947356770a5db/lib/immutable.js#L37-L40 "Source code on GitHub")
+[lib/immutable.js:37-40][95]
 
 Returns `true` if the given value is an Immutable.
 
 **Parameters**
 
--   `value` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
+-   `value` **[object][50]** 
 
-Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** 
+Returns **[boolean][57]** 
 
 ### isImmutableType
 
-[lib/immutable.js:48-50](https://github.com/acdaniel/cosa/blob/8df5d192c3594d747fe41554a47947356770a5db/lib/immutable.js#L48-L50 "Source code on GitHub")
+[lib/immutable.js:48-50][96]
 
 Returns `true` if the given value is an Immutable of the given type.
 
 **Parameters**
 
--   `value` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
--   `type` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** 
+-   `value` **[object][50]** 
+-   `type` **[string][46]** 
 
-Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** 
+Returns **[boolean][57]** 
 
 ### create
 
-[lib/immutable.js:58-106](https://github.com/acdaniel/cosa/blob/8df5d192c3594d747fe41554a47947356770a5db/lib/immutable.js#L58-L106 "Source code on GitHub")
+[lib/immutable.js:58-106][97]
 
 Creates an immutable object based on the given data.
 
 **Parameters**
 
--   `data` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** Object to make immutable.
--   `options` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)?** Options passed to the immutable handler for the given data type.
+-   `data` **[object][50]** Object to make immutable.
+-   `options` **[object][50]?** Options passed to the immutable handler for the given data type.
 
-Returns **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
+Returns **[object][50]** 
 
 ## Database
 
-[lib/db.js:13-22](https://github.com/acdaniel/cosa/blob/8df5d192c3594d747fe41554a47947356770a5db/lib/db.js#L13-L22 "Source code on GitHub")
+[lib/db.js:37-280][98]
 
 Singleton that provides methods for connecting to a MongoDB collection.
 
 ### init
 
-[lib/db.js:64-93](https://github.com/acdaniel/cosa/blob/8df5d192c3594d747fe41554a47947356770a5db/lib/db.js#L64-L93 "Source code on GitHub")
+[lib/db.js:61-93][99]
 
--   **See: [init](init)**
+-   **See: [init][100]**
 
 Initialize the database connection.
 
 **Parameters**
 
--   `uri` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** URI to the database. If no URI is provided, the value
+-   `uri` **[string][46]?** URI to the database. If no URI is provided, the value
        of `process.env.COSA_DB_URI` is used. See
-       <https://docs.mongodb.com/manual/reference/connection-string/> for
+       [https://docs.mongodb.com/manual/reference/connection-string/][47] for
        information on the URI format.
+-   `options` **[object][50]?** Optional collection settings.
 
-Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)** 
+Returns **[Promise][48]** returns the db when connected
 
 ### collection
 
-[lib/db.js:102-131](https://github.com/acdaniel/cosa/blob/8df5d192c3594d747fe41554a47947356770a5db/lib/db.js#L102-L131 "Source code on GitHub")
+[lib/db.js:102-123][101]
 
--   **See: <http://mongodb.github.io/node-mongodb-native/3.0/api/Db.html#collection>**
+-   **See: [http://mongodb.github.io/node-mongodb-native/3.0/api/Db.html#collection][102]**
 
 Fetch a specific database collection.
 
 **Parameters**
 
--   `name` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Collection name.
--   `options` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)?** Optional collection settings.
+-   `name` **[string][46]** Collection name.
+-   `options` **[object][50]?** Optional collection settings.
 
-Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)** 
+Returns **[Promise][48]** resolves with the connection
 
 ### find
 
-[lib/db.js:150-178](https://github.com/acdaniel/cosa/blob/8df5d192c3594d747fe41554a47947356770a5db/lib/db.js#L150-L178 "Source code on GitHub")
+[lib/db.js:143-168][103]
 
--   **See: <http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html>**
--   **See: <http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#find>**
--   **See: <http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#findOne>**
--   **See: <http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#count>**
+-   **See: [http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html][104]**
+-   **See: [http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#find][105]**
+-   **See: [http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#findOne][106]**
+-   **See: [http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#count][107]**
 
 Fetches documents from a collection with the given query.
 
 **Parameters**
 
--   `collection` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Name of the collection.
--   `query` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** MongoDB query object.
--   `options` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)?** MongoDB query options.
-    -   `options.fields` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)?** The fields to return in the query. Object of fields to include or exclude (not both), {'a':1
-    -   `options.sort` **([object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object) \| [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array))?** Set to sort the documents coming back from the query. Array of indexes, \[['a', 1]] etc.
-    -   `options.skip` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** Set to skip N documents ahead in your query (useful for pagination). (optional, default `0`)
-    -   `options.limit` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** Sets the limit of documents returned in the query. (optional, default `1000`)
-    -   `options.count` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** Should the count of items be returned instead of the items themselves. (optional, default `false`)
-    -   `options.findOne` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** Should a single item be returned. (optional, default `false`)
+-   `collectionName` **[string][46]** Name of the collection.
+-   `query` **[object][50]** MongoDB query object.
+-   `options` **[object][50]?** MongoDB query options.
+    -   `options.fields` **[object][50]?** (deprecated, will be mapped to projection) The fields to return in the query. Object of fields to include or exclude (not both), {'a':1
+    -   `options.projection` **[object][50]?** The projection to return in the query. Object of projection to include or exclude (not both), {'a':1
+    -   `options.sort` **([object][50] \| [Array][81])?** Set to sort the documents coming back from the query. Array of indexes, \[['a', 1]] etc.
+    -   `options.skip` **[number][58]** Set to skip N documents ahead in your query (useful for pagination). (optional, default `0`)
+    -   `options.limit` **[object][50]** Sets the limit of documents returned in the query. (optional, default `1000`)
+    -   `options.count` **[object][50]** get a count of the items, instead of the items themselves. (optional, default `false`)
+    -   `options.findOne` **[object][50]** Should a single item be returned. (optional, default `false`)
 
-Returns **[Cursor](#cursor)** 
+Returns **[Cursor][65]** returns Cursor object
 
 ### insert
 
-[lib/db.js:188-209](https://github.com/acdaniel/cosa/blob/8df5d192c3594d747fe41554a47947356770a5db/lib/db.js#L188-L209 "Source code on GitHub")
+[lib/db.js:178-183][108]
 
--   **See: <http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#insertmany>**
--   **See: <http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#insertOne>**
+-   **See: [http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#insertmany][109]**
+-   **See: [http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#insertOne][110]**
 
 Inserts the given docs into a collection.
 
 **Parameters**
 
--   `collection` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Name of the collection.
--   `docs` **([object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object) \| [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array))** Documents objects to insert.
+-   `collectionName` **[string][46]** Name of the collection.
+-   `docs` **([object][50] \| [Array][81])** Documents objects to insert.
 
-Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)** 
+Returns **[Promise][48]** resolves with an object with results, and ops as keys
 
 ### update
 
-[lib/db.js:223-250](https://github.com/acdaniel/cosa/blob/8df5d192c3594d747fe41554a47947356770a5db/lib/db.js#L223-L250 "Source code on GitHub")
+[lib/db.js:197-208][111]
 
--   **See: <http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#updateMany>**
--   **See: <http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#updateOne>**
+-   **See: [http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#updateMany][112]**
+-   **See: [http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#updateOne][113]**
 
 Updates docs in a collection.
 
 **Parameters**
 
--   `collection` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Name of the collection.
--   `query` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** Query to find which documents to update.
--   `update` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** Document properties to update.
--   `options` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)?** 
-    -   `options.multiple` **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Should multiple documents be updated. (optional, default `false`)
-    -   `options.upsert` **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Should documents be inserted if they don't already exist.. (optional, default `false`)
+-   `collectionName` **[string][46]** Name of the collection.
+-   `query` **[object][50]** Query to find which documents to update.
+-   `update` **[object][50]** Document properties to update.
+-   `options` **[object][50]?** Optional settings see mongo documentation
+    -   `options.multiple` **[boolean][57]** Should multiple documents be updated. (optional, default `false`)
+    -   `options.upsert` **[boolean][57]** Should documents be inserted if they don't already exist.. (optional, default `false`)
 
-Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)** 
+Returns **[Promise][48]** resolves with an object with results, and ops as keys
 
 ### remove
 
-[lib/db.js:262-286](https://github.com/acdaniel/cosa/blob/8df5d192c3594d747fe41554a47947356770a5db/lib/db.js#L262-L286 "Source code on GitHub")
+[lib/db.js:220-228][114]
 
--   **See: <http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#deleteMany>**
--   **See: <http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#deleteOne>**
+-   **See: [http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#deleteMany][115]**
+-   **See: [http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#deleteOne][116]**
 
 Removes docs from a collection.
 
 **Parameters**
 
--   `collection` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Name of the collection.
--   `query` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** Query to find which documents to remove.
--   `options` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)?** 
-    -   `options.multiple` **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Should multiple documents be removed. (optional, default `false`)
+-   `collectionName` **[string][46]** Name of the collection.
+-   `query` **[object][50]** Query to find which documents to remove.
+-   `options` **[object][50]?** Optional settings see mongo documentation
+    -   `options.multiple` **[boolean][57]** Should multiple documents be removed. (optional, default `false`)
 
-Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)** 
+Returns **[Promise][48]** resolves with an object with results, and ops as keys
 
 ### aggregate
 
-[lib/db.js:297-312](https://github.com/acdaniel/cosa/blob/8df5d192c3594d747fe41554a47947356770a5db/lib/db.js#L297-L312 "Source code on GitHub")
+[lib/db.js:239-251][117]
 
--   **See: <http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#aggregate>**
+-   **See: [http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#aggregate][118]**
 
 Executes aggregation pipeline against a collection.
 
 **Parameters**
 
--   `collection` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Name of the collection.
--   `pipeline` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** Aggregation pipeline.
--   `options` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)?** 
-    -   `options.explain` **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Should should the execution plan be returned. (optional, default `false`)
+-   `collectionName` **[string][46]** Name of the collection.
+-   `pipeline` **[object][50]** Aggregation pipeline.
+-   `options` **[object][50]?** Optional settings see mongo documentation
+    -   `options.explain` **[boolean][57]** Should should the execution plan be returned. (optional, default `false`)
 
-Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)** 
+Returns **[Promise][48]** resovles with the result of the aggregatation from mongo
 
 ### distinct
 
-[lib/db.js:323-336](https://github.com/acdaniel/cosa/blob/8df5d192c3594d747fe41554a47947356770a5db/lib/db.js#L323-L336 "Source code on GitHub")
+[lib/db.js:262-267][119]
 
--   **See: <http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#distinct>**
+-   **See: [http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#distinct][120]**
 
 Returns list of unique values for the given key across a collection.
 
 **Parameters**
 
--   `collection` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Name of the collection.
--   `key` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Document property.
--   `query` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** Query to find which documents evaluate.
--   `options` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)?** 
+-   `collectionName` **[string][46]** Name of the collection.
+-   `key` **[string][46]** Document property.
+-   `query` **[object][50]** Query to find which documents evaluate.
+-   `options` **[object][50]?** Optional settings see mongo documentation
 
-Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)** 
+Returns **[Promise][48]** resovles with the result of the distinct query from mongo
+
+[1]: #cosa
+
+[2]: #db
+
+[3]: #init
+
+[4]: #model
+
+[5]: #define
+
+[6]: #cursor
+
+[7]: #foreach
+
+[8]: #count
+
+[9]: #close
+
+[10]: #isclosed
+
+[11]: #filter
+
+[12]: #limit
+
+[13]: #map
+
+[14]: #max
+
+[15]: #min
+
+[16]: #next
+
+[17]: #serialforeach
+
+[18]: #skip
+
+[19]: #sort
+
+[20]: #toarray
+
+[21]: #errors
+
+[22]: #conflict
+
+[23]: #validation
+
+[24]: #immutabledefinedobject
+
+[25]: #immutablearray
+
+[26]: #immutabledate
+
+[27]: #immutablebsonobjectid
+
+[28]: #immutableobject
+
+[29]: #immutable
+
+[30]: #use
+
+[31]: #isimmutable
+
+[32]: #isimmutabletype
+
+[33]: #create
+
+[34]: #database
+
+[35]: #init-1
+
+[36]: #collection
+
+[37]: #find
+
+[38]: #insert
+
+[39]: #update
+
+[40]: #remove
+
+[41]: #aggregate
+
+[42]: #distinct
+
+[43]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/index.js#L9-L34 "Source code on GitHub"
+
+[44]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/index.js#L19-L19 "Source code on GitHub"
+
+[45]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/index.js#L30-L33 "Source code on GitHub"
+
+[46]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
+
+[47]: https://docs.mongodb.com/manual/reference/connection-string/
+
+[48]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise
+
+[49]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/model.js#L325-L450 "Source code on GitHub"
+
+[50]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
+
+[51]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/cursor.js#L7-L172 "Source code on GitHub"
+
+[52]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function
+
+[53]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/cursor.js#L19-L28 "Source code on GitHub"
+
+[54]: http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#forEach
+
+[55]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/cursor.js#L37-L39 "Source code on GitHub"
+
+[56]: http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#count
+
+[57]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
+
+[58]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number
+
+[59]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/cursor.js#L46-L48 "Source code on GitHub"
+
+[60]: http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#close
+
+[61]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/cursor.js#L55-L57 "Source code on GitHub"
+
+[62]: http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#isClosed
+
+[63]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/cursor.js#L65-L68 "Source code on GitHub"
+
+[64]: http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#filter
+
+[65]: #cursor
+
+[66]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/cursor.js#L76-L79 "Source code on GitHub"
+
+[67]: http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#limit
+
+[68]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/cursor.js#L87-L91 "Source code on GitHub"
+
+[69]: http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#map
+
+[70]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/cursor.js#L99-L102 "Source code on GitHub"
+
+[71]: http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#max
+
+[72]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/cursor.js#L110-L113 "Source code on GitHub"
+
+[73]: http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#min
+
+[74]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/cursor.js#L120-L123 "Source code on GitHub"
+
+[75]: http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#next
+
+[76]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/cursor.js#L131-L139 "Source code on GitHub"
+
+[77]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/cursor.js#L147-L150 "Source code on GitHub"
+
+[78]: http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#skip
+
+[79]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/cursor.js#L159-L162 "Source code on GitHub"
+
+[80]: http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#sort
+
+[81]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
+
+[82]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/cursor.js#L169-L171 "Source code on GitHub"
+
+[83]: http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#toArray
+
+[84]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/errors.js#L19-L39 "Source code on GitHub"
+
+[85]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/errors.js#L24-L28 "Source code on GitHub"
+
+[86]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/errors.js#L33-L37 "Source code on GitHub"
+
+[87]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/defined-object.js#L15-L58 "Source code on GitHub"
+
+[88]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/array.js#L11-L84 "Source code on GitHub"
+
+[89]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/date.js#L10-L50 "Source code on GitHub"
+
+[90]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/bson-objectId.js#L8-L34 "Source code on GitHub"
+
+[91]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/undefined
+
+[92]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/object.js#L19-L23 "Source code on GitHub"
+
+[93]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/immutable.js#L13-L108 "Source code on GitHub"
+
+[94]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/immutable.js#L21-L30 "Source code on GitHub"
+
+[95]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/immutable.js#L37-L40 "Source code on GitHub"
+
+[96]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/immutable.js#L48-L50 "Source code on GitHub"
+
+[97]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/immutable.js#L58-L106 "Source code on GitHub"
+
+[98]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/db.js#L37-L280 "Source code on GitHub"
+
+[99]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/db.js#L61-L93 "Source code on GitHub"
+
+[100]: init
+
+[101]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/db.js#L102-L123 "Source code on GitHub"
+
+[102]: http://mongodb.github.io/node-mongodb-native/3.0/api/Db.html#collection
+
+[103]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/db.js#L143-L168 "Source code on GitHub"
+
+[104]: http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html
+
+[105]: http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#find
+
+[106]: http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#findOne
+
+[107]: http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#count
+
+[108]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/db.js#L178-L183 "Source code on GitHub"
+
+[109]: http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#insertmany
+
+[110]: http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#insertOne
+
+[111]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/db.js#L197-L208 "Source code on GitHub"
+
+[112]: http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#updateMany
+
+[113]: http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#updateOne
+
+[114]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/db.js#L220-L228 "Source code on GitHub"
+
+[115]: http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#deleteMany
+
+[116]: http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#deleteOne
+
+[117]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/db.js#L239-L251 "Source code on GitHub"
+
+[118]: http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#aggregate
+
+[119]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/db.js#L262-L267 "Source code on GitHub"
+
+[120]: http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#distinct
