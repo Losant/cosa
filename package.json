@@ -62,15 +62,10 @@
     "extends": "@losant/eslint-config-losant/env/node"
   },
   "eslintIgnore": [
-    "packages/*/node_modules",
-    "scripts/node_modules",
     "lib/array.js",
     "lib/date.js",
     "lib/defined-object.js",
     "lib/immutable.js",
-    "lib/object.js",
-    "test/support",
-    "test/immutable.js",
-    "test/mocha.opts"
+    "lib/object.js"
   ]
 }
