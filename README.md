@@ -1,5 +1,7 @@
 # Cosa
 
+[![Build Status](https://travis-ci.org/Losant/cosa.svg?branch=master)](https://travis-ci.org/Losant/cosa) [![npm version](https://badge.fury.io/js/cosa.svg)](https://badge.fury.io/js/cosa)
+
 Simplified object modeling for MongoDB
 
 ## Installation
@@ -29,8 +31,8 @@ Use the model to add users to the database:
 
 ```javascript
 const newUser = UserModel.create({ 
-  name: 'John Smith', 
-  email: 'jsmith@example.com' 
+  name: 'John Smith',
+  email: 'jsmith@example.com'
 })
 newUser.save()
 ```
@@ -48,4 +50,8 @@ UserModel
 ## Reference
 
 - [Cosa API Documentation](API.md)
-- [MongoDB API Documentation](http://mongodb.github.io/node-mongodb-native/3.0/api/)
+- [MongoDB API Documentation](http://mongodb.github.io/node-mongodb-native/3.1/api/)
+
+## License
+
+The module is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).

@@ -18,14 +18,14 @@
     "test-cov": "istanbul cover _mocha -- --require test/support/env",
     "doc": "documentation build lib/index.js -f md --github > API.md"
   },
-  "author": {
-    "name": "Adam Daniel",
-    "email": "adam@acdaniel.com"
+  "author": "Losant <hello@losant.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Losant/cosa/issues"
   },
-  "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "https://github.com/acdaniel/cosa"
+    "url": "git+https://github.com/Losant/cosa.git"
   },
   "files": [
     "lib"
