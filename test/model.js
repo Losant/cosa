@@ -5,6 +5,7 @@ chai.use(require('chai-as-promised'));
 chai.use(require('chai-datetime'));
 const expect             = chai.expect;
 const Model = require('../lib/model');
+const cosaDb = require('../lib/db');
 const { sleep } = require('omnibelt');
 
 const getMongoClient = () => MongoClient.connect(process.env.COSA_DB_URI, { useNewUrlParser: true });
@@ -13,8 +14,14 @@ const cleanUpDb = async (client, db, close = true) => {
     const collection = db.collection(cName);
     return collection.deleteMany();
   }));
-  if (close) { client.close(); }
+  if (close) { await client.close(); }
 };
+
+after(async () => {
+  if (cosaDb._client) {
+    await cosaDb._client.close();
+  }
+});
 
 describe('Model', () => {
 
