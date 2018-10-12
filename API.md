@@ -660,11 +660,11 @@ Returns **[Promise][48]** resovles with the result of the distinct query from mo
 
 [42]: #distinct
 
-[43]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/index.js#L9-L34 "Source code on GitHub"
+[43]: https://github.com/Losant/cosa/blob/109d6d882793b680242583818253886f5002ff20/lib/index.js#L9-L34 "Source code on GitHub"
 
-[44]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/index.js#L19-L19 "Source code on GitHub"
+[44]: https://github.com/Losant/cosa/blob/109d6d882793b680242583818253886f5002ff20/lib/index.js#L19-L19 "Source code on GitHub"
 
-[45]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/index.js#L30-L33 "Source code on GitHub"
+[45]: https://github.com/Losant/cosa/blob/109d6d882793b680242583818253886f5002ff20/lib/index.js#L30-L33 "Source code on GitHub"
 
 [46]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
 
@@ -672,19 +672,19 @@ Returns **[Promise][48]** resovles with the result of the distinct query from mo
 
 [48]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise
 
-[49]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/model.js#L325-L450 "Source code on GitHub"
+[49]: https://github.com/Losant/cosa/blob/109d6d882793b680242583818253886f5002ff20/lib/model.js#L325-L450 "Source code on GitHub"
 
 [50]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
 
-[51]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/cursor.js#L7-L172 "Source code on GitHub"
+[51]: https://github.com/Losant/cosa/blob/109d6d882793b680242583818253886f5002ff20/lib/cursor.js#L7-L172 "Source code on GitHub"
 
 [52]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function
 
-[53]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/cursor.js#L19-L28 "Source code on GitHub"
+[53]: https://github.com/Losant/cosa/blob/109d6d882793b680242583818253886f5002ff20/lib/cursor.js#L19-L28 "Source code on GitHub"
 
 [54]: http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#forEach
 
-[55]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/cursor.js#L37-L39 "Source code on GitHub"
+[55]: https://github.com/Losant/cosa/blob/109d6d882793b680242583818253886f5002ff20/lib/cursor.js#L37-L39 "Source code on GitHub"
 
 [56]: http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#count
 
@@ -692,95 +692,95 @@ Returns **[Promise][48]** resovles with the result of the distinct query from mo
 
 [58]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number
 
-[59]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/cursor.js#L46-L48 "Source code on GitHub"
+[59]: https://github.com/Losant/cosa/blob/109d6d882793b680242583818253886f5002ff20/lib/cursor.js#L46-L48 "Source code on GitHub"
 
 [60]: http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#close
 
-[61]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/cursor.js#L55-L57 "Source code on GitHub"
+[61]: https://github.com/Losant/cosa/blob/109d6d882793b680242583818253886f5002ff20/lib/cursor.js#L55-L57 "Source code on GitHub"
 
 [62]: http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#isClosed
 
-[63]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/cursor.js#L65-L68 "Source code on GitHub"
+[63]: https://github.com/Losant/cosa/blob/109d6d882793b680242583818253886f5002ff20/lib/cursor.js#L65-L68 "Source code on GitHub"
 
 [64]: http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#filter
 
 [65]: #cursor
 
-[66]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/cursor.js#L76-L79 "Source code on GitHub"
+[66]: https://github.com/Losant/cosa/blob/109d6d882793b680242583818253886f5002ff20/lib/cursor.js#L76-L79 "Source code on GitHub"
 
 [67]: http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#limit
 
-[68]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/cursor.js#L87-L91 "Source code on GitHub"
+[68]: https://github.com/Losant/cosa/blob/109d6d882793b680242583818253886f5002ff20/lib/cursor.js#L87-L91 "Source code on GitHub"
 
 [69]: http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#map
 
-[70]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/cursor.js#L99-L102 "Source code on GitHub"
+[70]: https://github.com/Losant/cosa/blob/109d6d882793b680242583818253886f5002ff20/lib/cursor.js#L99-L102 "Source code on GitHub"
 
 [71]: http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#max
 
-[72]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/cursor.js#L110-L113 "Source code on GitHub"
+[72]: https://github.com/Losant/cosa/blob/109d6d882793b680242583818253886f5002ff20/lib/cursor.js#L110-L113 "Source code on GitHub"
 
 [73]: http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#min
 
-[74]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/cursor.js#L120-L123 "Source code on GitHub"
+[74]: https://github.com/Losant/cosa/blob/109d6d882793b680242583818253886f5002ff20/lib/cursor.js#L120-L123 "Source code on GitHub"
 
 [75]: http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#next
 
-[76]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/cursor.js#L131-L139 "Source code on GitHub"
+[76]: https://github.com/Losant/cosa/blob/109d6d882793b680242583818253886f5002ff20/lib/cursor.js#L131-L139 "Source code on GitHub"
 
-[77]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/cursor.js#L147-L150 "Source code on GitHub"
+[77]: https://github.com/Losant/cosa/blob/109d6d882793b680242583818253886f5002ff20/lib/cursor.js#L147-L150 "Source code on GitHub"
 
 [78]: http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#skip
 
-[79]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/cursor.js#L159-L162 "Source code on GitHub"
+[79]: https://github.com/Losant/cosa/blob/109d6d882793b680242583818253886f5002ff20/lib/cursor.js#L159-L162 "Source code on GitHub"
 
 [80]: http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#sort
 
 [81]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
 
-[82]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/cursor.js#L169-L171 "Source code on GitHub"
+[82]: https://github.com/Losant/cosa/blob/109d6d882793b680242583818253886f5002ff20/lib/cursor.js#L169-L171 "Source code on GitHub"
 
 [83]: http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#toArray
 
-[84]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/errors.js#L19-L39 "Source code on GitHub"
+[84]: https://github.com/Losant/cosa/blob/109d6d882793b680242583818253886f5002ff20/lib/errors.js#L19-L39 "Source code on GitHub"
 
-[85]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/errors.js#L24-L28 "Source code on GitHub"
+[85]: https://github.com/Losant/cosa/blob/109d6d882793b680242583818253886f5002ff20/lib/errors.js#L24-L28 "Source code on GitHub"
 
-[86]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/errors.js#L33-L37 "Source code on GitHub"
+[86]: https://github.com/Losant/cosa/blob/109d6d882793b680242583818253886f5002ff20/lib/errors.js#L33-L37 "Source code on GitHub"
 
-[87]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/defined-object.js#L15-L58 "Source code on GitHub"
+[87]: https://github.com/Losant/cosa/blob/109d6d882793b680242583818253886f5002ff20/lib/defined-object.js#L15-L58 "Source code on GitHub"
 
-[88]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/array.js#L11-L84 "Source code on GitHub"
+[88]: https://github.com/Losant/cosa/blob/109d6d882793b680242583818253886f5002ff20/lib/array.js#L11-L84 "Source code on GitHub"
 
-[89]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/date.js#L10-L50 "Source code on GitHub"
+[89]: https://github.com/Losant/cosa/blob/109d6d882793b680242583818253886f5002ff20/lib/date.js#L10-L50 "Source code on GitHub"
 
-[90]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/bson-objectId.js#L8-L34 "Source code on GitHub"
+[90]: https://github.com/Losant/cosa/blob/109d6d882793b680242583818253886f5002ff20/lib/bson-objectId.js#L8-L34 "Source code on GitHub"
 
 [91]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/undefined
 
-[92]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/object.js#L19-L23 "Source code on GitHub"
+[92]: https://github.com/Losant/cosa/blob/109d6d882793b680242583818253886f5002ff20/lib/object.js#L19-L23 "Source code on GitHub"
 
-[93]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/immutable.js#L13-L108 "Source code on GitHub"
+[93]: https://github.com/Losant/cosa/blob/109d6d882793b680242583818253886f5002ff20/lib/immutable.js#L13-L108 "Source code on GitHub"
 
-[94]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/immutable.js#L21-L30 "Source code on GitHub"
+[94]: https://github.com/Losant/cosa/blob/109d6d882793b680242583818253886f5002ff20/lib/immutable.js#L21-L30 "Source code on GitHub"
 
-[95]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/immutable.js#L37-L40 "Source code on GitHub"
+[95]: https://github.com/Losant/cosa/blob/109d6d882793b680242583818253886f5002ff20/lib/immutable.js#L37-L40 "Source code on GitHub"
 
-[96]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/immutable.js#L48-L50 "Source code on GitHub"
+[96]: https://github.com/Losant/cosa/blob/109d6d882793b680242583818253886f5002ff20/lib/immutable.js#L48-L50 "Source code on GitHub"
 
-[97]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/immutable.js#L58-L106 "Source code on GitHub"
+[97]: https://github.com/Losant/cosa/blob/109d6d882793b680242583818253886f5002ff20/lib/immutable.js#L58-L106 "Source code on GitHub"
 
-[98]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/db.js#L37-L280 "Source code on GitHub"
+[98]: https://github.com/Losant/cosa/blob/109d6d882793b680242583818253886f5002ff20/lib/db.js#L37-L280 "Source code on GitHub"
 
-[99]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/db.js#L61-L93 "Source code on GitHub"
+[99]: https://github.com/Losant/cosa/blob/109d6d882793b680242583818253886f5002ff20/lib/db.js#L61-L93 "Source code on GitHub"
 
 [100]: init
 
-[101]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/db.js#L102-L123 "Source code on GitHub"
+[101]: https://github.com/Losant/cosa/blob/109d6d882793b680242583818253886f5002ff20/lib/db.js#L102-L123 "Source code on GitHub"
 
 [102]: http://mongodb.github.io/node-mongodb-native/3.0/api/Db.html#collection
 
-[103]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/db.js#L143-L168 "Source code on GitHub"
+[103]: https://github.com/Losant/cosa/blob/109d6d882793b680242583818253886f5002ff20/lib/db.js#L143-L168 "Source code on GitHub"
 
 [104]: http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html
 
@@ -790,28 +790,28 @@ Returns **[Promise][48]** resovles with the result of the distinct query from mo
 
 [107]: http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#count
 
-[108]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/db.js#L178-L183 "Source code on GitHub"
+[108]: https://github.com/Losant/cosa/blob/109d6d882793b680242583818253886f5002ff20/lib/db.js#L178-L183 "Source code on GitHub"
 
 [109]: http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#insertmany
 
 [110]: http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#insertOne
 
-[111]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/db.js#L197-L208 "Source code on GitHub"
+[111]: https://github.com/Losant/cosa/blob/109d6d882793b680242583818253886f5002ff20/lib/db.js#L197-L208 "Source code on GitHub"
 
 [112]: http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#updateMany
 
 [113]: http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#updateOne
 
-[114]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/db.js#L220-L228 "Source code on GitHub"
+[114]: https://github.com/Losant/cosa/blob/109d6d882793b680242583818253886f5002ff20/lib/db.js#L220-L228 "Source code on GitHub"
 
 [115]: http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#deleteMany
 
 [116]: http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#deleteOne
 
-[117]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/db.js#L239-L251 "Source code on GitHub"
+[117]: https://github.com/Losant/cosa/blob/109d6d882793b680242583818253886f5002ff20/lib/db.js#L239-L251 "Source code on GitHub"
 
 [118]: http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#aggregate
 
-[119]: https://github.com/acdaniel/cosa/blob/f9ba23cda85704a48acb090fda4845d15aaf50c6/lib/db.js#L262-L267 "Source code on GitHub"
+[119]: https://github.com/Losant/cosa/blob/109d6d882793b680242583818253886f5002ff20/lib/db.js#L262-L267 "Source code on GitHub"
 
 [120]: http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#distinct
