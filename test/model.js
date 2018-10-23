@@ -485,7 +485,7 @@ describe('Model', () => {
       });
       const updatedModel = await model.save();
       const reloadedModel = await updatedModel.reload();
-      expect(reloadedModel).to.deep.equal(updatedModel);
+      expect(reloadedModel.toObject()).to.deep.equal(updatedModel.toObject());
     });
   });
 
