@@ -504,6 +504,33 @@ describe('Model', () => {
       const count = await FullTestModel.count({ _id: updatedModel._id });
       expect(count).to.equal(1);
     });
+    it('should return the count of objects with a skip or limit without a query', async () => {
+      await Promise.all([
+        FullTestModel.create({
+          str: 'test string',
+          obj: { prop1: 'bar' }
+        }).save(),
+        FullTestModel.create({
+          str: 'test string',
+          obj: { prop1: 'bar' }
+        }).save(),
+        FullTestModel.create({
+          str: 'test string',
+          obj: { prop1: 'bar' }
+        }).save(),
+        FullTestModel.create({
+          str: 'test string',
+          obj: { prop1: 'bar' }
+        }).save(),
+        FullTestModel.create({
+          str: 'test string',
+          obj: { prop1: 'bar' }
+        }).save()
+      ]);
+      expect(await FullTestModel.count({}, { skip: 3 })).to.equal(2);
+      expect(await FullTestModel.count(undefined, { limit: 4 })).to.equal(4);
+      expect(await FullTestModel.count(null, { skip: 2, limit: 4 })).to.equal(3);
+    });
   });
 
   describe('.find()', () => {
