@@ -336,9 +336,14 @@ describe('Model', () => {
 
   describe('.validate()', () => {
 
-    it('should reject promise if validation fails', () => {
+    it('should reject promise if validation fails', async () => {
       const model = FullTestModel.create({});
-      expect(model.validate()).to.be.eventually.rejectedWith({ statusCode: 400 });
+      const error = await model.validate().catch((e) => { return e; });
+      expect(error.type).to.equal('Validation');
+      expect(error.name).to.equal('ValidationError');
+      expect(error.statusCode).to.equal(400);
+      expect(error.message).to.equal('child "str" fails because ["str" is required]');
+
     });
 
     it('should resolve promise if validation succeeds', async () => {
