@@ -1,6 +1,6 @@
 {
   "name": "cosa",
-  "version": "3.0.5",
+  "version": "3.0.4",
   "description": "Cosa Models for MongoDB",
   "main": "lib/index.js",
   "engines": {
@@ -19,6 +19,7 @@
   },
   "author": "Losant <hello@losant.com>",
   "license": "MIT",
+
   "bugs": {
     "url": "https://github.com/Losant/cosa/issues"
   },
