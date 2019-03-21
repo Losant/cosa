@@ -565,6 +565,57 @@ describe('Model', () => {
       expect(Immutable.isImmutableType(arr[0], 'FullTestModel')).to.equal(true);
     });
 
+    it('should perform reasonably on large finds', async () => {
+      const creations = [];
+      for (let i=0; i<1000; i++) {
+        creations.push(cosaDb.insert('mocha_test', {
+          aDate: new Date(Number(new Date('2019-03-11T04:55:00.000Z')) - i),
+          aString: 'a string',
+          aNumber: 1234,
+          anArray: ['a', {}, 2, true, [], bson.ObjectId(), new Date()],
+          aBoolean: true,
+          anObject: {
+            one: 1, two: false, three: {}, four: [], five: new Date(), six: bson.ObjectId(), seven: 'one two three four five six seven'
+          },
+          _etag: '"1e0-ilC0ScG/I4BHBDUJQZFa+TEv+B0"'
+        }));
+      }
+      await Promise.all(creations);
+
+      const PerfModel = Model.define({
+        name: 'PerfTest',
+        collection: 'mocha_test',
+        properties: {
+          aDate: { type: 'date' },
+          aString: { type: 'string' },
+          aNumber: { type: 'number' },
+          anArray: { type: 'array', items: { type: 'any' } },
+          aBoolean: { type: 'boolean' },
+          anObject: {
+            type: 'object',
+            properties: {
+              one: { type: 'number' },
+              two: { type: 'boolean' },
+              three: { type: 'object', properties: {} },
+              four: { type: 'array', items: { type: 'any' } },
+              five: { type: 'date' },
+              six: { type: 'objectid' },
+              seven: { type: 'string' }
+            }
+          }
+        }
+      });
+
+      let start = Date.now();
+      expect((await PerfModel.find({}, { array: true })).length).to.equal(1000);
+      const modelFindTime = Date.now() - start;
+      expect(modelFindTime).to.be.below(300); // generally below 200, but leaving some room
+
+      start = Date.now();
+      expect((await PerfModel.project({}, {}, { array: true })).length).to.equal(1000);
+      const projectFindTime = Date.now() - start;
+      expect(projectFindTime).to.be.below(200); // generally below 100 but leaving some room
+    });
   });
 
   describe('.findOne()', () => {
