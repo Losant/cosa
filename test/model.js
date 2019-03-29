@@ -220,6 +220,27 @@ describe('Model', () => {
 
   });
 
+  describe('.saveWithId()', function() {
+    it('should save with a given ID', async () => {
+      const id = { _id: 'this is an id' };
+      const model = await FullTestModel.create({
+        str: 'foo'
+      }).saveWithId(id);
+      expect(model._id).to.equal('this is an id');
+    });
+
+    it('should only set ID on creation', async () => {
+      const id = { _id: 'this is an id' };
+      const badId = { _id: 'this is a bad id' };
+      const model = await FullTestModel.create({
+        str: 'foo'
+      }).saveWithId(id);
+      model.saveWithId(badId);
+      expect(model._id).to.equal('this is an id');
+    });
+
+  });
+
   describe('.isModified()', () => {
 
     it('should return true if the given path is modified', () => {
