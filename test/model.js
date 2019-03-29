@@ -222,21 +222,23 @@ describe('Model', () => {
 
   describe('.saveWithId()', function() {
     it('should save with a given ID', async () => {
-      const id = { _id: 'this is an id' };
+      const id = new bson.ObjectID('1234abcd103f8e485c9d2019');
       const model = await FullTestModel.create({
         str: 'foo'
       }).saveWithId(id);
-      expect(model._id).to.equal('this is an id');
+
+
+      expect(model._id.toString()).to.equal('1234abcd103f8e485c9d2019');
     });
 
     it('should only set ID on creation', async () => {
-      const id = { _id: 'this is an id' };
-      const badId = { _id: 'this is a bad id' };
+      const id = new bson.ObjectID('1234abcd103f8e485c9d2019');
+      const newId = new bson.ObjectID('5678abcd103f8e485c9d9000');
       const model = await FullTestModel.create({
         str: 'foo'
       }).saveWithId(id);
-      model.saveWithId(badId);
-      expect(model._id).to.equal('this is an id');
+      model.saveWithId(newId);
+      expect(model._id.toString()).to.equal('1234abcd103f8e485c9d2019');
     });
 
   });
