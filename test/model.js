@@ -238,9 +238,7 @@ describe('Model', () => {
         str: 'foo'
       }).saveWithId(id);
       const error = await model.saveWithId(newId).catch((e) => { return e; });
-      expect(error.type).to.equal('Validation');
-      expect(error.name).to.equal('ValidationError');
-      expect(error.statusCode).to.equal(400);
+      expect(error.name).to.equal('Error');
       expect(error.message).to.equal('saveWithId must receive a newly created object');
     });
   });
