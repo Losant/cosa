@@ -231,16 +231,18 @@ describe('Model', () => {
       expect(model._id.toString()).to.equal('1234abcd103f8e485c9d2019');
     });
 
-    it('should only set ID on creation', async () => {
+    it('should error when trying to update an object', async () => {
       const id = new bson.ObjectID('1234abcd103f8e485c9d2019');
       const newId = new bson.ObjectID('5678abcd103f8e485c9d9000');
       const model = await FullTestModel.create({
         str: 'foo'
       }).saveWithId(id);
-      model.saveWithId(newId);
-      expect(model._id.toString()).to.equal('1234abcd103f8e485c9d2019');
+      const error = await model.saveWithId(newId).catch((e) => { return e; });
+      expect(error.type).to.equal('Validation');
+      expect(error.name).to.equal('ValidationError');
+      expect(error.statusCode).to.equal(400);
+      expect(error.message).to.equal('saveWithId must receive a newly created object');
     });
-
   });
 
   describe('.isModified()', () => {
