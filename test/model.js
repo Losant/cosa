@@ -388,7 +388,7 @@ describe('Model', () => {
       const updatedModel = await model.save();
       let count = await FullTestModel.count({ _id: updatedModel._id });
       expect(count).to.equal(1);
-      db._client.close();
+      await db._client.close();
       count = await FullTestModel.count({ _id: updatedModel._id });
       expect(count).to.equal(1);
     });
