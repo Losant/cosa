@@ -1,5 +1,5 @@
 const chai               = require('chai');
-const MongoClient        = require('mongodb').MongoClient;
+const { MongoClient }    = require('mongodb');
 const bson               = require('bson');
 chai.use(require('chai-as-promised'));
 chai.use(require('chai-datetime'));
@@ -8,7 +8,13 @@ const Model = require('../lib/model');
 const cosaDb = require('../lib/db');
 const { sleep } = require('omnibelt');
 
-const getMongoClient = () => MongoClient.connect(process.env.COSA_DB_URI, { useNewUrlParser: true });
+const getMongoClient = () => {
+  return MongoClient.connect(process.env.COSA_DB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  });
+};
+
 const cleanUpDb = async (client, db, close = true) => {
   await Promise.all([ 'mocha_test', 'mocha_save_test', 'mocha_remove_test' ].map((cName) => {
     const collection = db.collection(cName);
@@ -44,6 +50,7 @@ describe('Model', () => {
 
     it('should return a model definition', () => {
       const ModelA = Model.define({
+        name: 'MyModelA',
         collection: 'mocha_test',
         properties: {
           _type: { type: 'string', enum: ['A', 'B'], default: 'A' },
@@ -61,6 +68,8 @@ describe('Model', () => {
       expect(ModelA.find).to.be.a('function');
       expect(ModelA.findOne).to.be.a('function');
       expect(ModelA.remove).to.be.a('function');
+      expect(ModelA.__collectionName).to.equal('mocha_test');
+      expect(ModelA.__name).to.equal('MyModelA');
     });
 
   });
