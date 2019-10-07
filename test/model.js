@@ -11,7 +11,7 @@ const { sleep } = require('omnibelt');
 const getMongoClient = () => {
   return MongoClient.connect(process.env.COSA_DB_URI, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: false // https://jira.mongodb.org/projects/NODE/issues/NODE-2231
   });
 };
 
