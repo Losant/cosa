@@ -983,7 +983,10 @@ describe('Model', () => {
       const count = await FullTestModel.count();
       const cursor = await FullTestModel.find();
       let numOfTimesCalled = 0;
-      await cursor.forEachParallelLimitP(50, async () => { numOfTimesCalled++; });
+      await cursor.forEachParallelLimitP(50, async (item) => {
+        expect(FullTestModel.isA(item)).to.equal(true);
+        numOfTimesCalled++;
+      });
       expect(numOfTimesCalled).to.equal(count);
     });
   });
