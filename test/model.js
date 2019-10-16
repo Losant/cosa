@@ -6,7 +6,7 @@ chai.use(require('chai-datetime'));
 const expect             = chai.expect;
 const Model = require('../lib/model');
 const cosaDb = require('../lib/db');
-const { sleep } = require('omnibelt');
+const { sleep, times } = require('omnibelt');
 
 const getMongoClient = () => {
   return MongoClient.connect(process.env.COSA_DB_URI, {
@@ -970,6 +970,22 @@ describe('Model', () => {
       expect(values[0].str).to.equal('test string');
     });
 
+  });
+
+  describe('.forEachParallelLimitP', () => {
+    it('should iterate over a cursor in parallel', async () => {
+      await Promise.all(times(() => {
+        return FullTestModel.create({
+          str: 'test string',
+          obj: { prop1: 'bar' }
+        }).save();
+      }, 100));
+      const count = await FullTestModel.count();
+      const cursor = await FullTestModel.find();
+      let numOfTimesCalled = 0;
+      await cursor.forEachParallelLimitP(50, async () => { numOfTimesCalled++; });
+      expect(numOfTimesCalled).to.equal(count);
+    });
   });
 
 });
