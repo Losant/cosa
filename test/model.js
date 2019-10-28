@@ -980,7 +980,7 @@ describe('Model', () => {
 
   });
 
-  describe.only('.forEachParallelLimitP', () => {
+  describe('.forEachParallelLimitP', () => {
     it('should iterate over a cursor in parallel', async () => {
       await Promise.all(times(() => {
         return FullTestModel.create({
