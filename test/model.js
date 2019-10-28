@@ -993,6 +993,24 @@ describe('Model', () => {
       let numOfTimesCalled = 0;
       await cursor.forEachParallelLimitP(50, async (item) => {
         expect(FullTestModel.isA(item)).to.equal(true);
+        await sleep(1);
+        numOfTimesCalled++;
+      });
+      expect(numOfTimesCalled).to.equal(count);
+    });
+    it('should iterate over a cursor in parallel', async () => {
+      await Promise.all(times(() => {
+        return FullTestModel.create({
+          str: 'test string',
+          obj: { prop1: 'bar' }
+        }).save();
+      }, 10));
+      const count = await FullTestModel.count();
+      const cursor = await FullTestModel.find();
+      let numOfTimesCalled = 0;
+      await cursor.forEachParallelLimitP(100, async (item) => {
+        expect(FullTestModel.isA(item)).to.equal(true);
+        await sleep(1);
         numOfTimesCalled++;
       });
       expect(numOfTimesCalled).to.equal(count);
