@@ -8,13 +8,15 @@ Simplified object modeling for MongoDB
 
 Use your favorite package manager to add cosa to your project.
 
-    $ yarn add cosa
+```bash
+yarn add cosa
+```
 
 ## Usage
 
 First define a model:
 
-``` javascript
+```javascript
 const { Model } = require('cosa');
 
 const UserModel = Model.define({
@@ -30,7 +32,7 @@ const UserModel = Model.define({
 Use the model to add users to the database:
 
 ```javascript
-const newUser = UserModel.create({ 
+const newUser = UserModel.create({
   name: 'John Smith',
   email: 'jsmith@example.com'
 })
@@ -50,7 +52,7 @@ UserModel
 ## Reference
 
 - [Cosa API Documentation](API.md)
-- [MongoDB API Documentation](http://mongodb.github.io/node-mongodb-native/3.1/api/)
+- [MongoDB API Documentation](http://mongodb.github.io/node-mongodb-native/3.5/api/)
 
 ## License
 
