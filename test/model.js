@@ -11,7 +11,7 @@ const { sleep, times } = require('omnibelt');
 const getMongoClient = () => {
   return MongoClient.connect(process.env.COSA_DB_URI, {
     useNewUrlParser: true,
-    useUnifiedTopology: false // https://jira.mongodb.org/projects/NODE/issues/NODE-2231
+    useUnifiedTopology: true
   });
 };
 
@@ -374,8 +374,7 @@ describe('Model', () => {
       expect(error.type).to.equal('Validation');
       expect(error.name).to.equal('ValidationError');
       expect(error.statusCode).to.equal(400);
-      expect(error.message).to.equal('child "str" fails because ["str" is required]');
-
+      expect(error.message).to.equal('"str" is required');
     });
 
     it('should resolve promise if validation succeeds', async () => {
