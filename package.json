@@ -13,8 +13,8 @@
     "lint:watch": "yarn lint --watch",
     "lint:changed": "lint-staged",
     "reinstall": "rm -rf node_modules && yarn install",
-    "test": "mocha",
-    "test-debug": "mocha --debug-brk",
+    "test": "NODE_ENV='test' COSA_DB_URI='mongodb://localhost:27017/test' mocha",
+    "test-debug": "yarn test --debug-brk",
     "doc": "documentation build lib/index.js -f md --github > API.md"
   },
   "author": "Losant <hello@losant.com>",
@@ -72,5 +72,11 @@
     "hooks": {
       "pre-commit": "lint-staged"
     }
+  },
+  "mocha": {
+    "require": "chai",
+    "reporter": "spec",
+    "ui": "bdd",
+    "check-leaks": true
   }
 }

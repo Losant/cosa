@@ -1,5 +1,0 @@
---require chai
---reporter spec
---ui bdd
---check-leaks
---require ./test/support/env
