@@ -455,7 +455,7 @@ Returns **[object][80]**
 
 ## Database
 
-[lib/db.js:45-296][128]
+[lib/db.js:45-315][128]
 
 Singleton that provides methods for connecting to a MongoDB collection.
 
@@ -494,12 +494,13 @@ Returns **[Promise][78]** resolves with the connection
 
 ### find
 
-[lib/db.js:154-184][133]
+[lib/db.js:156-199][133]
 
 -   **See: [http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html][134]**
 -   **See: [http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#find][135]**
 -   **See: [http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#findOne][136]**
 -   **See: [http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#count][137]**
+-   **See: [https://github.com/mongodb/node-mongodb-native/blob/357cbf689735c2447bfb05d73c142f1a5b88ca91/lib/read_preference.js#L69][138]**
 
 Fetches documents from a collection with the given query.
 
@@ -515,15 +516,16 @@ Fetches documents from a collection with the given query.
     -   `options.limit` **[object][80]** Sets the limit of documents returned in the query. (optional, default `1000`)
     -   `options.count` **[object][80]** get a count of the items, instead of the items themselves. (optional, default `false`)
     -   `options.findOne` **[object][80]** Should a single item be returned. (optional, default `false`)
+    -   `options.readPreference` **[object][80]?** the read preference for the query with one of the read constants
 
 Returns **[Cursor][95]** returns Cursor object
 
 ### insert
 
-[lib/db.js:194-199][138]
+[lib/db.js:209-214][139]
 
--   **See: [http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#insertmany][139]**
--   **See: [http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#insertOne][140]**
+-   **See: [http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#insertmany][140]**
+-   **See: [http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#insertOne][141]**
 
 Inserts the given docs into a collection.
 
@@ -536,10 +538,10 @@ Returns **[Promise][78]** resolves with an object with results, and ops as keys
 
 ### update
 
-[lib/db.js:213-224][141]
+[lib/db.js:228-239][142]
 
--   **See: [http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#updateMany][142]**
--   **See: [http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#updateOne][143]**
+-   **See: [http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#updateMany][143]**
+-   **See: [http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#updateOne][144]**
 
 Updates docs in a collection.
 
@@ -556,10 +558,10 @@ Returns **[Promise][78]** resolves with an object with results, and ops as keys
 
 ### remove
 
-[lib/db.js:236-244][144]
+[lib/db.js:251-259][145]
 
--   **See: [http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#deleteMany][145]**
--   **See: [http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#deleteOne][146]**
+-   **See: [http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#deleteMany][146]**
+-   **See: [http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#deleteOne][147]**
 
 Removes docs from a collection.
 
@@ -574,9 +576,10 @@ Returns **[Promise][78]** resolves with an object with results, and ops as keys
 
 ### aggregate
 
-[lib/db.js:255-267][147]
+[lib/db.js:272-284][148]
 
--   **See: [http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#aggregate][148]**
+-   **See: [http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#aggregate][149]**
+-   **See: [https://github.com/mongodb/node-mongodb-native/blob/357cbf689735c2447bfb05d73c142f1a5b88ca91/lib/read_preference.js#L69][138]**
 
 Executes aggregation pipeline against a collection.
 
@@ -586,14 +589,16 @@ Executes aggregation pipeline against a collection.
 -   `pipeline` **[object][80]** Aggregation pipeline.
 -   `options` **[object][80]?** Optional settings see mongo documentation
     -   `options.explain` **[boolean][87]** Should should the execution plan be returned. (optional, default `false`)
+    -   `options.readPreference` **[object][80]?** the read preference for the query
 
 Returns **[Promise][78]** resovles with the result of the aggregatation from mongo
 
 ### distinct
 
-[lib/db.js:278-283][149]
+[lib/db.js:297-302][150]
 
--   **See: [http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#distinct][150]**
+-   **See: [http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#distinct][151]**
+-   **See: [https://github.com/mongodb/node-mongodb-native/blob/357cbf689735c2447bfb05d73c142f1a5b88ca91/lib/read_preference.js#L69][138]**
 
 Returns list of unique values for the given key across a collection.
 
@@ -603,6 +608,7 @@ Returns list of unique values for the given key across a collection.
 -   `key` **[string][76]** Document property.
 -   `query` **[object][80]** Query to find which documents evaluate.
 -   `options` **[object][80]?** Optional settings see mongo documentation
+    -   `options.readPreference` **[object][80]?** the read preference for the query
 
 Returns **[Promise][78]** resovles with the result of the distinct query from mongo
 
@@ -750,11 +756,11 @@ Returns **[Promise][78]** resovles with the result of the distinct query from mo
 
 [72]: #parameters-29
 
-[73]: https://git@github.com/:Losant/cosa/blob/54425f5f8e1ec5ab6d63cd7adf48651d7153c82d/lib/index.js#L9-L34 "Source code on GitHub"
+[73]: https://git@github.com/:Losant/cosa/blob/6fb3fff42e41c8ef0bfaee98d2be864ab9cc2ccd/lib/index.js#L9-L34 "Source code on GitHub"
 
-[74]: https://git@github.com/:Losant/cosa/blob/54425f5f8e1ec5ab6d63cd7adf48651d7153c82d/lib/index.js#L19-L19 "Source code on GitHub"
+[74]: https://git@github.com/:Losant/cosa/blob/6fb3fff42e41c8ef0bfaee98d2be864ab9cc2ccd/lib/index.js#L19-L19 "Source code on GitHub"
 
-[75]: https://git@github.com/:Losant/cosa/blob/54425f5f8e1ec5ab6d63cd7adf48651d7153c82d/lib/index.js#L30-L33 "Source code on GitHub"
+[75]: https://git@github.com/:Losant/cosa/blob/6fb3fff42e41c8ef0bfaee98d2be864ab9cc2ccd/lib/index.js#L30-L33 "Source code on GitHub"
 
 [76]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
 
@@ -762,19 +768,19 @@ Returns **[Promise][78]** resovles with the result of the distinct query from mo
 
 [78]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise
 
-[79]: https://git@github.com/:Losant/cosa/blob/54425f5f8e1ec5ab6d63cd7adf48651d7153c82d/lib/model.js#L334-L463 "Source code on GitHub"
+[79]: https://git@github.com/:Losant/cosa/blob/6fb3fff42e41c8ef0bfaee98d2be864ab9cc2ccd/lib/model.js#L334-L463 "Source code on GitHub"
 
 [80]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
 
-[81]: https://git@github.com/:Losant/cosa/blob/54425f5f8e1ec5ab6d63cd7adf48651d7153c82d/lib/cursor.js#L7-L172 "Source code on GitHub"
+[81]: https://git@github.com/:Losant/cosa/blob/6fb3fff42e41c8ef0bfaee98d2be864ab9cc2ccd/lib/cursor.js#L7-L172 "Source code on GitHub"
 
 [82]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function
 
-[83]: https://git@github.com/:Losant/cosa/blob/54425f5f8e1ec5ab6d63cd7adf48651d7153c82d/lib/cursor.js#L19-L28 "Source code on GitHub"
+[83]: https://git@github.com/:Losant/cosa/blob/6fb3fff42e41c8ef0bfaee98d2be864ab9cc2ccd/lib/cursor.js#L19-L28 "Source code on GitHub"
 
 [84]: http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#forEach
 
-[85]: https://git@github.com/:Losant/cosa/blob/54425f5f8e1ec5ab6d63cd7adf48651d7153c82d/lib/cursor.js#L37-L39 "Source code on GitHub"
+[85]: https://git@github.com/:Losant/cosa/blob/6fb3fff42e41c8ef0bfaee98d2be864ab9cc2ccd/lib/cursor.js#L37-L39 "Source code on GitHub"
 
 [86]: http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#count
 
@@ -782,95 +788,95 @@ Returns **[Promise][78]** resovles with the result of the distinct query from mo
 
 [88]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number
 
-[89]: https://git@github.com/:Losant/cosa/blob/54425f5f8e1ec5ab6d63cd7adf48651d7153c82d/lib/cursor.js#L46-L48 "Source code on GitHub"
+[89]: https://git@github.com/:Losant/cosa/blob/6fb3fff42e41c8ef0bfaee98d2be864ab9cc2ccd/lib/cursor.js#L46-L48 "Source code on GitHub"
 
 [90]: http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#close
 
-[91]: https://git@github.com/:Losant/cosa/blob/54425f5f8e1ec5ab6d63cd7adf48651d7153c82d/lib/cursor.js#L55-L57 "Source code on GitHub"
+[91]: https://git@github.com/:Losant/cosa/blob/6fb3fff42e41c8ef0bfaee98d2be864ab9cc2ccd/lib/cursor.js#L55-L57 "Source code on GitHub"
 
 [92]: http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#isClosed
 
-[93]: https://git@github.com/:Losant/cosa/blob/54425f5f8e1ec5ab6d63cd7adf48651d7153c82d/lib/cursor.js#L65-L68 "Source code on GitHub"
+[93]: https://git@github.com/:Losant/cosa/blob/6fb3fff42e41c8ef0bfaee98d2be864ab9cc2ccd/lib/cursor.js#L65-L68 "Source code on GitHub"
 
 [94]: http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#filter
 
 [95]: #cursor
 
-[96]: https://git@github.com/:Losant/cosa/blob/54425f5f8e1ec5ab6d63cd7adf48651d7153c82d/lib/cursor.js#L76-L79 "Source code on GitHub"
+[96]: https://git@github.com/:Losant/cosa/blob/6fb3fff42e41c8ef0bfaee98d2be864ab9cc2ccd/lib/cursor.js#L76-L79 "Source code on GitHub"
 
 [97]: http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#limit
 
-[98]: https://git@github.com/:Losant/cosa/blob/54425f5f8e1ec5ab6d63cd7adf48651d7153c82d/lib/cursor.js#L87-L91 "Source code on GitHub"
+[98]: https://git@github.com/:Losant/cosa/blob/6fb3fff42e41c8ef0bfaee98d2be864ab9cc2ccd/lib/cursor.js#L87-L91 "Source code on GitHub"
 
 [99]: http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#map
 
-[100]: https://git@github.com/:Losant/cosa/blob/54425f5f8e1ec5ab6d63cd7adf48651d7153c82d/lib/cursor.js#L99-L102 "Source code on GitHub"
+[100]: https://git@github.com/:Losant/cosa/blob/6fb3fff42e41c8ef0bfaee98d2be864ab9cc2ccd/lib/cursor.js#L99-L102 "Source code on GitHub"
 
 [101]: http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#max
 
-[102]: https://git@github.com/:Losant/cosa/blob/54425f5f8e1ec5ab6d63cd7adf48651d7153c82d/lib/cursor.js#L110-L113 "Source code on GitHub"
+[102]: https://git@github.com/:Losant/cosa/blob/6fb3fff42e41c8ef0bfaee98d2be864ab9cc2ccd/lib/cursor.js#L110-L113 "Source code on GitHub"
 
 [103]: http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#min
 
-[104]: https://git@github.com/:Losant/cosa/blob/54425f5f8e1ec5ab6d63cd7adf48651d7153c82d/lib/cursor.js#L120-L123 "Source code on GitHub"
+[104]: https://git@github.com/:Losant/cosa/blob/6fb3fff42e41c8ef0bfaee98d2be864ab9cc2ccd/lib/cursor.js#L120-L123 "Source code on GitHub"
 
 [105]: http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#next
 
-[106]: https://git@github.com/:Losant/cosa/blob/54425f5f8e1ec5ab6d63cd7adf48651d7153c82d/lib/cursor.js#L131-L139 "Source code on GitHub"
+[106]: https://git@github.com/:Losant/cosa/blob/6fb3fff42e41c8ef0bfaee98d2be864ab9cc2ccd/lib/cursor.js#L131-L139 "Source code on GitHub"
 
-[107]: https://git@github.com/:Losant/cosa/blob/54425f5f8e1ec5ab6d63cd7adf48651d7153c82d/lib/cursor.js#L147-L150 "Source code on GitHub"
+[107]: https://git@github.com/:Losant/cosa/blob/6fb3fff42e41c8ef0bfaee98d2be864ab9cc2ccd/lib/cursor.js#L147-L150 "Source code on GitHub"
 
 [108]: http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#skip
 
-[109]: https://git@github.com/:Losant/cosa/blob/54425f5f8e1ec5ab6d63cd7adf48651d7153c82d/lib/cursor.js#L159-L162 "Source code on GitHub"
+[109]: https://git@github.com/:Losant/cosa/blob/6fb3fff42e41c8ef0bfaee98d2be864ab9cc2ccd/lib/cursor.js#L159-L162 "Source code on GitHub"
 
 [110]: http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#sort
 
 [111]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
 
-[112]: https://git@github.com/:Losant/cosa/blob/54425f5f8e1ec5ab6d63cd7adf48651d7153c82d/lib/cursor.js#L169-L171 "Source code on GitHub"
+[112]: https://git@github.com/:Losant/cosa/blob/6fb3fff42e41c8ef0bfaee98d2be864ab9cc2ccd/lib/cursor.js#L169-L171 "Source code on GitHub"
 
 [113]: http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html#toArray
 
-[114]: https://git@github.com/:Losant/cosa/blob/54425f5f8e1ec5ab6d63cd7adf48651d7153c82d/lib/errors.js#L19-L39 "Source code on GitHub"
+[114]: https://git@github.com/:Losant/cosa/blob/6fb3fff42e41c8ef0bfaee98d2be864ab9cc2ccd/lib/errors.js#L19-L39 "Source code on GitHub"
 
-[115]: https://git@github.com/:Losant/cosa/blob/54425f5f8e1ec5ab6d63cd7adf48651d7153c82d/lib/errors.js#L24-L28 "Source code on GitHub"
+[115]: https://git@github.com/:Losant/cosa/blob/6fb3fff42e41c8ef0bfaee98d2be864ab9cc2ccd/lib/errors.js#L24-L28 "Source code on GitHub"
 
-[116]: https://git@github.com/:Losant/cosa/blob/54425f5f8e1ec5ab6d63cd7adf48651d7153c82d/lib/errors.js#L33-L37 "Source code on GitHub"
+[116]: https://git@github.com/:Losant/cosa/blob/6fb3fff42e41c8ef0bfaee98d2be864ab9cc2ccd/lib/errors.js#L33-L37 "Source code on GitHub"
 
-[117]: https://git@github.com/:Losant/cosa/blob/54425f5f8e1ec5ab6d63cd7adf48651d7153c82d/lib/defined-object.js#L15-L57 "Source code on GitHub"
+[117]: https://git@github.com/:Losant/cosa/blob/6fb3fff42e41c8ef0bfaee98d2be864ab9cc2ccd/lib/defined-object.js#L15-L57 "Source code on GitHub"
 
-[118]: https://git@github.com/:Losant/cosa/blob/54425f5f8e1ec5ab6d63cd7adf48651d7153c82d/lib/array.js#L11-L84 "Source code on GitHub"
+[118]: https://git@github.com/:Losant/cosa/blob/6fb3fff42e41c8ef0bfaee98d2be864ab9cc2ccd/lib/array.js#L11-L84 "Source code on GitHub"
 
-[119]: https://git@github.com/:Losant/cosa/blob/54425f5f8e1ec5ab6d63cd7adf48651d7153c82d/lib/date.js#L10-L50 "Source code on GitHub"
+[119]: https://git@github.com/:Losant/cosa/blob/6fb3fff42e41c8ef0bfaee98d2be864ab9cc2ccd/lib/date.js#L10-L50 "Source code on GitHub"
 
-[120]: https://git@github.com/:Losant/cosa/blob/54425f5f8e1ec5ab6d63cd7adf48651d7153c82d/lib/bson-objectId.js#L8-L34 "Source code on GitHub"
+[120]: https://git@github.com/:Losant/cosa/blob/6fb3fff42e41c8ef0bfaee98d2be864ab9cc2ccd/lib/bson-objectId.js#L8-L34 "Source code on GitHub"
 
 [121]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/undefined
 
-[122]: https://git@github.com/:Losant/cosa/blob/54425f5f8e1ec5ab6d63cd7adf48651d7153c82d/lib/object.js#L19-L23 "Source code on GitHub"
+[122]: https://git@github.com/:Losant/cosa/blob/6fb3fff42e41c8ef0bfaee98d2be864ab9cc2ccd/lib/object.js#L19-L23 "Source code on GitHub"
 
-[123]: https://git@github.com/:Losant/cosa/blob/54425f5f8e1ec5ab6d63cd7adf48651d7153c82d/lib/immutable.js#L13-L108 "Source code on GitHub"
+[123]: https://git@github.com/:Losant/cosa/blob/6fb3fff42e41c8ef0bfaee98d2be864ab9cc2ccd/lib/immutable.js#L13-L108 "Source code on GitHub"
 
-[124]: https://git@github.com/:Losant/cosa/blob/54425f5f8e1ec5ab6d63cd7adf48651d7153c82d/lib/immutable.js#L21-L30 "Source code on GitHub"
+[124]: https://git@github.com/:Losant/cosa/blob/6fb3fff42e41c8ef0bfaee98d2be864ab9cc2ccd/lib/immutable.js#L21-L30 "Source code on GitHub"
 
-[125]: https://git@github.com/:Losant/cosa/blob/54425f5f8e1ec5ab6d63cd7adf48651d7153c82d/lib/immutable.js#L37-L40 "Source code on GitHub"
+[125]: https://git@github.com/:Losant/cosa/blob/6fb3fff42e41c8ef0bfaee98d2be864ab9cc2ccd/lib/immutable.js#L37-L40 "Source code on GitHub"
 
-[126]: https://git@github.com/:Losant/cosa/blob/54425f5f8e1ec5ab6d63cd7adf48651d7153c82d/lib/immutable.js#L48-L50 "Source code on GitHub"
+[126]: https://git@github.com/:Losant/cosa/blob/6fb3fff42e41c8ef0bfaee98d2be864ab9cc2ccd/lib/immutable.js#L48-L50 "Source code on GitHub"
 
-[127]: https://git@github.com/:Losant/cosa/blob/54425f5f8e1ec5ab6d63cd7adf48651d7153c82d/lib/immutable.js#L58-L106 "Source code on GitHub"
+[127]: https://git@github.com/:Losant/cosa/blob/6fb3fff42e41c8ef0bfaee98d2be864ab9cc2ccd/lib/immutable.js#L58-L106 "Source code on GitHub"
 
-[128]: https://git@github.com/:Losant/cosa/blob/54425f5f8e1ec5ab6d63cd7adf48651d7153c82d/lib/db.js#L45-L296 "Source code on GitHub"
+[128]: https://git@github.com/:Losant/cosa/blob/6fb3fff42e41c8ef0bfaee98d2be864ab9cc2ccd/lib/db.js#L45-L315 "Source code on GitHub"
 
-[129]: https://git@github.com/:Losant/cosa/blob/54425f5f8e1ec5ab6d63cd7adf48651d7153c82d/lib/db.js#L69-L104 "Source code on GitHub"
+[129]: https://git@github.com/:Losant/cosa/blob/6fb3fff42e41c8ef0bfaee98d2be864ab9cc2ccd/lib/db.js#L69-L104 "Source code on GitHub"
 
 [130]: init
 
-[131]: https://git@github.com/:Losant/cosa/blob/54425f5f8e1ec5ab6d63cd7adf48651d7153c82d/lib/db.js#L113-L134 "Source code on GitHub"
+[131]: https://git@github.com/:Losant/cosa/blob/6fb3fff42e41c8ef0bfaee98d2be864ab9cc2ccd/lib/db.js#L113-L134 "Source code on GitHub"
 
 [132]: http://mongodb.github.io/node-mongodb-native/3.0/api/Db.html#collection
 
-[133]: https://git@github.com/:Losant/cosa/blob/54425f5f8e1ec5ab6d63cd7adf48651d7153c82d/lib/db.js#L154-L184 "Source code on GitHub"
+[133]: https://git@github.com/:Losant/cosa/blob/6fb3fff42e41c8ef0bfaee98d2be864ab9cc2ccd/lib/db.js#L156-L199 "Source code on GitHub"
 
 [134]: http://mongodb.github.io/node-mongodb-native/3.0/api/Cursor.html
 
@@ -880,28 +886,30 @@ Returns **[Promise][78]** resovles with the result of the distinct query from mo
 
 [137]: http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#count
 
-[138]: https://git@github.com/:Losant/cosa/blob/54425f5f8e1ec5ab6d63cd7adf48651d7153c82d/lib/db.js#L194-L199 "Source code on GitHub"
+[138]: https://github.com/mongodb/node-mongodb-native/blob/357cbf689735c2447bfb05d73c142f1a5b88ca91/lib/read_preference.js#L69
 
-[139]: http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#insertmany
+[139]: https://git@github.com/:Losant/cosa/blob/6fb3fff42e41c8ef0bfaee98d2be864ab9cc2ccd/lib/db.js#L209-L214 "Source code on GitHub"
 
-[140]: http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#insertOne
+[140]: http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#insertmany
 
-[141]: https://git@github.com/:Losant/cosa/blob/54425f5f8e1ec5ab6d63cd7adf48651d7153c82d/lib/db.js#L213-L224 "Source code on GitHub"
+[141]: http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#insertOne
 
-[142]: http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#updateMany
+[142]: https://git@github.com/:Losant/cosa/blob/6fb3fff42e41c8ef0bfaee98d2be864ab9cc2ccd/lib/db.js#L228-L239 "Source code on GitHub"
 
-[143]: http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#updateOne
+[143]: http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#updateMany
 
-[144]: https://git@github.com/:Losant/cosa/blob/54425f5f8e1ec5ab6d63cd7adf48651d7153c82d/lib/db.js#L236-L244 "Source code on GitHub"
+[144]: http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#updateOne
 
-[145]: http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#deleteMany
+[145]: https://git@github.com/:Losant/cosa/blob/6fb3fff42e41c8ef0bfaee98d2be864ab9cc2ccd/lib/db.js#L251-L259 "Source code on GitHub"
 
-[146]: http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#deleteOne
+[146]: http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#deleteMany
 
-[147]: https://git@github.com/:Losant/cosa/blob/54425f5f8e1ec5ab6d63cd7adf48651d7153c82d/lib/db.js#L255-L267 "Source code on GitHub"
+[147]: http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#deleteOne
 
-[148]: http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#aggregate
+[148]: https://git@github.com/:Losant/cosa/blob/6fb3fff42e41c8ef0bfaee98d2be864ab9cc2ccd/lib/db.js#L272-L284 "Source code on GitHub"
 
-[149]: https://git@github.com/:Losant/cosa/blob/54425f5f8e1ec5ab6d63cd7adf48651d7153c82d/lib/db.js#L278-L283 "Source code on GitHub"
+[149]: http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#aggregate
 
-[150]: http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#distinct
+[150]: https://git@github.com/:Losant/cosa/blob/6fb3fff42e41c8ef0bfaee98d2be864ab9cc2ccd/lib/db.js#L297-L302 "Source code on GitHub"
+
+[151]: http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#distinct
