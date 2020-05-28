@@ -6,7 +6,7 @@ chai.use(require('chai-datetime'));
 const expect             = chai.expect;
 const Model = require('../lib/model');
 const cosaDb = require('../lib/db');
-const { sleep } = require('omnibelt');
+const { sleep, times } = require('omnibelt');
 
 const getMongoClient = () => {
   return MongoClient.connect(process.env.COSA_DB_URI, {
@@ -374,8 +374,7 @@ describe('Model', () => {
       expect(error.type).to.equal('Validation');
       expect(error.name).to.equal('ValidationError');
       expect(error.statusCode).to.equal(400);
-      expect(error.message).to.equal('child "str" fails because ["str" is required]');
-
+      expect(error.message).to.equal('"str" is required');
     });
 
     it('should resolve promise if validation succeeds', async () => {
@@ -824,7 +823,7 @@ describe('Model', () => {
   describe('.beforeSave()', () => {
 
     it('should execute before a model is saved', async () => {
-      let strToSave = '';
+      let strToSave, options;
       const HookedModel = Model.define({
         name: 'HookedModel',
         collection: 'mocha_test',
@@ -832,15 +831,17 @@ describe('Model', () => {
           str: { type: 'string' }
         },
         methods: {
-          beforeSave: function() {
+          beforeSave: function(opts) {
             strToSave = this.str;
+            options = opts;
           }
         }
       });
       const model = HookedModel.create({ str: 'foo' });
       expect(model.beforeSave).to.be.a('function');
-      await model.save();
+      await model.save({ randomOption: 'hello' });
       expect(strToSave).to.equal('foo');
+      expect(options).to.deep.equal({ randomOption: 'hello', waitAfterSave: false });
     });
 
     it('should allow mutating model before saving', async () => {
@@ -884,23 +885,26 @@ describe('Model', () => {
         }
       });
       const model = HookedModel.create({ str: 'foo' });
+
       expect(model.afterSave).to.be.a('function');
       let wasCalled = false;
       checkFunction = function(instance, args) {
         expect(instance.str).to.equal('foo');
         expect(args[0]).to.equal(null);
+        expect(args[1]).to.deep.equal({ randomOption: 'hello', waitAfterSave: false });
         wasCalled = true;
       };
-
-      const m = await model.save();
+      const m = await model.save({ randomOption: 'hello' });
       expect(wasCalled).to.equal(true);
+
       wasCalled = false;
       checkFunction = function(instance, args) {
         expect(instance.str).to.equal('bar');
         expect(args[0].str).to.equal('foo');
+        expect(args[1]).to.deep.equal({ randomOption: 'goodbye', waitAfterSave: false });
         wasCalled = true;
       };
-      await m.set('str', 'bar').save();
+      await m.set('str', 'bar').save({ randomOption: 'goodbye' });
       expect(wasCalled).to.equal(true);
       expect(strSaved).to.equal('bar');
     });
@@ -910,7 +914,7 @@ describe('Model', () => {
   describe('.beforeRemove()', () => {
 
     it('should execute before a model is removed', async () => {
-      let strRemoved = '';
+      let strRemoved, options;
       const HookedModel = Model.define({
         name: 'HookedModel',
         collection: 'mocha_test',
@@ -918,16 +922,18 @@ describe('Model', () => {
           str: { type: 'string' }
         },
         methods: {
-          beforeRemove: function() {
+          beforeRemove: function(opts) {
             strRemoved = this.str;
+            options = opts;
           }
         }
       });
       const model = HookedModel.create({ str: 'foo' });
       expect(model.beforeRemove).to.be.a('function');
       const m = await model.save();
-      await m.remove();
+      await m.remove({ anotherOption: 'what' });
       expect(strRemoved).to.equal('foo');
+      expect(options).to.deep.equal({ anotherOption: 'what', waitAfterRemove: false });
     });
 
   });
@@ -935,7 +941,7 @@ describe('Model', () => {
   describe('.afterRemove()', () => {
 
     it('should execute after a model is removed', async () => {
-      let strRemoved = '';
+      let strRemoved, options;
       const HookedModel = Model.define({
         name: 'HookedModel',
         collection: 'mocha_test',
@@ -943,17 +949,18 @@ describe('Model', () => {
           str: { type: 'string' }
         },
         methods: {
-          afterRemove: function() {
+          afterRemove: function(opt) {
             strRemoved = this.str;
+            options = opt;
           }
         }
       });
       const model = HookedModel.create({ str: 'foo' });
       expect(model.afterRemove).to.be.a('function');
-
       const m = await model.save();
-      await m.remove();
+      await m.remove({ foo: 'bar' });
       expect(strRemoved).to.equal('foo');
+      expect(options).to.deep.equal({ foo: 'bar', waitAfterRemove: false });
     });
 
   });
@@ -970,6 +977,43 @@ describe('Model', () => {
       expect(values[0].str).to.equal('test string');
     });
 
+  });
+
+  describe('.forEachParallelLimitP', () => {
+    it('should iterate over a cursor in parallel', async () => {
+      await Promise.all(times(() => {
+        return FullTestModel.create({
+          str: 'test string',
+          obj: { prop1: 'bar' }
+        }).save();
+      }, 100));
+      const count = await FullTestModel.count();
+      const cursor = await FullTestModel.find();
+      let numOfTimesCalled = 0;
+      await cursor.forEachParallelLimitP(50, async (item) => {
+        expect(FullTestModel.isA(item)).to.equal(true);
+        await sleep(1);
+        numOfTimesCalled++;
+      });
+      expect(numOfTimesCalled).to.equal(count);
+    });
+    it('should iterate over a cursor in parallel', async () => {
+      await Promise.all(times(() => {
+        return FullTestModel.create({
+          str: 'test string',
+          obj: { prop1: 'bar' }
+        }).save();
+      }, 10));
+      const count = await FullTestModel.count();
+      const cursor = await FullTestModel.find();
+      let numOfTimesCalled = 0;
+      await cursor.forEachParallelLimitP(100, async (item) => {
+        expect(FullTestModel.isA(item)).to.equal(true);
+        await sleep(1);
+        numOfTimesCalled++;
+      });
+      expect(numOfTimesCalled).to.equal(count);
+    });
   });
 
 });
