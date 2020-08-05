@@ -18,7 +18,10 @@ const getMongoClient = () => {
 const cleanUpDb = async (client, db, close = true) => {
   await Promise.all([ 'mocha_test', 'mocha_save_test', 'mocha_remove_test' ].map(async (cName) => {
     const collection = db.collection(cName);
-    await collection.dropIndexes();
+    const indexes = await collection.indexes();
+    if (indexes.length) {
+      await collection.dropIndexes();
+    }
     return collection.deleteMany();
   }));
   if (close) { await client.close(); }
