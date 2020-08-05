@@ -1,6 +1,6 @@
 {
   "name": "cosa",
-  "version": "4.0.2",
+  "version": "4.0.3",
   "description": "Cosa Models for MongoDB",
   "main": "lib/index.js",
   "engines": {
@@ -41,7 +41,7 @@
     "error": "^7.0.2",
     "etag": "^1.8.1",
     "@hapi/joi": "^17.1.1",
-    "mongodb": "~3.5.9",
+    "mongodb": "~3.6.0",
     "mongodb-extended-json": "~1.11.0",
     "object-assign": "^4.1.1",
     "object-path": "^0.11.4",
