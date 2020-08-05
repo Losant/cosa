@@ -16,12 +16,11 @@ const getMongoClient = () => {
 };
 
 const cleanUpDb = async (client, db, close = true) => {
-  await Promise.all([ 'mocha_test', 'mocha_save_test', 'mocha_remove_test' ].map(async (cName) => {
-    const collection = db.collection(cName);
-    const indexes = await collection.indexes();
-    if (indexes.length) {
-      await collection.dropIndexes();
-    }
+  const cursorCollection = await db.listCollections({});
+  const collections = await cursorCollection.toArray();
+  await Promise.all(collections.map(async ({ name }) => {
+    const collection = db.collection(name);
+    await collection.dropIndexes();
     return collection.deleteMany();
   }));
   if (close) { await client.close(); }
