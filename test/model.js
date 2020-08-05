@@ -16,8 +16,10 @@ const getMongoClient = () => {
 };
 
 const cleanUpDb = async (client, db, close = true) => {
-  await Promise.all([ 'mocha_test', 'mocha_save_test', 'mocha_remove_test' ].map(async (cName) => {
-    const collection = db.collection(cName);
+  const cursorCollection = await db.listCollections({});
+  const collections = await cursorCollection.toArray();
+  await Promise.all(collections.map(async ({ name }) => {
+    const collection = db.collection(name);
     await collection.dropIndexes();
     return collection.deleteMany();
   }));
@@ -481,7 +483,6 @@ describe('Model', () => {
           transformDuplicateKeyError: function(err) {
             expect(this.__original).to.equal(null);
             expect(err.code).to.equal(11000);
-            expect(err.keyValue).to.deep.equal({ str: 'str' });
             return new Error(`Duplicate key on ${this.str}`);
           }
         }
@@ -512,7 +513,6 @@ describe('Model', () => {
           transformDuplicateKeyError: function(err) {
             expect(this.__original.str).to.equal(str);
             expect(err.code).to.equal(11000);
-            expect(err.keyValue).to.deep.equal({ str: 'str1' });
             return new Error(`Duplicate key on ${this.str}`);
           }
         }
