@@ -16,8 +16,9 @@ const getMongoClient = () => {
 };
 
 const cleanUpDb = async (client, db, close = true) => {
-  await Promise.all([ 'mocha_test', 'mocha_save_test', 'mocha_remove_test' ].map((cName) => {
+  await Promise.all([ 'mocha_test', 'mocha_save_test', 'mocha_remove_test' ].map(async (cName) => {
     const collection = db.collection(cName);
+    await collection.dropIndexes();
     return collection.deleteMany();
   }));
   if (close) { await client.close(); }
@@ -466,6 +467,57 @@ describe('Model', () => {
       const collection = _db.collection('mocha_save_test');
       const count = await collection.countDocuments();
       expect(count).to.equal(1);
+    });
+
+    it('should transform a duplicate error on insert', async () => {
+      const collection = 'mocha_save_test';
+      const dupKeyModel = Model.define({
+        name: 'SaveTest',
+        collection,
+        properties: {
+          str: { type: 'string', required: true }
+        },
+        transformDuplicateKeyError: (obj) => {
+          throw new Error(`Duplicate key on ${obj.str}`);
+        }
+      });
+
+      await _db.collection(collection).createIndex({ str: 1 }, { name: 'str_1', unique: true });
+      const str = 'str';
+      await dupKeyModel.create({ str }).save();
+      let err;
+      try {
+        await dupKeyModel.create({ str }).save();
+      } catch (e) {
+        err = e;
+      }
+      expect(err.message).to.equal('Duplicate key on str');
+    });
+
+    it('should transform a duplicate error on update', async () => {
+      const collection = 'mocha_save_test';
+      const dupKeyModel = Model.define({
+        name: 'SaveTest',
+        collection,
+        properties: {
+          str: { type: 'string', required: true }
+        },
+        transformDuplicateKeyError: (obj) => {
+          throw new Error(`Duplicate key on ${obj.str}`);
+        }
+      });
+
+      await _db.collection(collection).createIndex({ str: 1 }, { name: 'str_1', unique: true });
+      const str = 'str';
+      const toBeUpdated = await dupKeyModel.create({ str }).save();
+      await dupKeyModel.create({ str: 'str1' }).save();
+      let err;
+      try {
+        await toBeUpdated.set({ str: 'str1' }).save();
+      } catch (e) {
+        err = e;
+      }
+      expect(err.message).to.equal('Duplicate key on str1');
     });
 
   });
