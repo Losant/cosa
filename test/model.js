@@ -478,7 +478,8 @@ describe('Model', () => {
           str: { type: 'string', required: true }
         },
         methods: {
-          transformDuplicateKeyError: function(err) {
+          transformDuplicateKeyError: function(original, err) {
+            expect(original).to.equal(null);
             expect(err.code).to.equal(11000);
             expect(err.keyValue).to.deep.equal({ str: 'str' });
             return new Error(`Duplicate key on ${this.str}`);
@@ -500,6 +501,7 @@ describe('Model', () => {
 
     it('should transform a duplicate error on update', async () => {
       const collection = 'mocha_save_test';
+      const str = 'str';
       const dupKeyModel = Model.define({
         name: 'SaveTest',
         collection,
@@ -507,7 +509,8 @@ describe('Model', () => {
           str: { type: 'string', required: true }
         },
         methods: {
-          transformDuplicateKeyError: function(err) {
+          transformDuplicateKeyError: function(original, err) {
+            expect(original.str).to.equal(str);
             expect(err.code).to.equal(11000);
             expect(err.keyValue).to.deep.equal({ str: 'str1' });
             return new Error(`Duplicate key on ${this.str}`);
@@ -516,7 +519,6 @@ describe('Model', () => {
       });
 
       await _db.collection(collection).createIndex({ str: 1 }, { name: 'str_1', unique: true });
-      const str = 'str';
       const toBeUpdated = await dupKeyModel.create({ str }).save();
       await dupKeyModel.create({ str: 'str1' }).save();
       let err;
