@@ -477,8 +477,10 @@ describe('Model', () => {
         properties: {
           str: { type: 'string', required: true }
         },
-        transformDuplicateKeyError: (obj) => {
-          throw new Error(`Duplicate key on ${obj.str}`);
+        methods: {
+          transformDuplicateKeyError: (obj) => {
+            throw new Error(`Duplicate key on ${obj.str}`);
+          }
         }
       });
 
@@ -502,8 +504,10 @@ describe('Model', () => {
         properties: {
           str: { type: 'string', required: true }
         },
-        transformDuplicateKeyError: (obj) => {
-          throw new Error(`Duplicate key on ${obj.str}`);
+        methods: {
+          transformDuplicateKeyError: (obj) => {
+            throw new Error(`Duplicate key on ${obj.str}`);
+          }
         }
       });
 
