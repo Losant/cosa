@@ -478,8 +478,8 @@ describe('Model', () => {
           str: { type: 'string', required: true }
         },
         methods: {
-          transformDuplicateKeyError: function(original, err) {
-            expect(original).to.equal(null);
+          transformDuplicateKeyError: function(err) {
+            expect(this.__original).to.equal(null);
             expect(err.code).to.equal(11000);
             expect(err.keyValue).to.deep.equal({ str: 'str' });
             return new Error(`Duplicate key on ${this.str}`);
@@ -509,8 +509,8 @@ describe('Model', () => {
           str: { type: 'string', required: true }
         },
         methods: {
-          transformDuplicateKeyError: function(original, err) {
-            expect(original.str).to.equal(str);
+          transformDuplicateKeyError: function(err) {
+            expect(this.__original.str).to.equal(str);
             expect(err.code).to.equal(11000);
             expect(err.keyValue).to.deep.equal({ str: 'str1' });
             return new Error(`Duplicate key on ${this.str}`);
