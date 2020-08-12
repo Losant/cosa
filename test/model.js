@@ -843,6 +843,43 @@ describe('Model', () => {
     });
   });
 
+  describe('where', () => {
+    const ModelWithWhere = Model.define({
+      name: 'ModelWithWhere',
+      collection: 'mocha_test',
+      where: { strA: 'A' },
+      properties: {
+        strA: { type: 'string' },
+        strB: { type: 'string' }
+      }
+    });
+
+    it('should correctly respect the global where', async () => {
+      const modelA = await ModelWithWhere.create({
+        strA: 'A',
+        strB: 'B'
+      }).save();
+      expect(await modelA.reload()).to.deep.equal(modelA);
+
+      const modelB = await ModelWithWhere.create({
+        strA: 'C',
+        strB: 'D'
+      }).save();
+      expect(await modelB.reload()).to.deep.equal(modelB);
+
+      expect(await ModelWithWhere.count()).to.equal(1);
+      expect(await ModelWithWhere.count({}, { bypassGlobalWhere: true })).to.equal(2);
+
+      expect(await ModelWithWhere.find({}, { array: true })).to.deep.equal([modelA]);
+      expect(await ModelWithWhere.find({}, { sort: { strA: 1 }, array: true, bypassGlobalWhere: true }))
+        .to.deep.equal([modelA, modelB]);
+
+      expect(await ModelWithWhere.findOne({ _id: modelA._id })).to.deep.equal(modelA);
+      expect(await ModelWithWhere.findOne({ _id: modelB._id })).to.equal(null);
+      expect(await ModelWithWhere.findOne({ _id: modelB._id }, { bypassGlobalWhere: true })).to.deep.equal(modelB);
+    });
+  });
+
   describe('.extend()', () => {
 
     it('should allow extending of a model', () => {
