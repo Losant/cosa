@@ -45,7 +45,7 @@
     "mongodb-extended-json": "~1.11.0",
     "object-assign": "^4.1.1",
     "object-path": "^0.11.5",
-    "omnibelt": "^2.0.0"
+    "omnibelt": "^2.0.1"
   },
   "devDependencies": {
     "@losant/eslint-config-losant": "^1.4.0",
@@ -55,7 +55,7 @@
     "chai-as-promised": "^7.1.1",
     "chai-datetime": "^1.7.0",
     "documentation": "^13.1.0",
-    "mocha": "^8.2.0",
+    "mocha": "^8.2.1",
     "string-template": "^1.0.0"
   },
   "eslintConfig": {
