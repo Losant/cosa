@@ -1,6 +1,6 @@
 {
   "name": "cosa",
-  "version": "4.0.5",
+  "version": "4.1.0",
   "description": "Cosa Models for MongoDB",
   "main": "lib/index.js",
   "engines": {
@@ -34,7 +34,7 @@
     "lib"
   ],
   "dependencies": {
-    "bson": "~1.1.4",
+    "bson": "~1.1.5",
     "clone": "^2.1.2",
     "debug": "^4.2.0",
     "defaults": "^1.0.3",
