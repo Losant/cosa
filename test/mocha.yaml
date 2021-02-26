@@ -1,0 +1,6 @@
+reporter: 'spec'
+ui: 'bdd'
+check-leaks: true
+require:
+  - ./test/support/env
+  - chai

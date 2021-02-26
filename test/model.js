@@ -1,3 +1,4 @@
+// require('./support/env');
 const chai               = require('chai');
 const { MongoClient }    = require('mongodb');
 const bson               = require('bson');
@@ -7,7 +8,7 @@ const expect             = chai.expect;
 const Model = require('../lib/model');
 const cosaDb = require('../lib/db');
 const { sleep } = require('omnibelt');
-
+console.log(`${process.env.COSA_DB_URI}`);
 const getMongoClient = () => {
   return MongoClient.connect(process.env.COSA_DB_URI, {
     useNewUrlParser: true,
