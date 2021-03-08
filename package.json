@@ -1,10 +1,10 @@
 {
   "name": "cosa",
-  "version": "3.0.9",
+  "version": "5.0.0",
   "description": "Cosa Models for MongoDB",
   "main": "lib/index.js",
   "engines": {
-    "node": ">=8.9.0",
+    "node": ">=12",
     "yarn": ">=1.2.1"
   },
   "scripts": {
@@ -13,8 +13,8 @@
     "lint:watch": "yarn lint --watch",
     "lint:changed": "lint-staged",
     "reinstall": "rm -rf node_modules && yarn install",
-    "test": "mocha --config ./test/mocha.yaml",
-    "test-debug": "mocha --debug-brk",
+    "test": "NODE_ENV='test' COSA_DB_URI='mongodb://localhost:27017/test' mocha",
+    "test-debug": "yarn test --debug-brk",
     "doc": "documentation build lib/index.js -f md --github > API.md"
   },
   "author": "Losant <hello@losant.com>",
@@ -34,14 +34,14 @@
     "lib"
   ],
   "dependencies": {
-    "bson": "~1.1.0",
+    "bson": "~1.1.5",
     "clone": "^2.1.2",
     "debug": "^4.3.1",
     "defaults": "^1.0.3",
     "error": "^7.0.2",
     "etag": "^1.8.1",
-    "@hapi/joi": "^15.1.1",
-    "mongodb": "~3.3.5",
+    "@hapi/joi": "^17.1.1",
+    "mongodb": "~3.6.2",
     "mongodb-extended-json": "~1.11.0",
     "object-assign": "^4.1.1",
     "object-path": "^0.11.5",
@@ -72,5 +72,11 @@
     "hooks": {
       "pre-commit": "lint-staged"
     }
+  },
+  "mocha": {
+    "require": "chai",
+    "reporter": "spec",
+    "ui": "bdd",
+    "check-leaks": true
   }
 }
