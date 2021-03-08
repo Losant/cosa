@@ -1,6 +1,6 @@
 {
   "name": "cosa",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "description": "Cosa Models for MongoDB",
   "main": "lib/index.js",
   "engines": {
