@@ -41,7 +41,7 @@
     "error": "^7.0.2",
     "etag": "^1.8.1",
     "@hapi/joi": "^17.1.1",
-    "mongodb": "~3.6.2",
+    "mongodb": "~3.6.4",
     "mongodb-extended-json": "~1.11.0",
     "object-assign": "^4.1.1",
     "object-path": "^0.11.5",

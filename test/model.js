@@ -1,4 +1,3 @@
-// require('./support/env');
 const chai               = require('chai');
 const { MongoClient }    = require('mongodb');
 const bson               = require('bson');
