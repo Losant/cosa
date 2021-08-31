@@ -940,7 +940,7 @@ describe('Model', () => {
       expect(model.beforeSave).to.be.a('function');
       await model.save({ randomOption: 'hello' });
       expect(strToSave).to.equal('foo');
-      expect(options).to.deep.equal({ randomOption: 'hello', waitAfterSave: false });
+      expect(options).to.deep.equal({ randomOption: 'hello', waitAfterSave: false, writeConcern: undefined });
     });
 
     it('should allow mutating model before saving', async () => {
@@ -990,7 +990,7 @@ describe('Model', () => {
       checkFunction = function(instance, args) {
         expect(instance.str).to.equal('foo');
         expect(args[0]).to.equal(null);
-        expect(args[1]).to.deep.equal({ randomOption: 'hello', waitAfterSave: false });
+        expect(args[1]).to.deep.equal({ randomOption: 'hello', waitAfterSave: false, writeConcern: undefined });
         wasCalled = true;
       };
       const m = await model.save({ randomOption: 'hello' });
@@ -1000,7 +1000,7 @@ describe('Model', () => {
       checkFunction = function(instance, args) {
         expect(instance.str).to.equal('bar');
         expect(args[0].str).to.equal('foo');
-        expect(args[1]).to.deep.equal({ randomOption: 'goodbye', waitAfterSave: false });
+        expect(args[1]).to.deep.equal({ randomOption: 'goodbye', waitAfterSave: false, writeConcern: undefined });
         wasCalled = true;
       };
       await m.set('str', 'bar').save({ randomOption: 'goodbye' });
