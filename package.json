@@ -4,7 +4,7 @@
   "description": "Cosa Models for MongoDB",
   "main": "lib/index.js",
   "engines": {
-    "node": ">=12",
+    "node": ">=14",
     "yarn": ">=1.2.1"
   },
   "scripts": {
