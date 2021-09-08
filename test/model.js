@@ -237,7 +237,6 @@ describe('Model', () => {
         str: 'foo'
       }).saveWithId(id);
 
-
       expect(model._id.toString()).to.equal('1234abcd103f8e485c9d2017');
     });
 
