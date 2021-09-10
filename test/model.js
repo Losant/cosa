@@ -8,11 +8,9 @@ const Model = require('../lib/model');
 const cosaDb = require('../lib/db');
 const { sleep, times } = require('omnibelt');
 
-const getMongoClient = () => {
-  return MongoClient.connect(process.env.COSA_DB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  });
+const getMongoClient = async () => {
+  const mongoClient = new MongoClient(process.env.COSA_DB_URI);
+  return mongoClient.connect();
 };
 
 const cleanUpDb = async (client, db, close = true) => {
@@ -239,7 +237,6 @@ describe('Model', () => {
         str: 'foo'
       }).saveWithId(id);
 
-
       expect(model._id.toString()).to.equal('1234abcd103f8e485c9d2019');
     });
 
@@ -423,7 +420,7 @@ describe('Model', () => {
       const count = await FullTestModel.count({ _id: updatedModel._id });
       expect(count).to.equal(1);
       const collection = _db.collection('mocha_test');
-      const doc = await collection.findOne({ _id: updatedModel._id });
+      const doc = await collection.findOne({ _id: updatedModel._id.toObject() });
       expect(updatedModel._etag).to.equal(doc._etag);
       expect(updatedModel._id.toObject().toString()).to.equal(doc._id.toString());
       expect(updatedModel.bool).to.equal(doc.bool);
@@ -439,7 +436,7 @@ describe('Model', () => {
       expect(updatedModel._id.toString()).to.equal(newModel._id.toString());
       expect(updatedModel._etag).to.not.equal(newModel._etag);
       const collection = _db.collection('mocha_test');
-      const doc = await collection.findOne({ _id: updatedModel._id });
+      const doc = await collection.findOne({ _id: updatedModel._id.toObject() });
       expect(updatedModel._etag).to.equal(doc._etag);
       expect(updatedModel._id.toObject().toString()).to.equal(doc._id.toString());
       expect(updatedModel.bool).to.equal(doc.bool);
