@@ -35,15 +35,14 @@
     "lib"
   ],
   "dependencies": {
-    "bson": "~1.1.5",
+    "bson": "~4.5.1",
     "clone": "^2.1.2",
     "debug": "^4.3.2",
     "defaults": "^1.0.3",
     "error": "^7.0.2",
     "etag": "^1.8.1",
     "@hapi/joi": "^17.1.1",
-    "mongodb": "~3.6.4",
-    "mongodb-extended-json": "~1.11.1",
+    "mongodb": "~4.1.1",
     "object-assign": "^4.1.1",
     "object-path": "^0.11.7",
     "omnibelt": "^2.1.0"
