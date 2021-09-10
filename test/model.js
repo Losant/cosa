@@ -1029,7 +1029,7 @@ describe('Model', () => {
       const m = await model.save();
       await m.remove({ anotherOption: 'what' });
       expect(strRemoved).to.equal('foo');
-      expect(options).to.deep.equal({ anotherOption: 'what', waitAfterRemove: false });
+      expect(options).to.deep.equal({ anotherOption: 'what', waitAfterRemove: false, multiple: false });
     });
 
   });
@@ -1056,7 +1056,7 @@ describe('Model', () => {
       const m = await model.save();
       await m.remove({ foo: 'bar' });
       expect(strRemoved).to.equal('foo');
-      expect(options).to.deep.equal({ foo: 'bar', waitAfterRemove: false });
+      expect(options).to.deep.equal({ foo: 'bar', waitAfterRemove: false, multiple: false });
     });
 
   });
