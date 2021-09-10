@@ -17,6 +17,7 @@ describe('Immutable', function() {
       any: { type: 'any' },
       any2: { type: '*' },
       any3: {},
+      allowNull: { type: 'string', min: 1, max: 255, allow: null, required: true },
       obj: {
         type: 'object',
         properties: {
@@ -122,7 +123,7 @@ describe('Immutable', function() {
     });
 
     it('should return an immutable defined by definition', function() {
-      const obj = Immutable.create({ obj: { foo: 'a' } }, { definition: complexDef });
+      const obj = Immutable.create({ obj: { foo: 'a' }, allowNull: null }, { definition: complexDef });
       expect(Immutable.isImmutable(obj)).to.equal(true);
       expect(obj.obj.foo).to.equal('a');
       expect(obj.str).to.equal('');
@@ -131,6 +132,7 @@ describe('Immutable', function() {
       expect(Immutable.isImmutableType(obj.date, 'date')).to.equal(true);
       expect(obj.virt).to.equal('.0');
       expect(obj.foo()).to.equal('bar');
+      expect(obj.allowNull).to.equal(null);
     });
 
     it('should freeze object', function() {
