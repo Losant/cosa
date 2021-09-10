@@ -2,6 +2,7 @@ const chai = require('chai');
 chai.use(require('chai-datetime'));
 const expect = chai.expect;
 const models = require('../lib/model');
+const { clone } = require('omnibelt');
 
 describe('Immutable', function() {
 
@@ -13,13 +14,14 @@ describe('Immutable', function() {
   const complexDef = {
     abstract: true,
     properties: {
-      str: { type: 'string', default: 'abc' },
+      str: { type: 'string', default: '' },
       num: { type: 'number', default: 0 },
       bool: { type: 'boolean', default: true },
       any: { type: 'any' },
       any2: { type: '*' },
       any3: {},
-      allowNull: { type: 'string', min: 1, max: 255, allow: '', required: true },
+      allowEmpty: { type: 'string', max: 255, allow: [ '', null ], required: true },
+      allowNull: { type: 'string', max: 255, allow: null },
       obj: {
         type: 'object',
         properties: {
@@ -124,12 +126,28 @@ describe('Immutable', function() {
       expect(Immutable.create(now)).to.be.equal(now);
     });
 
-    it.only('should return an immutable defined by definition', async function() {
-      const obj = Immutable.create({ obj: { foo: 'a' }, allowNull: '' }, { definition: complexDef });
-      models.define(complexDef);
-      // console.log(complexDef);
-      // modelDef.create(obj).save();
-      const result = await complexDef._schema.validateAsync(obj);
+    it('should propery validate objects', async function() {
+      const newDef = clone(complexDef);
+      models.define(newDef);
+      await newDef._schema.validateAsync({ obj: { foo: 'a' }, allowNull: null, allowEmpty: '' });
+      let error = {};
+      try {
+        await newDef._schema.validateAsync({ obj: { foo: 'a' }, allowNull: '', allowEmpty: '' });
+      } catch (e) {
+        error = e;
+      }
+      expect(error.details[0].message).to.equal('"allowNull" is not allowed to be empty');
+      error = {};
+      try {
+        await newDef._schema.validateAsync({ obj: { foo: 'a' }, allowNull: null });
+      } catch (e) {
+        error = e;
+      }
+      expect(error.details[0].message).to.equal('"allowEmpty" is required');
+    });
+
+    it('should return an immutable defined by definition', function() {
+      const obj = Immutable.create({ obj: { foo: 'a' } }, { definition: complexDef });
       expect(Immutable.isImmutable(obj)).to.equal(true);
       expect(obj.obj.foo).to.equal('a');
       expect(obj.str).to.equal('');
@@ -138,8 +156,6 @@ describe('Immutable', function() {
       expect(Immutable.isImmutableType(obj.date, 'date')).to.equal(true);
       expect(obj.virt).to.equal('.0');
       expect(obj.foo()).to.equal('bar');
-      expect(obj.allowNull).to.equal(null);
-      const obj1 = Immutable.create({ obj: { foo: 'a' } }, { definition: complexDef });
     });
 
     it('should freeze object', function() {
