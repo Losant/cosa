@@ -1,6 +1,8 @@
 const chai = require('chai');
 chai.use(require('chai-datetime'));
 const expect = chai.expect;
+const models = require('../lib/model');
+const { clone } = require('omnibelt');
 
 describe('Immutable', function() {
 
@@ -10,6 +12,7 @@ describe('Immutable', function() {
   Immutable.use(require('../lib/object'));
 
   const complexDef = {
+    abstract: true,
     properties: {
       str: { type: 'string', default: '' },
       num: { type: 'number', default: 0 },
@@ -17,6 +20,8 @@ describe('Immutable', function() {
       any: { type: 'any' },
       any2: { type: '*' },
       any3: {},
+      allowEmpty: { type: 'string', max: 255, allow: [ '', null ], required: true },
+      allowNull: { type: 'string', max: 255, allow: null },
       obj: {
         type: 'object',
         properties: {
@@ -119,6 +124,26 @@ describe('Immutable', function() {
       expect(Immutable.create(obj)).to.be.equal(obj);
       expect(Immutable.create(arr)).to.be.equal(arr);
       expect(Immutable.create(now)).to.be.equal(now);
+    });
+
+    it('should propery validate objects', async function() {
+      const newDef = clone(complexDef);
+      models.define(newDef);
+      await newDef._schema.validateAsync({ obj: { foo: 'a' }, allowNull: null, allowEmpty: '' });
+      let error = {};
+      try {
+        await newDef._schema.validateAsync({ obj: { foo: 'a' }, allowNull: '', allowEmpty: '' });
+      } catch (e) {
+        error = e;
+      }
+      expect(error.details[0].message).to.equal('"allowNull" is not allowed to be empty');
+      error = {};
+      try {
+        await newDef._schema.validateAsync({ obj: { foo: 'a' }, allowNull: null });
+      } catch (e) {
+        error = e;
+      }
+      expect(error.details[0].message).to.equal('"allowEmpty" is required');
     });
 
     it('should return an immutable defined by definition', function() {
