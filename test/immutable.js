@@ -14,7 +14,7 @@ describe('Immutable', function() {
   const complexDef = {
     abstract: true,
     properties: {
-      str: { type: 'string', default: '' },
+      str: { type: 'string', default: '', allow: '' },
       num: { type: 'number', default: 0 },
       bool: { type: 'boolean', default: true },
       any: { type: 'any' },
@@ -126,24 +126,24 @@ describe('Immutable', function() {
       expect(Immutable.create(now)).to.be.equal(now);
     });
 
-    it('should propery validate objects', async function() {
+    it('should properly validate objects', async function() {
       const newDef = clone(complexDef);
-      models.define(newDef);
-      await newDef._schema.validateAsync({ obj: { foo: 'a' }, allowNull: null, allowEmpty: '' });
+      const m = models.define(newDef);
+      await m.create({ obj: { foo: 'a' }, allowNull: null, allowEmpty: '' }).validate();
       let error = {};
       try {
-        await newDef._schema.validateAsync({ obj: { foo: 'a' }, allowNull: '', allowEmpty: '' });
+        await m.create({ obj: { foo: 'a' }, allowNull: '', allowEmpty: '' }).validate();
       } catch (e) {
         error = e;
       }
-      expect(error.details[0].message).to.equal('"allowNull" is not allowed to be empty');
+      expect(error.message).to.equal('"allowNull" is not allowed to be empty');
       error = {};
       try {
-        await newDef._schema.validateAsync({ obj: { foo: 'a' }, allowNull: null });
+        await m.create({ obj: { foo: 'a' }, allowNull: null }).validate();
       } catch (e) {
         error = e;
       }
-      expect(error.details[0].message).to.equal('"allowEmpty" is required');
+      expect(error.message).to.equal('"allowEmpty" is required');
     });
 
     it('should return an immutable defined by definition', function() {
