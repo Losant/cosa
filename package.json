@@ -59,13 +59,6 @@
   "eslintConfig": {
     "extends": "@losant/eslint-config-losant/env/node"
   },
-  "eslintIgnore": [
-    "lib/array.js",
-    "lib/date.js",
-    "lib/defined-object.js",
-    "lib/immutable.js",
-    "lib/object.js"
-  ],
   "mocha": {
     "require": "chai",
     "reporter": "spec",

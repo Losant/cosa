@@ -51,14 +51,14 @@
 *   [ImmutableObject][47]
     *   [Parameters][48]
 *   [Immutable][49]
-    *   [use][50]
-        *   [Parameters][51]
-    *   [isImmutable][52]
-        *   [Parameters][53]
-    *   [isImmutableType][54]
-        *   [Parameters][55]
-    *   [create][56]
-        *   [Parameters][57]
+*   [use][50]
+    *   [Parameters][51]
+*   [isImmutable][52]
+    *   [Parameters][53]
+*   [isImmutableType][54]
+    *   [Parameters][55]
+*   [create][56]
+    *   [Parameters][57]
 *   [Database][58]
     *   [init][59]
         *   [Parameters][60]
@@ -351,50 +351,56 @@ Error used when validation of a document fails.
 
 ## ImmutableDefinedObject
 
-[lib/defined-object.js:15-57][122]
+[lib/defined-object.js:16-58][122]
 
 Immutable handler used to create an immutable object based on definition
 describing the object properties and methods.
 
 ### Parameters
 
-*   `data` **[object][84]** 
-*   `builder` **[object][84]** 
-*   `options` **[object][84]** 
+*   `data` **[object][84]** Underlying defined object
+*   `builder` **[object][84]** Builder instance
+*   `options` **[object][84]** Optional settings
 
-    *   `options.definition` **[object][84]** 
+    *   `options.definition` **[object][84]** Defintion settings
 
         *   `options.definition.properties` **[object][84]?** Describes the properties of the immutable object.
         *   `options.definition.virtuals` **[object][84]?** Describes the virtual properties of the immutable object.
         *   `options.definition.methods` **[object][84]?** Describes the methods of the immutable object.
 
+Returns **[undefined][123]** no return value
+
 ## ImmutableArray
 
-[lib/array.js:11-84][123]
+[lib/array.js:12-76][124]
 
 Immutable handler used to wrap a javascript array.
 
 ### Parameters
 
-*   `data` **[object][84]** 
-*   `builder` **[object][84]** 
-*   `options` **[object][84]** 
+*   `data` **[object][84]** Underlying array
+*   `builder` **[object][84]** Builder instance
+*   `options` **[object][84]** Optional settings
+
+Returns **[undefined][123]** no return value
 
 ## ImmutableDate
 
-[lib/date.js:10-50][124]
+[lib/date.js:11-43][125]
 
 Immutable handler used to wrap javascript Dates.
 
 ### Parameters
 
-*   `data` **[object][84]** 
-*   `builder` **[object][84]** 
-*   `options` **[object][84]** 
+*   `data` **[object][84]** Underlying date
+*   `builder` **[object][84]** Builder instance
+*   `options` **[object][84]** Optional settings
+
+Returns **[undefined][123]** no return value
 
 ## ImmutableBSONObjectID
 
-[lib/bson-objectId.js:8-34][125]
+[lib/bson-objectId.js:8-34][126]
 
 Immutable handler used to wrap bson ObjectID.
 
@@ -403,74 +409,78 @@ Immutable handler used to wrap bson ObjectID.
 *   `data` **[object][84]** the object id
 *   `builder` **[object][84]** the immutable handler to wrapper the object id.
 
-Returns **[undefined][126]** this adds methods on to the builder.
+Returns **[undefined][123]** this adds methods on to the builder.
 
 ## ImmutableObject
 
-[lib/object.js:19-23][127]
+[lib/object.js:20-26][127]
 
 Immutable handler used to wrap a simple javascript object.
 
 ### Parameters
 
-*   `data` **[object][84]** 
-*   `builder` **[object][84]** 
+*   `data` **[object][84]** Underlying array
+*   `builder` **[object][84]** Builder instance
+
+Returns **[undefined][123]** no return value
 
 ## Immutable
 
-[lib/immutable.js:11-103][128]
+[lib/immutable.js:35-126][128]
 
 Static class for working with immutable data types.
 
-### use
+## use
 
-[lib/immutable.js:19-28][129]
+[lib/immutable.js:44-53][129]
 
 Registers an immutable handler for the given data type. Handlers are used
 to wrap specific data types. For example BSON ObjectIds or Dates.
 
-#### Parameters
+### Parameters
 
-*   `type` **[string][80]**  (optional, default `*`)
-*   `handler` **[function][86]** 
+*   `type` **[string][80]** the name of the type (optional, default `*`)
+*   `handler` **[function][86]** the handler for the type
 
-### isImmutable
+Returns **[undefined][123]** no return value
 
-[lib/immutable.js:35-38][130]
+## isImmutable
+
+[lib/immutable.js:60-63][130]
 
 Returns `true` if the given value is an Immutable.
 
-#### Parameters
+### Parameters
 
-*   `value` **[object][84]** 
+*   `value` **[object][84]** a value to check
 
-Returns **[boolean][93]** 
+Returns **[boolean][93]** if it is an immutable instance
 
-### isImmutableType
+## isImmutableType
 
-[lib/immutable.js:46-48][131]
+[lib/immutable.js:71-73][131]
 
 Returns `true` if the given value is an Immutable of the given type.
 
-#### Parameters
+### Parameters
 
-*   `value` **[object][84]** 
-*   `type` **[string][80]** 
+*   `value` **[object][84]** a value to check
+*   `type` **[string][80]** type to check against
 
-Returns **[boolean][93]** 
+Returns **[boolean][93]** if the value is an immutable instance of that type
 
-### create
+## create
 
-[lib/immutable.js:56-101][132]
+[lib/immutable.js:81-125][132]
 
 Creates an immutable object based on the given data.
 
-#### Parameters
+### Parameters
 
 *   `data` **[object][84]** Object to make immutable.
 *   `options` **[object][84]?** Options passed to the immutable handler for the given data type. (optional, default `{}`)
 
-Returns **[object][84]** 
+Returns **[object][84]** the immutable wrapped object
 
 ## Database
 
@@ -819,11 +829,11 @@ Returns **[Promise][82]** resolves with the result of the distinct query from mo
 
 [76]: #parameters-31
 
-[77]: https://github.com/Losant/cosa/blob/fa3b8a0377ba8784cd5e963665f829c38d7f802b/lib/index.js#L9-L34 "Source code on GitHub"
+[77]: https://github.com/Losant/cosa/blob/05b938d76e615424a13d6fe9603a7c217806d954/lib/index.js#L9-L34 "Source code on GitHub"
 
-[78]: https://github.com/Losant/cosa/blob/fa3b8a0377ba8784cd5e963665f829c38d7f802b/lib/index.js#L19-L19 "Source code on GitHub"
+[78]: https://github.com/Losant/cosa/blob/05b938d76e615424a13d6fe9603a7c217806d954/lib/index.js#L19-L19 "Source code on GitHub"
 
-[79]: https://github.com/Losant/cosa/blob/fa3b8a0377ba8784cd5e963665f829c38d7f802b/lib/index.js#L30-L33 "Source code on GitHub"
+[79]: https://github.com/Losant/cosa/blob/05b938d76e615424a13d6fe9603a7c217806d954/lib/index.js#L30-L33 "Source code on GitHub"
 
 [80]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
 
@@ -831,117 +841,117 @@ Returns **[Promise][82]** resolves with the result of the distinct query from mo
 
 [82]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise
 
-[83]: https://github.com/Losant/cosa/blob/fa3b8a0377ba8784cd5e963665f829c38d7f802b/lib/model.js#L329-L454 "Source code on GitHub"
+[83]: https://github.com/Losant/cosa/blob/05b938d76e615424a13d6fe9603a7c217806d954/lib/model.js#L329-L454 "Source code on GitHub"
 
 [84]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
 
-[85]: https://github.com/Losant/cosa/blob/fa3b8a0377ba8784cd5e963665f829c38d7f802b/lib/cursor.js#L8-L204 "Source code on GitHub"
+[85]: https://github.com/Losant/cosa/blob/05b938d76e615424a13d6fe9603a7c217806d954/lib/cursor.js#L8-L204 "Source code on GitHub"
 
 [86]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function
 
-[87]: https://github.com/Losant/cosa/blob/fa3b8a0377ba8784cd5e963665f829c38d7f802b/lib/cursor.js#L20-L29 "Source code on GitHub"
+[87]: https://github.com/Losant/cosa/blob/05b938d76e615424a13d6fe9603a7c217806d954/lib/cursor.js#L20-L29 "Source code on GitHub"
 
 [88]: https://mongodb.github.io/node-mongodb-native/4.0/classes/findcursor.html#foreach
 
-[89]: https://github.com/Losant/cosa/blob/fa3b8a0377ba8784cd5e963665f829c38d7f802b/lib/cursor.js#L37-L60 "Source code on GitHub"
+[89]: https://github.com/Losant/cosa/blob/05b938d76e615424a13d6fe9603a7c217806d954/lib/cursor.js#L37-L60 "Source code on GitHub"
 
 [90]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number
 
-[91]: https://github.com/Losant/cosa/blob/fa3b8a0377ba8784cd5e963665f829c38d7f802b/lib/cursor.js#L69-L71 "Source code on GitHub"
+[91]: https://github.com/Losant/cosa/blob/05b938d76e615424a13d6fe9603a7c217806d954/lib/cursor.js#L69-L71 "Source code on GitHub"
 
 [92]: https://mongodb.github.io/node-mongodb-native/4.0/classes/findcursor.html#count
 
 [93]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
 
-[94]: https://github.com/Losant/cosa/blob/fa3b8a0377ba8784cd5e963665f829c38d7f802b/lib/cursor.js#L78-L80 "Source code on GitHub"
+[94]: https://github.com/Losant/cosa/blob/05b938d76e615424a13d6fe9603a7c217806d954/lib/cursor.js#L78-L80 "Source code on GitHub"
 
 [95]: https://mongodb.github.io/node-mongodb-native/4.0/classes/findcursor.html#close
 
-[96]: https://github.com/Losant/cosa/blob/fa3b8a0377ba8784cd5e963665f829c38d7f802b/lib/cursor.js#L87-L89 "Source code on GitHub"
+[96]: https://github.com/Losant/cosa/blob/05b938d76e615424a13d6fe9603a7c217806d954/lib/cursor.js#L87-L89 "Source code on GitHub"
 
-[97]: https://github.com/Losant/cosa/blob/fa3b8a0377ba8784cd5e963665f829c38d7f802b/lib/cursor.js#L97-L100 "Source code on GitHub"
+[97]: https://github.com/Losant/cosa/blob/05b938d76e615424a13d6fe9603a7c217806d954/lib/cursor.js#L97-L100 "Source code on GitHub"
 
 [98]: https://mongodb.github.io/node-mongodb-native/4.0/classes/findcursor.html#filter
 
 [99]: #cursor
 
-[100]: https://github.com/Losant/cosa/blob/fa3b8a0377ba8784cd5e963665f829c38d7f802b/lib/cursor.js#L108-L111 "Source code on GitHub"
+[100]: https://github.com/Losant/cosa/blob/05b938d76e615424a13d6fe9603a7c217806d954/lib/cursor.js#L108-L111 "Source code on GitHub"
 
 [101]: https://mongodb.github.io/node-mongodb-native/4.0/classes/findcursor.html#limit
 
-[102]: https://github.com/Losant/cosa/blob/fa3b8a0377ba8784cd5e963665f829c38d7f802b/lib/cursor.js#L119-L123 "Source code on GitHub"
+[102]: https://github.com/Losant/cosa/blob/05b938d76e615424a13d6fe9603a7c217806d954/lib/cursor.js#L119-L123 "Source code on GitHub"
 
 [103]: https://mongodb.github.io/node-mongodb-native/4.0/classes/findcursor.html#map
 
-[104]: https://github.com/Losant/cosa/blob/fa3b8a0377ba8784cd5e963665f829c38d7f802b/lib/cursor.js#L131-L134 "Source code on GitHub"
+[104]: https://github.com/Losant/cosa/blob/05b938d76e615424a13d6fe9603a7c217806d954/lib/cursor.js#L131-L134 "Source code on GitHub"
 
 [105]: https://mongodb.github.io/node-mongodb-native/4.0/classes/findcursor.html#max
 
-[106]: https://github.com/Losant/cosa/blob/fa3b8a0377ba8784cd5e963665f829c38d7f802b/lib/cursor.js#L142-L145 "Source code on GitHub"
+[106]: https://github.com/Losant/cosa/blob/05b938d76e615424a13d6fe9603a7c217806d954/lib/cursor.js#L142-L145 "Source code on GitHub"
 
 [107]: https://mongodb.github.io/node-mongodb-native/4.0/classes/findcursor.html#min
 
-[108]: https://github.com/Losant/cosa/blob/fa3b8a0377ba8784cd5e963665f829c38d7f802b/lib/cursor.js#L152-L155 "Source code on GitHub"
+[108]: https://github.com/Losant/cosa/blob/05b938d76e615424a13d6fe9603a7c217806d954/lib/cursor.js#L152-L155 "Source code on GitHub"
 
 [109]: https://mongodb.github.io/node-mongodb-native/4.0/classes/findcursor.html#next
 
-[110]: https://github.com/Losant/cosa/blob/fa3b8a0377ba8784cd5e963665f829c38d7f802b/lib/cursor.js#L163-L171 "Source code on GitHub"
+[110]: https://github.com/Losant/cosa/blob/05b938d76e615424a13d6fe9603a7c217806d954/lib/cursor.js#L163-L171 "Source code on GitHub"
 
 [111]: https://mongodb.github.io/node-mongodb-native/4.0/classes/findcursor.html#forEach
 
-[112]: https://github.com/Losant/cosa/blob/fa3b8a0377ba8784cd5e963665f829c38d7f802b/lib/cursor.js#L179-L182 "Source code on GitHub"
+[112]: https://github.com/Losant/cosa/blob/05b938d76e615424a13d6fe9603a7c217806d954/lib/cursor.js#L179-L182 "Source code on GitHub"
 
 [113]: https://mongodb.github.io/node-mongodb-native/4.0/classes/findcursor.html#skip
 
-[114]: https://github.com/Losant/cosa/blob/fa3b8a0377ba8784cd5e963665f829c38d7f802b/lib/cursor.js#L191-L194 "Source code on GitHub"
+[114]: https://github.com/Losant/cosa/blob/05b938d76e615424a13d6fe9603a7c217806d954/lib/cursor.js#L191-L194 "Source code on GitHub"
 
 [115]: https://mongodb.github.io/node-mongodb-native/4.0/classes/findcursor.html#sort
 
 [116]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
 
-[117]: https://github.com/Losant/cosa/blob/fa3b8a0377ba8784cd5e963665f829c38d7f802b/lib/cursor.js#L201-L203 "Source code on GitHub"
+[117]: https://github.com/Losant/cosa/blob/05b938d76e615424a13d6fe9603a7c217806d954/lib/cursor.js#L201-L203 "Source code on GitHub"
 
 [118]: https://mongodb.github.io/node-mongodb-native/4.0/classes/findcursor.html#toArray
 
-[119]: https://github.com/Losant/cosa/blob/fa3b8a0377ba8784cd5e963665f829c38d7f802b/lib/errors.js#L19-L39 "Source code on GitHub"
+[119]: https://github.com/Losant/cosa/blob/05b938d76e615424a13d6fe9603a7c217806d954/lib/errors.js#L19-L39 "Source code on GitHub"
 
-[120]: https://github.com/Losant/cosa/blob/fa3b8a0377ba8784cd5e963665f829c38d7f802b/lib/errors.js#L24-L28 "Source code on GitHub"
+[120]: https://github.com/Losant/cosa/blob/05b938d76e615424a13d6fe9603a7c217806d954/lib/errors.js#L24-L28 "Source code on GitHub"
 
-[121]: https://github.com/Losant/cosa/blob/fa3b8a0377ba8784cd5e963665f829c38d7f802b/lib/errors.js#L33-L37 "Source code on GitHub"
+[121]: https://github.com/Losant/cosa/blob/05b938d76e615424a13d6fe9603a7c217806d954/lib/errors.js#L33-L37 "Source code on GitHub"
 
-[122]: https://github.com/Losant/cosa/blob/fa3b8a0377ba8784cd5e963665f829c38d7f802b/lib/defined-object.js#L15-L57 "Source code on GitHub"
+[122]: https://github.com/Losant/cosa/blob/05b938d76e615424a13d6fe9603a7c217806d954/lib/defined-object.js#L16-L58 "Source code on GitHub"
 
-[123]: https://github.com/Losant/cosa/blob/fa3b8a0377ba8784cd5e963665f829c38d7f802b/lib/array.js#L11-L84 "Source code on GitHub"
+[123]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/undefined
 
-[124]: https://github.com/Losant/cosa/blob/fa3b8a0377ba8784cd5e963665f829c38d7f802b/lib/date.js#L10-L50 "Source code on GitHub"
+[124]: https://github.com/Losant/cosa/blob/05b938d76e615424a13d6fe9603a7c217806d954/lib/array.js#L12-L76 "Source code on GitHub"
 
-[125]: https://github.com/Losant/cosa/blob/fa3b8a0377ba8784cd5e963665f829c38d7f802b/lib/bson-objectId.js#L8-L34 "Source code on GitHub"
+[125]: https://github.com/Losant/cosa/blob/05b938d76e615424a13d6fe9603a7c217806d954/lib/date.js#L11-L43 "Source code on GitHub"
 
-[126]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/undefined
+[126]: https://github.com/Losant/cosa/blob/05b938d76e615424a13d6fe9603a7c217806d954/lib/bson-objectId.js#L8-L34 "Source code on GitHub"
 
-[127]: https://github.com/Losant/cosa/blob/fa3b8a0377ba8784cd5e963665f829c38d7f802b/lib/object.js#L19-L23 "Source code on GitHub"
+[127]: https://github.com/Losant/cosa/blob/05b938d76e615424a13d6fe9603a7c217806d954/lib/object.js#L20-L26 "Source code on GitHub"
 
-[128]: https://github.com/Losant/cosa/blob/fa3b8a0377ba8784cd5e963665f829c38d7f802b/lib/immutable.js#L11-L103 "Source code on GitHub"
+[128]: https://github.com/Losant/cosa/blob/05b938d76e615424a13d6fe9603a7c217806d954/lib/immutable.js#L35-L126 "Source code on GitHub"
 
-[129]: https://github.com/Losant/cosa/blob/fa3b8a0377ba8784cd5e963665f829c38d7f802b/lib/immutable.js#L19-L28 "Source code on GitHub"
+[129]: https://github.com/Losant/cosa/blob/05b938d76e615424a13d6fe9603a7c217806d954/lib/immutable.js#L44-L53 "Source code on GitHub"
 
-[130]: https://github.com/Losant/cosa/blob/fa3b8a0377ba8784cd5e963665f829c38d7f802b/lib/immutable.js#L35-L38 "Source code on GitHub"
+[130]: https://github.com/Losant/cosa/blob/05b938d76e615424a13d6fe9603a7c217806d954/lib/immutable.js#L60-L63 "Source code on GitHub"
 
-[131]: https://github.com/Losant/cosa/blob/fa3b8a0377ba8784cd5e963665f829c38d7f802b/lib/immutable.js#L46-L48 "Source code on GitHub"
+[131]: https://github.com/Losant/cosa/blob/05b938d76e615424a13d6fe9603a7c217806d954/lib/immutable.js#L71-L73 "Source code on GitHub"
 
-[132]: https://github.com/Losant/cosa/blob/fa3b8a0377ba8784cd5e963665f829c38d7f802b/lib/immutable.js#L56-L101 "Source code on GitHub"
+[132]: https://github.com/Losant/cosa/blob/05b938d76e615424a13d6fe9603a7c217806d954/lib/immutable.js#L81-L125 "Source code on GitHub"
 
-[133]: https://github.com/Losant/cosa/blob/fa3b8a0377ba8784cd5e963665f829c38d7f802b/lib/db.js#L75-L368 "Source code on GitHub"
+[133]: https://github.com/Losant/cosa/blob/05b938d76e615424a13d6fe9603a7c217806d954/lib/db.js#L75-L368 "Source code on GitHub"
 
-[134]: https://github.com/Losant/cosa/blob/fa3b8a0377ba8784cd5e963665f829c38d7f802b/lib/db.js#L99-L137 "Source code on GitHub"
+[134]: https://github.com/Losant/cosa/blob/05b938d76e615424a13d6fe9603a7c217806d954/lib/db.js#L99-L137 "Source code on GitHub"
 
 [135]: init
 
-[136]: https://github.com/Losant/cosa/blob/fa3b8a0377ba8784cd5e963665f829c38d7f802b/lib/db.js#L146-L167 "Source code on GitHub"
+[136]: https://github.com/Losant/cosa/blob/05b938d76e615424a13d6fe9603a7c217806d954/lib/db.js#L146-L167 "Source code on GitHub"
 
 [137]: https://mongodb.github.io/node-mongodb-native/4.0/classes/db.html#collection
 
-[138]: https://github.com/Losant/cosa/blob/fa3b8a0377ba8784cd5e963665f829c38d7f802b/lib/db.js#L193-L234 "Source code on GitHub"
+[138]: https://github.com/Losant/cosa/blob/05b938d76e615424a13d6fe9603a7c217806d954/lib/db.js#L193-L234 "Source code on GitHub"
 
 [139]: https://mongodb.github.io/node-mongodb-native/4.0/classes/findcursor.html
 
@@ -957,7 +967,7 @@ Returns **[Promise][82]** resolves with the result of the distinct query from mo
 
 [145]: https://mongodb.github.io/node-mongodb-native/4.0/interfaces/findoptions.html#nocursortimeout
 
-[146]: https://github.com/Losant/cosa/blob/fa3b8a0377ba8784cd5e963665f829c38d7f802b/lib/db.js#L246-L262 "Source code on GitHub"
+[146]: https://github.com/Losant/cosa/blob/05b938d76e615424a13d6fe9603a7c217806d954/lib/db.js#L246-L262 "Source code on GitHub"
 
 [147]: https://mongodb.github.io/node-mongodb-native/4.0/classes/collection.html#insertmany
 
@@ -965,26 +975,26 @@ Returns **[Promise][82]** resolves with the result of the distinct query from mo
 
 [149]: https://mongodb.github.io/node-mongodb-native/4.0/classes/writeconcern.html
 
-[150]: https://github.com/Losant/cosa/blob/fa3b8a0377ba8784cd5e963665f829c38d7f802b/lib/db.js#L277-L286 "Source code on GitHub"
+[150]: https://github.com/Losant/cosa/blob/05b938d76e615424a13d6fe9603a7c217806d954/lib/db.js#L277-L286 "Source code on GitHub"
 
 [151]: https://mongodb.github.io/node-mongodb-native/4.0/classes/collection.html#updateMany
 
 [152]: https://mongodb.github.io/node-mongodb-native/4.0/classes/collection.html#updateOne
 
-[153]: https://github.com/Losant/cosa/blob/fa3b8a0377ba8784cd5e963665f829c38d7f802b/lib/db.js#L299-L304 "Source code on GitHub"
+[153]: https://github.com/Losant/cosa/blob/05b938d76e615424a13d6fe9603a7c217806d954/lib/db.js#L299-L304 "Source code on GitHub"
 
 [154]: https://mongodb.github.io/node-mongodb-native/4.0/classes/collection.html#deleteMany
 
 [155]: https://mongodb.github.io/node-mongodb-native/4.0/classes/collection.html#deleteOne
 
-[156]: https://github.com/Losant/cosa/blob/fa3b8a0377ba8784cd5e963665f829c38d7f802b/lib/db.js#L320-L328 "Source code on GitHub"
+[156]: https://github.com/Losant/cosa/blob/05b938d76e615424a13d6fe9603a7c217806d954/lib/db.js#L320-L328 "Source code on GitHub"
 
 [157]: https://mongodb.github.io/node-mongodb-native/4.0/classes/collection.html#aggregate
 
-[158]: https://github.com/Losant/cosa/blob/fa3b8a0377ba8784cd5e963665f829c38d7f802b/lib/db.js#L341-L346 "Source code on GitHub"
+[158]: https://github.com/Losant/cosa/blob/05b938d76e615424a13d6fe9603a7c217806d954/lib/db.js#L341-L346 "Source code on GitHub"
 
 [159]: https://mongodb.github.io/node-mongodb-native/4.0/classes/collection.html#distinct
 
-[160]: https://github.com/Losant/cosa/blob/fa3b8a0377ba8784cd5e963665f829c38d7f802b/lib/db.js#L358-L366 "Source code on GitHub"
+[160]: https://github.com/Losant/cosa/blob/05b938d76e615424a13d6fe9603a7c217806d954/lib/db.js#L358-L366 "Source code on GitHub"
 
 [161]: http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#replace
