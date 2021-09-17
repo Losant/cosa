@@ -937,7 +937,7 @@ describe('Model', () => {
       expect(model.beforeSave).to.be.a('function');
       await model.save({ randomOption: 'hello' });
       expect(strToSave).to.equal('foo');
-      expect(options).to.deep.equal({ randomOption: 'hello', waitAfterSave: false });
+      expect(options).to.deep.equal({ randomOption: 'hello' });
     });
 
     it('should allow mutating model before saving', async () => {
@@ -987,7 +987,7 @@ describe('Model', () => {
       checkFunction = function(instance, args) {
         expect(instance.str).to.equal('foo');
         expect(args[0]).to.equal(null);
-        expect(args[1]).to.deep.equal({ randomOption: 'hello', waitAfterSave: false });
+        expect(args[1]).to.deep.equal({ randomOption: 'hello' });
         wasCalled = true;
       };
       const m = await model.save({ randomOption: 'hello' });
@@ -997,7 +997,7 @@ describe('Model', () => {
       checkFunction = function(instance, args) {
         expect(instance.str).to.equal('bar');
         expect(args[0].str).to.equal('foo');
-        expect(args[1]).to.deep.equal({ randomOption: 'goodbye', waitAfterSave: false });
+        expect(args[1]).to.deep.equal({ randomOption: 'goodbye' });
         wasCalled = true;
       };
       await m.set('str', 'bar').save({ randomOption: 'goodbye' });
@@ -1029,7 +1029,7 @@ describe('Model', () => {
       const m = await model.save();
       await m.remove({ anotherOption: 'what' });
       expect(strRemoved).to.equal('foo');
-      expect(options).to.deep.equal({ anotherOption: 'what', waitAfterRemove: false, multiple: false });
+      expect(options).to.deep.equal({ anotherOption: 'what' });
     });
 
   });
@@ -1056,7 +1056,7 @@ describe('Model', () => {
       const m = await model.save();
       await m.remove({ foo: 'bar' });
       expect(strRemoved).to.equal('foo');
-      expect(options).to.deep.equal({ foo: 'bar', waitAfterRemove: false, multiple: false });
+      expect(options).to.deep.equal({ foo: 'bar' });
     });
 
   });
