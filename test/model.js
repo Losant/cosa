@@ -47,6 +47,37 @@ describe('Model', () => {
   const Immutable = require('../lib/immutable');
   const FullTestModel = require('./support/full-test-model');
 
+  describe('session test', () => {
+    it('should save all transactions', async () => {
+      const session = await client.startSession();
+      await session.startTransaction();
+      await FullTestModel.create({
+        str: 'foo'
+      }).save({ session });
+      await FullTestModel.create({
+        str: 'foo1'
+      }).save({ session });
+      await session.commitTransaction();
+      await session.endSession();
+      const total = await FullTestModel.count();
+      expect(total).to.equal(2);
+    });
+    it('should abort all transactions', async () => {
+      const session = await client.startSession();
+      await session.startTransaction();
+      await FullTestModel.create({
+        str: 'foo'
+      }).save({ session });
+      await FullTestModel.create({
+        str: 'foo1'
+      }).save({ session });
+      await session.abortTransaction();
+      await session.endSession();
+      const total = await FullTestModel.count();
+      expect(total).to.equal(0);
+    });
+  });
+
   describe('.define()', () => {
 
     it('should return a model definition', () => {
