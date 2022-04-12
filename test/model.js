@@ -48,15 +48,17 @@ describe('Model', () => {
   const FullTestModel = require('./support/full-test-model');
 
   describe('session test', () => {
+
     it('should save all transactions', async () => {
       const session = await client.startSession();
+      const FulleTestModelWithSession = FullTestModel.useSession(session);
       await session.startTransaction();
-      await FullTestModel.create({
+      await FulleTestModelWithSession.create({
         str: 'foo'
-      }).save({ session });
-      await FullTestModel.create({
+      }).save();
+      await FulleTestModelWithSession.create({
         str: 'foo1'
-      }).save({ session });
+      }).save();
       await session.commitTransaction();
       await session.endSession();
       const total = await FullTestModel.count();
@@ -65,12 +67,13 @@ describe('Model', () => {
     it('should abort all transactions', async () => {
       const session = await client.startSession();
       await session.startTransaction();
-      await FullTestModel.create({
+      const FulleTestModelWithSession = FullTestModel.useSession(session);
+      await FulleTestModelWithSession.create({
         str: 'foo'
-      }).save({ session });
-      await FullTestModel.create({
+      }).save();
+      await FulleTestModelWithSession.create({
         str: 'foo1'
-      }).save({ session });
+      }).save();
       await session.abortTransaction();
       await session.endSession();
       const total = await FullTestModel.count();
