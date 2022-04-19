@@ -24,7 +24,7 @@ const ModelA = Model.define({
   },
   methods: {
     beforeSave: async function(saveOpts) {
-      let b = await ModelB.findOne({}, { session: saveOpts.session });
+      const b = await ModelB.findOne({}, { session: saveOpts.session });
       if (b) {
         const strs = b.toObject().strs;
         strs.push(this.str);
@@ -54,7 +54,7 @@ const ModelABeforeCommitError = Model.define({
     },
     beforeSave: async function(saveOpts) {
       globalSet.add(this.str);
-      let b = await ModelB.findOne({}, { session: saveOpts.session });
+      const b = await ModelB.findOne({}, { session: saveOpts.session });
       if (b) {
         const strs = b.toObject().strs;
         strs.push(this.str);
@@ -81,7 +81,7 @@ const cleanUpDb = async (client, db, close = true) => {
 };
 
 
-describe.only('Sessions', () => {
+describe('Sessions', () => {
   after(async () => {
     if (cosaDb._client) {
       await cosaDb._client.close();
@@ -98,7 +98,6 @@ describe.only('Sessions', () => {
       await session.startTransaction();
       await ModelA.create({ str: 'hello' }).save({ session });
       await session.abortTransaction();
-  
       expect(await ModelA.count()).to.equal(0);
       expect(await ModelB.count()).to.equal(0);
     });
@@ -109,7 +108,6 @@ describe.only('Sessions', () => {
       await ModelA.create({ str: 'hello' }).save({ session });
       await ModelA.create({ str: 'world' }).save({ session });
       await session.abortTransaction();
-  
       expect(await ModelA.count()).to.equal(0);
       expect(await ModelB.count()).to.equal(0);
     });
@@ -122,7 +120,6 @@ describe.only('Sessions', () => {
       await ModelA.create({ str: 'hello' }).save({ session });
       await ModelA.create({ str: 'world' }).save({ session });
       await session.commitTransaction();
-  
       expect(await ModelA.count()).to.equal(2);
       expect(await ModelB.count()).to.equal(1);
     });
@@ -141,7 +138,5 @@ describe.only('Sessions', () => {
       expect(globalSet.has('hello')).to.equal(false);
       expect(globalSet.has('world')).to.equal(false);
     });
-    
   });
-
 });

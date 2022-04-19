@@ -27,7 +27,7 @@ const cleanUpDb = async (client, db, close = true) => {
 
 
 describe('Model', () => {
-  
+
   after(async () => {
     if (cosaDb._client) {
       await cosaDb._client.close();
