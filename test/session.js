@@ -7,6 +7,7 @@ const { createSession } = require('../lib/session');
 const cosaDb = require('../lib/db');
 
 const globalSet = new Set();
+const globalAfterSave = new Set();
 
 const ModelB = Model.define({
   name: 'ModelB',
@@ -33,6 +34,11 @@ const ModelA = Model.define({
         await ModelB.create({ strs: [ this.str ] }).save(saveOpts);
       }
       return;
+    },
+    afterSave: function() {
+      return () => {
+        globalAfterSave.add(this.str);
+      };
     }
   }
 });
@@ -122,6 +128,7 @@ describe('Sessions', () => {
       await session.commitTransaction();
       expect(await ModelA.count()).to.equal(2);
       expect(await ModelB.count()).to.equal(1);
+      expect(Array.from(globalAfterSave)).to.deep.equal([ 'hello', 'world' ]);
     });
 
     it('multiple models', async () => {
