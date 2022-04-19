@@ -6,8 +6,8 @@ node_js:
 services:
   - mongodb
 before_script:
-  - echo -e "replication:\n  replSetName: travisReplica" | sudo tee -a /etc/mongodb.conf
-  - sudo service mongodb restart
+  - echo "replSet = travisReplica" | sudo tee -a /etc/mongodb.conf
+  - sudo /etc/init.d/mongodb restart
   - sleep 20
   - mongo --eval 'rs.initiate()'
   - sleep 15
