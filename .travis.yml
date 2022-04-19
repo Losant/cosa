@@ -5,9 +5,9 @@ node_js:
   - "16"
 services:
   - mongodb
-before_script:
+before_install:
   - echo "replSet = travisReplica" | sudo tee -a /etc/mongodb.conf
-  - sudo /etc/init.d/mongodb restart
+  - sudo service mongodb restart
   - sleep 20
   - mongo --eval 'rs.initiate()'
   - sleep 15
