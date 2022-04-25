@@ -9,8 +9,7 @@ before_install:
   - echo "replication.replSetName = replTravis" | sudo tee -a /etc/mongodb.conf
   - sudo systemctl stop mongod
   - sleep 20
-  - sudo systemctl start mongod
+  - sudo systemctl start mongod --replSet replTravis
   - sleep 20
-  - mongo --eval 'rs.reconfig({ _id: 'replTravis' })'
   - mongo --eval 'rs.initiate()'
   - sleep 15
