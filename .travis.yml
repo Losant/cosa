@@ -11,6 +11,6 @@ before_install:
   - sleep 20
   - sudo systemctl start mongod
   - sleep 20
-  - mongo --eval 'rs.reconfig({ _id:\ 'replTravis' })'
+  - mongo --eval 'rs.reconfig({ _id: 'replTravis' })'
   - mongo --eval 'rs.initiate()'
   - sleep 15
