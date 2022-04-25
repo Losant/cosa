@@ -6,8 +6,8 @@ node_js:
 services:
   - mongodb
 before_install:
-  - echo "replication:" >> /etc/mongodb.conf
-  - echo -e "\treplSetName: travisReplica" >> etc/mongodb.conf
+  - sudo echo "replication:" >> /etc/mongodb.conf
+  - sudo echo -e "\treplSetName: travisReplica" >> etc/mongodb.conf
   - sudo systemctl stop mongod
   - sleep 20
   - sudo systemctl start mongod
