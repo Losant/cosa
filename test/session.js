@@ -9,6 +9,14 @@ const cosaDb = require('../lib/db');
 const globalSet = new Set();
 const globalAfterSave = new Set();
 
+const ModelC = Model.define({
+  name: 'ModelA',
+  collection: 'mochaA',
+  properties: {
+    str: { type: 'string', required: true }
+  }
+});
+
 const ModelB = Model.define({
   name: 'ModelB',
   collection: 'mochaB',
@@ -24,38 +32,7 @@ const ModelA = Model.define({
     str: { type: 'string', required: true }
   },
   methods: {
-    beforeSave: async function(saveOpts) {
-      const b = await ModelB.findOne({}, { session: saveOpts.session });
-      if (b) {
-        const strs = b.toObject().strs;
-        strs.push(this.str);
-        await b.set({ strs }).save(saveOpts);
-      } else {
-        await ModelB.create({ strs: [ this.str ] }).save(saveOpts);
-      }
-      return;
-    },
-    afterSave: function() {
-      return () => {
-        globalAfterSave.add(this.str);
-      };
-    }
-  }
-});
-
-const ModelABeforeCommitError = Model.define({
-  name: 'ModelAError',
-  collection: 'mochaA',
-  properties: {
-    str: { type: 'string', required: true }
-  },
-  virtuals: {
-    virt: function() {
-      return `${this.str}.virtual`;
-    }
-  },
-  methods: {
-    onAbortTransaction: function() {
+    saveAbort: function() {
       globalSet.delete(this.str);
     },
     beforeSave: async function(saveOpts) {
@@ -68,9 +45,38 @@ const ModelABeforeCommitError = Model.define({
       } else {
         await ModelB.create({ strs: [ this.str ] }).save(saveOpts);
       }
-      return async () => {
-        throw new Error('Error before committee function...');
-      };
+      return;
+    },
+    afterSaveCommit: function() {
+      globalAfterSave.add(this.str);
+    }
+  }
+});
+
+const ModelBAfterSaveCommitError = Model.define({
+  name: 'ModelAError',
+  collection: 'mochaA',
+  properties: {
+    str: { type: 'string', required: true }
+  },
+  virtuals: {
+    virt: function() {
+      return `${this.str}.virtual`;
+    }
+  },
+  methods: {
+    beforeSave: async function(saveOpts) {
+      const b = await ModelB.findOne({}, { session: saveOpts.session });
+      if (b) {
+        const strs = b.toObject().strs;
+        strs.push(this.str);
+        await b.set({ strs }).save(saveOpts);
+      } else {
+        await ModelB.create({ strs: [ this.str ] }).save(saveOpts);
+      }
+    },
+    afterSaveCommit: async function() {
+      throw new Error('Error before committee function...');
     }
   }
 });
@@ -113,13 +119,25 @@ describe('Sessions', () => {
       await session.startTransaction();
       await ModelA.create({ str: 'hello' }).save({ session });
       await ModelA.create({ str: 'world' }).save({ session });
+      expect(globalSet.has('hello')).to.equal(true);
+      expect(globalSet.has('world')).to.equal(true);
       await session.abortTransaction();
+      expect(globalSet.has('hello')).to.equal(false);
+      expect(globalSet.has('world')).to.equal(false);
       expect(await ModelA.count()).to.equal(0);
       expect(await ModelB.count()).to.equal(0);
     });
   });
 
   describe('onCommitte', () => {
+    it('one model with invalid schema', async () => {
+      const session = await createSession();
+      await session.startTransaction();
+      const error = await ModelC.create({}).save({ session }).catch((e) => e);
+      expect(error.message).to.equal('"str" is required');
+      await session.commitTransaction();
+      expect(await ModelC.count()).to.equal(0);
+    });
     it('multiple models', async () => {
       const session = await createSession();
       await session.startTransaction();
@@ -134,16 +152,12 @@ describe('Sessions', () => {
     it('multiple models', async () => {
       const session = await createSession();
       await session.startTransaction();
-      await ModelABeforeCommitError.create({ str: 'hello' }).save({ session });
-      await ModelABeforeCommitError.create({ str: 'world' }).save({ session });
+      await ModelBAfterSaveCommitError.create({ str: 'hello' }).save({ session });
+      await ModelBAfterSaveCommitError.create({ str: 'world' }).save({ session });
       expect(globalSet.has('hello')).to.equal(true);
       expect(globalSet.has('world')).to.equal(true);
       const error = await session.commitTransaction().catch((e) => { return e; });
       expect(error.message).to.equal('Error before committee function...');
-      expect(await ModelABeforeCommitError.count()).to.equal(0);
-      expect(await ModelB.count()).to.equal(0);
-      expect(globalSet.has('hello')).to.equal(false);
-      expect(globalSet.has('world')).to.equal(false);
     });
   });
 });
