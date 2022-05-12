@@ -50,13 +50,6 @@ describe('Model', () => {
 
   describe('session test', () => {
 
-    it('create a transaction', async () => {
-      await FullTestModel.create({
-        str: 'foo'
-      }).save({ createSession: true });
-      expect(await FullTestModel.count()).to.equal(1);
-    });
-
     it('should abort all transactions', async () => {
       const session = await createSession();
       await session.startTransaction();

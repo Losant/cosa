@@ -32,7 +32,7 @@ const ModelA = Model.define({
     str: { type: 'string', required: true }
   },
   methods: {
-    saveAbort: function() {
+    afterSaveAbort: function() {
       globalSet.delete(this.str);
     },
     beforeSave: async function(saveOpts) {
