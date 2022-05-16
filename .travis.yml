@@ -6,7 +6,8 @@ node_js:
 services:
   - mongodb
 before_install:
-  - echo "replication.replSetName = replTravis" | sudo tee -a /etc/mongodb.conf
+  - sudo systemctl status mongod
+  - echo "replication:\n  replSetName: replTravis" | sudo tee -a /etc/mongodb.conf
   - sudo cat /etc/mongodb.conf
   - sudo systemctl restart mongod
   - sleep 20
