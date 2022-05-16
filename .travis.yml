@@ -7,9 +7,9 @@ services:
   - mongodb
 before_install:
   - echo "replication.replSetName = replTravis" | sudo tee -a /etc/mongodb.conf
-  - sudo systemctl stop mongod
-  - sleep 20
-  - sudo systemctl start mongod
+  - sudo cat /etc/mongodb.conf
+  - sudo systemctl restart mongod
   - sleep 20
   - mongo --eval 'rs.initiate()'
+  - sudo systemctl status mongod
   - sleep 15
