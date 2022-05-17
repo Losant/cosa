@@ -42,7 +42,11 @@ describe('Model', () => {
     client = await getMongoClient();
     _db = await client.db('test');
     await cleanUpDb(client, _db, false);
-    await _db.collection('mocha_test');
+    await _db.createCollection('mocha_test').catch((err) => {
+      if (!err.message.includes('Collection already exists')) {
+        throw err;
+      }
+    });
     const cursorCollection = await _db.listCollections({});
     const collections = await cursorCollection.toArray();
     console.log(collections);
