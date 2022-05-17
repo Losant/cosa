@@ -4,9 +4,10 @@ node_js:
 services:
   - mongodb
 before_install:
-  - echo "[Service]\nExecStart=/usr/bin/mongod --config /etc/mongod.conf --replSet=rs0" | sudo tee -a /lib/systemd/system/mongod.service
+  - echo "[Service]" | sudo tee -a /lib/systemd/system/mongod.service"
+  - echo "ExecStart=/usr/bin/mongod --config /etc/mongod.conf --replSet=rs0" | sudo tee -a /lib/systemd/system/mongod.service
   - cat /lib/systemd/system/mongod.service
-  - sudo systemctl systemctl daemon-reload
+  - sudo systemctl daemon-reload
   - sudo systemctl status mongod
   - echo "replication:" | sudo tee -a /etc/mongodb.conf
   - echo -n "  replSetName:" | sudo tee -a /etc/mongodb.conf
