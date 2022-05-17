@@ -47,9 +47,6 @@ describe('Model', () => {
         throw err;
       }
     });
-    const cursorCollection = await _db.listCollections({});
-    const collections = await cursorCollection.toArray();
-    console.log(collections);
   });
 
   afterEach(() => {
