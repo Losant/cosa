@@ -5,14 +5,10 @@ services:
   - mongodb
 before_install:
   - echo "[Service]" | sudo tee -a /lib/systemd/system/mongod.service
-  - echo "ExecStart=/usr/bin/mongod --config /etc/mongod.conf --replSet=rs0" | sudo tee -a /lib/systemd/system/mongod.service
+  - echo "ExecStart=/usr/bin/mongod --config /etc/mongod.conf --replSet rs0" | sudo tee -a /lib/systemd/system/mongod.service
   - cat /lib/systemd/system/mongod.service
   - sudo systemctl daemon-reload
   - sudo systemctl status mongod
-  - echo "replication:" | sudo tee -a /etc/mongodb.conf
-  - echo -n "  replSetName:" | sudo tee -a /etc/mongodb.conf
-  - echo " replTravis" | sudo tee -a /etc/mongodb.conf
-  - sudo cat /etc/mongodb.conf
   - sudo systemctl restart mongod
   - sleep 20
   - mongo --eval 'rs.initiate()'
