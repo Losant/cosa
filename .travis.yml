@@ -6,10 +6,8 @@ services:
 before_install:
   - sudo systemctl stop mongod
   - sudo sed -i -e 's/mongod --config/mongod --replSet rs0 --config/g' /lib/systemd/system/mongod.service
-  - cat /lib/systemd/system/mongod.service
   - sudo systemctl daemon-reload
   - sudo systemctl start mongod
-  - sleep 20
-  - mongo --eval 'rs.initiate()'
-  - sudo systemctl status mongod
   - sleep 15
+  - mongo --eval 'rs.initiate()'
+  - sleep 5
