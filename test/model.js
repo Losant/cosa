@@ -28,6 +28,9 @@ const cleanUpDb = async (client, db, close = true) => {
 
 describe('Model', () => {
 
+  const Immutable = require('../lib/immutable');
+  const FullTestModel = require('./support/full-test-model');
+
   after(async () => {
     if (cosaDb._client) {
       await cosaDb._client.close();
@@ -38,15 +41,13 @@ describe('Model', () => {
   beforeEach(async () => {
     client = await getMongoClient();
     _db = await client.db('test');
-    return cleanUpDb(client, _db, false);
+    await cleanUpDb(client, _db, false);
+    await _db.collection('mocha_test');
   });
 
   afterEach(() => {
     return cleanUpDb(client, _db);
   });
-
-  const Immutable = require('../lib/immutable');
-  const FullTestModel = require('./support/full-test-model');
 
   describe('session test', () => {
 
