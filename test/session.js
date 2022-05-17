@@ -9,14 +9,6 @@ const cosaDb = require('../lib/db');
 const globalSet = new Set();
 const globalAfterSave = new Set();
 
-const ModelC = Model.define({
-  name: 'ModelA',
-  collection: 'mochaA',
-  properties: {
-    str: { type: 'string', required: true }
-  }
-});
-
 const ModelB = Model.define({
   name: 'ModelB',
   collection: 'mochaB',
@@ -53,9 +45,17 @@ const ModelA = Model.define({
   }
 });
 
+const ModelC = Model.define({
+  name: 'ModelC',
+  collection: 'mochaC',
+  properties: {
+    str: { type: 'string', required: true }
+  }
+});
+
 const ModelBAfterSaveCommitError = Model.define({
   name: 'ModelAError',
-  collection: 'mochaA',
+  collection: 'mochaerror',
   properties: {
     str: { type: 'string', required: true }
   },

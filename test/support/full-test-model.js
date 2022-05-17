@@ -39,9 +39,6 @@ const FullTestModel = Model.define({
     fooString: function(message) {
       return format(message, this);
     }
-    // afterSave: function() {
-    //   console.log('after save...');
-    // }
   }
 });
 
