@@ -43,6 +43,9 @@ describe('Model', () => {
     _db = await client.db('test');
     await cleanUpDb(client, _db, false);
     await _db.collection('mocha_test');
+    const cursorCollection = await _db.listCollections({});
+    const collections = await cursorCollection.toArray();
+    console.log(collections);
   });
 
   afterEach(() => {
