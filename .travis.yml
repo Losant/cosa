@@ -5,8 +5,7 @@ services:
   - mongodb
 before_install:
   - sudo systemctl status mongod
-  - echo "replication:" | sudo tee -a /etc/mongodb.conf
-  - echo "  replSetName: replTravis" | sudo tee -a /etc/mongodb.conf
+  - 'echo "replication:\n  replSetName: replTravis"" | sudo tee -a /etc/mongodb.conf'
   - sudo cat /etc/mongodb.conf
   - sudo systemctl restart mongod
   - sleep 20
