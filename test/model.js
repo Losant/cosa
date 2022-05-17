@@ -43,7 +43,7 @@ describe('Model', () => {
     _db = await client.db('test');
     await cleanUpDb(client, _db, false);
     await _db.createCollection('mocha_test').catch((err) => {
-      if (!err.message.includes('Collection already exists')) {
+      if (!err.message.includes('already exists')) {
         throw err;
       }
     });

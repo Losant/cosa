@@ -5,6 +5,7 @@ const expect = chai.expect;
 const Model = require('../lib/model');
 const { createSession } = require('../lib/session');
 const cosaDb = require('../lib/db');
+const { forEachSerialP } = require('omnibelt');
 
 const globalSet = new Set();
 const globalAfterSave = new Set();
@@ -94,14 +95,25 @@ const cleanUpDb = async (client, db, close = true) => {
 
 
 describe('Sessions', () => {
+  before(async () => {
+    await cosaDb.init();
+    await forEachSerialP((colName) => {
+      return cosaDb._db.createCollection(colName).catch((err) => {
+        if (!err.message.includes('already exists')) {
+          throw err;
+        }
+      });
+    }, [ 'mochaA', 'mochaB', 'mochaC', 'mochaerror']);
+  });
+
   after(async () => {
     if (cosaDb._client) {
       await cosaDb._client.close();
     }
   });
 
-  afterEach(() => {
-    return cleanUpDb(cosaDb._client, cosaDb._db, false);
+  afterEach(async () => {
+    await cleanUpDb(cosaDb._client, cosaDb._db, false);
   });
 
   describe('onAbort', () => {
