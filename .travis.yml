@@ -4,6 +4,7 @@ node_js:
 services:
   - mongodb
 before_install:
+  - cat /lib/systemd/system/mongod.service
   - sudo systemctl status mongod
   - echo "replication:" | sudo tee -a /etc/mongodb.conf
   - echo -n "  replSetName:" | sudo tee -a /etc/mongodb.conf
