@@ -6,6 +6,7 @@ chai.use(require('chai-datetime'));
 const expect             = chai.expect;
 const Model = require('../lib/model');
 const cosaDb = require('../lib/db');
+const { createSession } = require('../lib/session');
 const { sleep, times } = require('omnibelt');
 
 const getMongoClient = async () => {
@@ -24,28 +25,63 @@ const cleanUpDb = async (client, db, close = true) => {
   if (close) { await client.close(); }
 };
 
-after(async () => {
-  if (cosaDb._client) {
-    await cosaDb._client.close();
-  }
-});
 
 describe('Model', () => {
 
+  const Immutable = require('../lib/immutable');
+  const FullTestModel = require('./support/full-test-model');
+
+  after(async () => {
+    if (cosaDb._client) {
+      await cosaDb._client.close();
+    }
+  });
   let _db, client;
 
   beforeEach(async () => {
     client = await getMongoClient();
     _db = await client.db('test');
-    return cleanUpDb(client, _db, false);
+    await cleanUpDb(client, _db, false);
+    await _db.createCollection('mocha_test').catch((err) => {
+      if (!err.message.includes('already exists')) {
+        throw err;
+      }
+    });
   });
 
   afterEach(() => {
     return cleanUpDb(client, _db);
   });
 
-  const Immutable = require('../lib/immutable');
-  const FullTestModel = require('./support/full-test-model');
+  describe('session test', () => {
+
+    it('should abort all transactions', async () => {
+      const session = await createSession();
+      await session.startTransaction();
+      await FullTestModel.create({
+        str: 'foo'
+      }).save({ session });
+      await FullTestModel.create({
+        str: 'foo1'
+      }).save({ session });
+      expect(await FullTestModel.count()).to.equal(2);
+      await session.abortTransaction();
+      expect(await FullTestModel.count()).to.equal(0);
+    });
+    it('should save all transactions', async () => {
+      const session = await createSession();
+      await session.startTransaction();
+      await FullTestModel.create({
+        str: 'foo'
+      }).save({ session });
+      await FullTestModel.create({
+        str: 'foo1'
+      }).save({ session });
+      expect(await FullTestModel.count()).to.equal(2);
+      await session.commitTransaction();
+      expect(await FullTestModel.count()).to.equal(2);
+    });
+  });
 
   describe('.define()', () => {
 
