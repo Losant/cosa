@@ -1,11 +1,8 @@
 language: node_js
-jobs:
-  include:
-  - dist: bionic
-    node_js: '18'
-  - node_js: '17'
-  - node_js: '16'
-  - node_js: '14'
+node_js:
+  - "14"
+  - "16"
+  - "17"
 services:
   - mongodb
 before_install:
