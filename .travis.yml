@@ -1,8 +1,11 @@
 language: node_js
-node_js:
-  - "14"
-  - "16"
-  - "17"
+jobs:
+  include:
+  - dist: focal
+    node_js: '18'
+  - node_js: '17'
+  - node_js: '16'
+  - node_js: '14'
 services:
   - mongodb
 before_install:
