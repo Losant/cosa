@@ -56,28 +56,41 @@ describe('Model', () => {
   describe('session test', () => {
 
     it('should abort all transactions', async () => {
+      const exists = await FullTestModel.create({
+        str: 'foo-1'
+      }).save();
       const session = await createSession();
       await session.startTransaction();
       await FullTestModel.create({
-        str: 'foo'
+        str: 'foo0'
       }).save({ session });
+      expect(await FullTestModel.count({}, { session })).to.equal(2);
       await FullTestModel.create({
         str: 'foo1'
       }).save({ session });
-      expect(await FullTestModel.count()).to.equal(2);
+      expect(await FullTestModel.count({}, { session })).to.equal(3);
+      await exists.remove({ session });
+      expect(await FullTestModel.count({}, { session })).to.equal(2);
       await session.abortTransaction();
-      expect(await FullTestModel.count()).to.equal(0);
+      expect(await FullTestModel.count()).to.equal(1);
     });
+
     it('should save all transactions', async () => {
+      const exists = await FullTestModel.create({
+        str: 'foo-1'
+      }).save();
       const session = await createSession();
       await session.startTransaction();
       await FullTestModel.create({
-        str: 'foo'
+        str: 'foo0'
       }).save({ session });
+      expect(await FullTestModel.count({}, { session })).to.equal(2);
       await FullTestModel.create({
         str: 'foo1'
       }).save({ session });
-      expect(await FullTestModel.count()).to.equal(2);
+      expect(await FullTestModel.count({}, { session })).to.equal(3);
+      await exists.remove({ session });
+      expect(await FullTestModel.count({}, { session })).to.equal(2);
       await session.commitTransaction();
       expect(await FullTestModel.count()).to.equal(2);
     });
