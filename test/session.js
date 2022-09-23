@@ -361,10 +361,12 @@ describe('Sessions', () => {
       await session.startTransaction();
       await ModelAError.create({ str: 'hello' }).save({ session });
       await ModelAError.create({ str: 'world' }).save({ session });
-      const error = await session.commitTransaction().catch((e) => { return e; });
+      const { errors } = await session.commitTransaction();
       expect(await ModelAError.count()).to.equal(2);
       expect(await ModelB.count()).to.equal(1);
-      expect(error.message).to.equal('Error after commit...');
+      expect(errors.length).to.equal(2);
+      expect(errors[0].message).to.equal('Error after commit...');
+      expect(errors[1].message).to.equal('Error after commit...');
 
       expect(callTracking).to.eql([
         ['afterSave', 'ModelAError', 'hello'],
