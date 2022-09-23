@@ -361,7 +361,7 @@ describe('Sessions', () => {
       await session.startTransaction();
       await ModelAError.create({ str: 'hello' }).save({ session });
       await ModelAError.create({ str: 'world' }).save({ session });
-      const errors = await session.commitTransaction();
+      const { errors } = await session.commitTransaction();
       expect(await ModelAError.count()).to.equal(2);
       expect(await ModelB.count()).to.equal(1);
       expect(errors.length).to.equal(2);
