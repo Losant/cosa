@@ -43,7 +43,7 @@
     "joi": "^17.6.4",
     "mongodb": "~4.11.0",
     "object-path": "^0.11.8",
-    "omnibelt": "^3.0.0"
+    "omnibelt": "Losant/omnibelt#add-all-equal-tests"
   },
   "devDependencies": {
     "@losant/eslint-config-losant": "^1.5.0",

@@ -517,6 +517,52 @@ describe('Model', () => {
       expect(count).to.equal(1);
     });
 
+    it('should wait after save when globally set', async () => {
+      let afterSaveCalled = false;
+      const afterSaveModel = Model.define({
+        name: 'SaveTest',
+        collection: 'mocha_save_test',
+        waitAfterSave: true,
+        properties: {
+          str: { type: 'string', required: true }
+        },
+        methods: {
+          afterSave: async function() {
+            await sleep(150);
+            afterSaveCalled = true;
+          }
+        }
+      });
+      await afterSaveModel.create({ str: 'hello' }).save();
+      expect(afterSaveCalled).to.equal(true);
+      const collection = _db.collection('mocha_save_test');
+      const count = await collection.countDocuments();
+      expect(count).to.equal(1);
+    });
+
+    it('should not wait after save when globally set but overrided as a save option', async () => {
+      let afterSaveCalled = false;
+      const afterSaveModel = Model.define({
+        name: 'SaveTest',
+        collection: 'mocha_save_test',
+        waitAfterSave: true,
+        properties: {
+          str: { type: 'string', required: true }
+        },
+        methods: {
+          afterSave: async function() {
+            await sleep(150);
+            afterSaveCalled = true;
+          }
+        }
+      });
+      await afterSaveModel.create({ str: 'hello' }).save({ waitAfterSave: false });
+      expect(afterSaveCalled).to.equal(false);
+      const collection = _db.collection('mocha_save_test');
+      const count = await collection.countDocuments();
+      expect(count).to.equal(1);
+    });
+
     it('should transform a duplicate error on insert', async () => {
       const collection = 'mocha_save_test';
       const dupKeyModel = Model.define({
@@ -614,6 +660,54 @@ describe('Model', () => {
       const testModel = await afterRemoveModel.create({ str: 'hello' }).save();
       await testModel.remove({ waitAfterRemove: true });
       expect(afterRemoveCalled).to.equal(true);
+      const collection = _db.collection('mocha_remove_test');
+      const count = await collection.countDocuments();
+      expect(count).to.equal(0);
+    });
+
+    it('should wait for the after remove when globally set', async () => {
+      let afterRemoveCalled = false;
+      const afterRemoveModel = Model.define({
+        name: 'RemoveTest',
+        collection: 'mocha_remove_test',
+        waitAfterRemove: true,
+        properties: {
+          str: { type: 'string', required: true }
+        },
+        methods: {
+          afterRemove: async function() {
+            await sleep(150);
+            afterRemoveCalled = true;
+          }
+        }
+      });
+      const testModel = await afterRemoveModel.create({ str: 'hello' }).save();
+      await testModel.remove();
+      expect(afterRemoveCalled).to.equal(true);
+      const collection = _db.collection('mocha_remove_test');
+      const count = await collection.countDocuments();
+      expect(count).to.equal(0);
+    });
+
+    it('should not wait for the after remove when globally set but overriden by remove options', async () => {
+      let afterRemoveCalled = false;
+      const afterRemoveModel = Model.define({
+        name: 'RemoveTest',
+        collection: 'mocha_remove_test',
+        waitAfterRemove: true,
+        properties: {
+          str: { type: 'string', required: true }
+        },
+        methods: {
+          afterRemove: async function() {
+            await sleep(150);
+            afterRemoveCalled = true;
+          }
+        }
+      });
+      const testModel = await afterRemoveModel.create({ str: 'hello' }).save();
+      await testModel.remove({ waitAfterRemove: false });
+      expect(afterRemoveCalled).to.equal(false);
       const collection = _db.collection('mocha_remove_test');
       const count = await collection.countDocuments();
       expect(count).to.equal(0);

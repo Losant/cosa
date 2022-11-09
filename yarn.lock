@@ -1794,6 +1794,11 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@pnpm/ramda@^0.28.1":
+  version "0.28.1"
+  resolved "https://registry.yarnpkg.com/@pnpm/ramda/-/ramda-0.28.1.tgz#0f32abc5275d586a03e0dc1dd90a009ac668ff33"
+  integrity sha512-zcAG+lvU0fMziNeGXpPyCyCJYp5ZVrPElEE4t14jAmViaihohocZ+dDkcRIyAomox8pQsuZnv1EyHR+pOhmUWw==
+
 "@rjhilgefort/export-dir@^2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@rjhilgefort/export-dir/-/export-dir-2.0.0.tgz#7b7605734b28ce4a070b6cf3edde8903f00a69d4"
@@ -4476,14 +4481,13 @@ object.values@^1.1.5:
     define-properties "^1.1.4"
     es-abstract "^1.20.4"
 
-omnibelt@^3.0.0:
+omnibelt@Losant/omnibelt#add-all-equal-tests:
   version "3.0.0"
-  resolved "https://registry.yarnpkg.com/omnibelt/-/omnibelt-3.0.0.tgz#df8862a7aa5ccb7162268d531604c09005cb8eae"
-  integrity sha512-NzRWmume76EGSwT1z8BnJa4AI/4IyCX+x3NWZFr2gEJk+6JP/PYb2vMVzsxez3FHJBk6qcH8jpPBeFBrwVCLUw==
+  resolved "https://codeload.github.com/Losant/omnibelt/tar.gz/a7d0410caa8656b29685d0a23331396329c1ce58"
   dependencies:
+    "@pnpm/ramda" "^0.28.1"
     "@rjhilgefort/export-dir" "^2.0.0"
     lodash "^4.17.21"
-    ramda "^0.28.0"
     string-format "^2.0.0"
     stringify-object "^3.3.0"
 
@@ -4712,11 +4716,6 @@ ramda@^0.27.1:
   version "0.27.2"
   resolved "https://registry.yarnpkg.com/ramda/-/ramda-0.27.2.tgz#84463226f7f36dc33592f6f4ed6374c48306c3f1"
   integrity sha512-SbiLPU40JuJniHexQSAgad32hfwd+DRUdwF2PlVuI5RZD0/vahUco7R8vD86J/tcEKKF9vZrUVwgtmGCqlCKyA==
-
-ramda@^0.28.0:
-  version "0.28.0"
-  resolved "https://registry.yarnpkg.com/ramda/-/ramda-0.28.0.tgz#acd785690100337e8b063cab3470019be427cc97"
-  integrity sha512-9QnLuG/kPVgWvMQ4aODhsBUFKOUmnbUnsSXACv+NCQZcHbeb+v8Lodp8OVxtRULN1/xOyYLLaL6npE6dMq5QTA==
 
 randombytes@^2.1.0:
   version "2.1.0"
