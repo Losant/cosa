@@ -1,6 +1,6 @@
 {
   "name": "cosa",
-  "version": "6.3.0",
+  "version": "6.4.0",
   "description": "Cosa Models for MongoDB",
   "main": "lib/index.js",
   "engines": {
@@ -40,20 +40,20 @@
     "debug": "^4.3.4",
     "error": "^7.0.2",
     "etag": "^1.8.1",
-    "@hapi/joi": "^17.1.1",
-    "mongodb": "~4.10.0",
+    "joi": "^17.6.4",
+    "mongodb": "~4.11.0",
     "object-path": "^0.11.8",
     "omnibelt": "^2.1.0"
   },
   "devDependencies": {
-    "@losant/eslint-config-losant": "^1.4.4",
-    "husky": "^8.0.1",
+    "@losant/eslint-config-losant": "^1.5.0",
+    "husky": "^8.0.2",
     "lint-staged": "^13.0.3",
-    "chai": "^4.3.6",
+    "chai": "^4.3.7",
     "chai-as-promised": "^7.1.1",
     "chai-datetime": "^1.8.0",
     "documentation": "^14.0.0",
-    "mocha": "^10.0.0",
+    "mocha": "^10.1.0",
     "string-template": "^1.0.0"
   },
   "eslintConfig": {
