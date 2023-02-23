@@ -64,15 +64,15 @@ describe('Model', () => {
       await FullTestModel.create({
         str: 'foo0'
       }).save({ session });
-      expect(await FullTestModel.count({}, { session })).to.equal(2);
+      expect(await FullTestModel.count({}, { session, allowGlobalQuery: true })).to.equal(2);
       await FullTestModel.create({
         str: 'foo1'
       }).save({ session });
-      expect(await FullTestModel.count({}, { session })).to.equal(3);
+      expect(await FullTestModel.count({}, { session, allowGlobalQuery: true })).to.equal(3);
       await exists.remove({ session });
-      expect(await FullTestModel.count({}, { session })).to.equal(2);
+      expect(await FullTestModel.count({}, { session, allowGlobalQuery: true })).to.equal(2);
       await session.abortTransaction();
-      expect(await FullTestModel.count()).to.equal(1);
+      expect(await FullTestModel.count({}, { allowGlobalQuery: true })).to.equal(1);
     });
 
     it('should save all transactions', async () => {
@@ -84,15 +84,15 @@ describe('Model', () => {
       await FullTestModel.create({
         str: 'foo0'
       }).save({ session });
-      expect(await FullTestModel.count({}, { session })).to.equal(2);
+      expect(await FullTestModel.count({}, { session, allowGlobalQuery: true })).to.equal(2);
       await FullTestModel.create({
         str: 'foo1'
       }).save({ session });
-      expect(await FullTestModel.count({}, { session })).to.equal(3);
+      expect(await FullTestModel.count({}, { session, allowGlobalQuery: true })).to.equal(3);
       await exists.remove({ session });
-      expect(await FullTestModel.count({}, { session })).to.equal(2);
+      expect(await FullTestModel.count({}, { session, allowGlobalQuery: true })).to.equal(2);
       await session.commitTransaction();
-      expect(await FullTestModel.count()).to.equal(2);
+      expect(await FullTestModel.count({}, { allowGlobalQuery: true })).to.equal(2);
     });
   });
 
@@ -777,9 +777,9 @@ describe('Model', () => {
           obj: { prop1: 'bar' }
         }).save()
       ]);
-      expect(await FullTestModel.count({}, { skip: 3 })).to.equal(2);
-      expect(await FullTestModel.count(undefined, { limit: 4 })).to.equal(4);
-      expect(await FullTestModel.count(null, { skip: 2, limit: 4 })).to.equal(3);
+      expect(await FullTestModel.count({}, { skip: 3, allowGlobalQuery: true })).to.equal(2);
+      expect(await FullTestModel.count({}, { limit: 4, allowGlobalQuery: true })).to.equal(4);
+      expect(await FullTestModel.count({}, { skip: 2, limit: 4, allowGlobalQuery: true })).to.equal(3);
     });
   });
 
@@ -852,12 +852,12 @@ describe('Model', () => {
       });
 
       let start = Date.now();
-      expect((await PerfModel.find({}, { array: true })).length).to.equal(1000);
+      expect((await PerfModel.find({}, { array: true, allowGlobalQuery: true })).length).to.equal(1000);
       const modelFindTime = Date.now() - start;
       expect(modelFindTime).to.be.below(300); // generally below 200, but leaving some room
 
       start = Date.now();
-      expect((await PerfModel.project({}, {}, { array: true })).length).to.equal(1000);
+      expect((await PerfModel.project({}, {}, { array: true, allowGlobalQuery: true })).length).to.equal(1000);
       const projectFindTime = Date.now() - start;
       expect(projectFindTime).to.be.below(200); // generally below 100 but leaving some room
     });
@@ -868,7 +868,7 @@ describe('Model', () => {
       await FullTestModel.create({
         str: 'test string'
       }).save();
-      expect(await FullTestModel.exists({})).to.equal(true);
+      expect(await FullTestModel.exists({ str: { $exists: true } })).to.equal(true);
     });
     it('should return false if no object matches the query', async () => {
       await FullTestModel.create({
@@ -911,7 +911,7 @@ describe('Model', () => {
     });
 
     it('should partial update a single doc', async () => {
-      const result = await FullTestModel.update({}, { any: 'boo' });
+      const result = await FullTestModel.update({}, { any: 'boo' }, { allowGlobalQuery: true });
       expect(result.matchedCount).to.equal(1);
       expect(result.modifiedCount).to.equal(1);
       const doc = await FullTestModel.findOne({ str: 'foo' });
@@ -920,10 +920,10 @@ describe('Model', () => {
     });
 
     it('should partial update all docs', async () => {
-      const result = await FullTestModel.update({}, { any: 'any' }, { multiple: true });
+      const result = await FullTestModel.update({}, { any: 'any' }, { multiple: true, allowGlobalQuery: true });
       expect(result.matchedCount).to.equal(3);
       expect(result.modifiedCount).to.equal(3);
-      const docs = await FullTestModel.find({}, { sort: { str: 1 }, array: true });
+      const docs = await FullTestModel.find({}, { sort: { str: 1 }, array: true, allowGlobalQuery: true });
       expect(docs[0].str).to.equal('bar');
       expect(docs[0].any).to.equal('any');
       expect(docs[1].str).to.equal('blah');
@@ -933,7 +933,7 @@ describe('Model', () => {
     });
 
     it('should replace single doc', async () => {
-      const result = await FullTestModel.update({}, { $set: { arr: ['a', 'b', 'c'] } }, { autoSet: false });
+      const result = await FullTestModel.update({}, { $set: { arr: ['a', 'b', 'c'] } }, { autoSet: false, allowGlobalQuery: true });
       expect(result.matchedCount).to.equal(1);
       expect(result.modifiedCount).to.equal(1);
       const doc = await FullTestModel.find({ arr: ['a', 'b', 'c'] });
@@ -955,7 +955,7 @@ describe('Model', () => {
         str: 'test string'
       });
       await Promise.all([ model.save(), model2.save(), model3.save() ]);
-      const results = await FullTestModel.distinct('str');
+      const results = await FullTestModel.distinct('str', {}, { allowGlobalQuery: true });
       expect(results).to.contain('test string', 'another test string');
     });
 
@@ -976,7 +976,7 @@ describe('Model', () => {
       await Promise.all([ model.save(), model2.save(), model3.save() ]);
       const cursor = await FullTestModel.aggregate([
         { $group: { _id: '$str', count: { $sum: 1 } } }
-      ]);
+      ], { allowGlobalQuery: true });
       const results = await cursor.toArray();
       expect(results.length).to.equal(2);
       results.forEach(function(item) {
@@ -1010,6 +1010,74 @@ describe('Model', () => {
     });
   });
 
+  describe('query validation', () => {
+    it('should validate query on count', async () => {
+      await expect(FullTestModel.count()).to.be.rejectedWith('Query must be an object.');
+      await expect(FullTestModel.count(1)).to.be.rejectedWith('Query must be an object.');
+      await expect(FullTestModel.count({})).to.be.rejectedWith('To make an unrestricted query, please set the allowGlobalQuery option.');
+      await expect(FullTestModel.count({}, { allowGlobalQuery: true })).to.eventually.deep.equal(0);
+    });
+
+    it('should validate query on find', async () => {
+      await expect(FullTestModel.find()).to.be.rejectedWith('Query must be an object.');
+      await expect(FullTestModel.find('what')).to.be.rejectedWith('Query must be an object.');
+      await expect(FullTestModel.find({})).to.be.rejectedWith('To make an unrestricted query, please set the allowGlobalQuery option.');
+      await expect(FullTestModel.find({}, { allowGlobalQuery: true, array: true })).to.eventually.deep.equal([]);
+    });
+
+    it('should validate query on findOne', async () => {
+      await expect(FullTestModel.findOne()).to.be.rejectedWith('Query must be an object.');
+      await expect(FullTestModel.findOne([])).to.be.rejectedWith('Query must be an object.');
+      await expect(FullTestModel.findOne({})).to.be.rejectedWith('To make an unrestricted query, please set the allowGlobalQuery option.');
+      await expect(FullTestModel.findOne({}, { allowGlobalQuery: true })).to.eventually.deep.equal(null);
+    });
+
+    it('should validate query on exists', async () => {
+      await expect(FullTestModel.exists()).to.be.rejectedWith('Query must be an object.');
+      await expect(FullTestModel.exists([])).to.be.rejectedWith('Query must be an object.');
+      await expect(FullTestModel.exists({})).to.be.rejectedWith('To make an unrestricted query, please set the allowGlobalQuery option.');
+      await expect(FullTestModel.exists({}, { allowGlobalQuery: true })).to.eventually.deep.equal(false);
+    });
+
+    it('should validate query on update', async () => {
+      await expect(FullTestModel.update()).to.be.rejectedWith('Query must be an object.');
+      await expect(FullTestModel.update(null)).to.be.rejectedWith('Query must be an object.');
+      await expect(FullTestModel.update({})).to.be.rejectedWith('To make an unrestricted query, please set the allowGlobalQuery option.');
+      await expect(FullTestModel.update({}, {}, { allowGlobalQuery: true })).to.eventually.deep.equal({
+        acknowledged: true,
+        matchedCount: 0,
+        modifiedCount: 0,
+        upsertedCount: 0,
+        upsertedId: null
+      });
+    });
+
+    it('should validate query on distinct', async () => {
+      await expect(FullTestModel.distinct()).to.be.rejectedWith('Query must be an object.');
+      await expect(FullTestModel.distinct('field')).to.be.rejectedWith('Query must be an object.');
+      await expect(FullTestModel.distinct('field', new Date())).to.be.rejectedWith('Query must be an object.');
+      await expect(FullTestModel.distinct('field', {})).to.be.rejectedWith('To make an unrestricted query, please set the allowGlobalQuery option.');
+      await expect(FullTestModel.distinct('field', {}, { allowGlobalQuery: true })).to.eventually.deep.equal([]);
+    });
+
+    it('should validate pipeline on aggregate', async () => {
+      await expect(FullTestModel.aggregate()).to.be.rejectedWith('Aggregation pipeline must be an array.');
+      await expect(FullTestModel.aggregate({})).to.be.rejectedWith('Aggregation pipeline must be an array.');
+      await expect(FullTestModel.aggregate([])).to.be.rejectedWith('To make an unrestricted query, please set the allowGlobalQuery option.');
+      await expect(FullTestModel.aggregate([{ $match: 'what' }])).to.be.rejectedWith('Query must be an object.');
+      await expect(FullTestModel.aggregate([{ $match: {} }])).to.be.rejectedWith('To make an unrestricted query, please set the allowGlobalQuery option.');
+      await expect(FullTestModel.aggregate([], { allowGlobalQuery: true, array: true })).to.eventually.deep.equal([]);
+      await expect(FullTestModel.aggregate([{ $match: {} }], { allowGlobalQuery: true, array: true })).to.eventually.deep.equal([]);
+    });
+
+    it('should validate query on project', async () => {
+      await expect(FullTestModel.project()).to.be.rejectedWith('Query must be an object.');
+      await expect(FullTestModel.project('what')).to.be.rejectedWith('Query must be an object.');
+      await expect(FullTestModel.project({}, {})).to.be.rejectedWith('To make an unrestricted query, please set the allowGlobalQuery option.');
+      await expect(FullTestModel.project({}, {}, { allowGlobalQuery: true, array: true })).to.eventually.deep.equal([]);
+    });
+  });
+
   describe('where', () => {
     const ModelWithWhere = Model.define({
       name: 'ModelWithWhere',
@@ -1034,16 +1102,36 @@ describe('Model', () => {
       }).save();
       expect(await modelB.reload()).to.deep.equal(modelB);
 
-      expect(await ModelWithWhere.count()).to.equal(1);
-      expect(await ModelWithWhere.count({}, { bypassGlobalWhere: true })).to.equal(2);
+      expect(await ModelWithWhere.count({}, { allowGlobalQuery: true })).to.equal(1);
+      expect(await ModelWithWhere.count({}, { bypassGlobalWhere: true, allowGlobalQuery: true })).to.equal(2);
 
-      expect(await ModelWithWhere.find({}, { array: true })).to.deep.equal([modelA]);
-      expect(await ModelWithWhere.find({}, { sort: { strA: 1 }, array: true, bypassGlobalWhere: true }))
+      expect(await ModelWithWhere.find({}, { array: true, allowGlobalQuery: true })).to.deep.equal([modelA]);
+      expect(await ModelWithWhere.find({}, { sort: { strA: 1 }, array: true, bypassGlobalWhere: true, allowGlobalQuery: true }))
         .to.deep.equal([modelA, modelB]);
 
       expect(await ModelWithWhere.findOne({ _id: modelA._id })).to.deep.equal(modelA);
       expect(await ModelWithWhere.findOne({ _id: modelB._id })).to.equal(null);
       expect(await ModelWithWhere.findOne({ _id: modelB._id }, { bypassGlobalWhere: true })).to.deep.equal(modelB);
+
+      await expect(ModelWithWhere.aggregate(
+        [{ $group: { _id: null, count: { $sum: 1 } } }],
+        { allowGlobalQuery: true, array: true }
+      )).to.eventually.deep.equal([ { _id: null, count: 1 } ]);
+
+      await expect(ModelWithWhere.aggregate(
+        [{ $match: { _id: modelB._id } }, { $group: { _id: null, count: { $sum: 1 } } }],
+        { allowGlobalQuery: true, array: true }
+      )).to.eventually.deep.equal([]);
+
+      await expect(ModelWithWhere.aggregate(
+        [{ $group: { _id: null, count: { $sum: 1 } } }],
+        { allowGlobalQuery: true, bypassGlobalWhere: true, array: true }
+      )).to.eventually.deep.equal([ { _id: null, count: 2 } ]);
+
+      await expect(ModelWithWhere.aggregate(
+        [{ $match: { _id: modelB._id } }, { $group: { _id: null, count: { $sum: 1 } } }],
+        { allowGlobalQuery: true, bypassGlobalWhere: true, array: true }
+      )).to.eventually.deep.equal([ { _id: null, count: 1 } ]);
     });
   });
 
@@ -1238,7 +1326,7 @@ describe('Model', () => {
         str: 'test string',
         obj: { prop1: 'bar' }
       }).save();
-      const values = await FullTestModel.project({}, { str: 1 }, { array: 1 });
+      const values = await FullTestModel.project({}, { str: 1 }, { array: 1, allowGlobalQuery: true });
       expect(values.length).to.equal(1);
       expect(values[0].str).to.equal('test string');
     });
@@ -1253,8 +1341,8 @@ describe('Model', () => {
           obj: { prop1: 'bar' }
         }).save();
       }, 100));
-      const count = await FullTestModel.count();
-      const cursor = await FullTestModel.find();
+      const count = await FullTestModel.count({}, { allowGlobalQuery: true });
+      const cursor = await FullTestModel.find({}, { allowGlobalQuery: true });
       let numOfTimesCalled = 0;
       await cursor.forEachParallelLimitP(50, async (item) => {
         expect(FullTestModel.isA(item)).to.equal(true);
@@ -1270,8 +1358,8 @@ describe('Model', () => {
           obj: { prop1: 'bar' }
         }).save();
       }, 10));
-      const count = await FullTestModel.count();
-      const cursor = await FullTestModel.find();
+      const count = await FullTestModel.count({}, { allowGlobalQuery: true });
+      const cursor = await FullTestModel.find({}, { allowGlobalQuery: true });
       let numOfTimesCalled = 0;
       await cursor.forEachParallelLimitP(100, async (item) => {
         expect(FullTestModel.isA(item)).to.equal(true);

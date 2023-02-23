@@ -49,7 +49,7 @@ const ModelA = Model.define({
     },
     afterSave: async function(original, saveOpts) {
       callTracking.push(['afterSave', 'ModelA', this.str]);
-      const b = await ModelB.findOne({}, { session: saveOpts.session });
+      const b = await ModelB.findOne({}, { session: saveOpts.session, allowGlobalQuery: true });
       if (b) {
         const strs = [...b.strs.toObject(), this.str];
         await b.set({ strs }).save(saveOpts);
@@ -121,7 +121,7 @@ const ModelAError = Model.define({
     },
     afterSave: async function(original, saveOpts) {
       callTracking.push(['afterSave', 'ModelAError', this.str]);
-      const b = await ModelB.findOne({}, { session: saveOpts.session });
+      const b = await ModelB.findOne({}, { session: saveOpts.session, allowGlobalQuery: true });
       if (b) {
         const strs = [...b.strs.toObject(), this.str];
         await b.set({ strs }).save(saveOpts);
@@ -194,11 +194,11 @@ describe('Sessions', () => {
       const session = await createSession();
       await session.startTransaction();
       await ModelA.create({ str: 'hello' }).save({ session });
-      expect(await ModelA.count({}, { session })).to.equal(1);
-      expect(await ModelB.count({}, { session })).to.equal(1);
+      expect(await ModelA.count({}, { session, allowGlobalQuery: true })).to.equal(1);
+      expect(await ModelB.count({}, { session, allowGlobalQuery: true })).to.equal(1);
       await session.abortTransaction();
-      expect(await ModelA.count()).to.equal(0);
-      expect(await ModelB.count()).to.equal(0);
+      expect(await ModelA.count({}, { allowGlobalQuery: true })).to.equal(0);
+      expect(await ModelB.count({}, { allowGlobalQuery: true })).to.equal(0);
       expect(callTracking).to.eql([
         ['afterSave', 'ModelA', 'hello'],
         ['afterSave', 'ModelB', ['hello']],
@@ -213,11 +213,11 @@ describe('Sessions', () => {
       const session = await createSession();
       await session.startTransaction();
       await orig.remove({ session });
-      expect(await ModelA.count({}, { session })).to.equal(0);
-      expect(await ModelB.count({}, { session })).to.equal(0);
+      expect(await ModelA.count({}, { session, allowGlobalQuery: true })).to.equal(0);
+      expect(await ModelB.count({}, { session, allowGlobalQuery: true })).to.equal(0);
       await session.abortTransaction();
-      expect(await ModelA.count()).to.equal(1);
-      expect(await ModelB.count()).to.equal(1);
+      expect(await ModelA.count({}, { allowGlobalQuery: true })).to.equal(1);
+      expect(await ModelB.count({}, { allowGlobalQuery: true })).to.equal(1);
       expect(callTracking).to.eql([
         ['afterSave', 'ModelA', 'hello'],
         ['afterSave', 'ModelB', ['hello']],
@@ -235,11 +235,11 @@ describe('Sessions', () => {
       await session.startTransaction();
       await ModelA.create({ str: 'hello' }).save({ session });
       await ModelA.create({ str: 'world' }).save({ session });
-      expect(await ModelA.count({}, { session })).to.equal(2);
-      expect(await ModelB.count({}, { session })).to.equal(1);
+      expect(await ModelA.count({}, { session, allowGlobalQuery: true })).to.equal(2);
+      expect(await ModelB.count({}, { session, allowGlobalQuery: true })).to.equal(1);
       await session.abortTransaction();
-      expect(await ModelA.count()).to.equal(0);
-      expect(await ModelB.count()).to.equal(0);
+      expect(await ModelA.count({}, { allowGlobalQuery: true })).to.equal(0);
+      expect(await ModelB.count({}, { allowGlobalQuery: true })).to.equal(0);
 
       expect(callTracking).to.eql([
         ['afterSave', 'ModelA', 'hello'],
@@ -261,13 +261,13 @@ describe('Sessions', () => {
       await session.startTransaction();
       await one.remove({ session });
       await two.remove({ session });
-      expect(await ModelA.count({}, { session })).to.equal(0);
-      expect(await ModelB.count({}, { session })).to.equal(0);
+      expect(await ModelA.count({}, { session, allowGlobalQuery: true })).to.equal(0);
+      expect(await ModelB.count({}, { session, allowGlobalQuery: true })).to.equal(0);
       await session.abortTransaction();
 
-      expect(await ModelA.count()).to.equal(2);
-      expect(await ModelB.count()).to.equal(1);
-      expect((await ModelB.findOne({})).strs.toObject()).to.eql(['hello', 'world']);
+      expect(await ModelA.count({}, { allowGlobalQuery: true })).to.equal(2);
+      expect(await ModelB.count({}, { allowGlobalQuery: true })).to.equal(1);
+      expect((await ModelB.findOne({}, { allowGlobalQuery: true })).strs.toObject()).to.eql(['hello', 'world']);
 
       expect(callTracking).to.eql([
         ['afterSave', 'ModelA', 'hello'],
@@ -298,7 +298,7 @@ describe('Sessions', () => {
       const error = await ModelC.create({}).save({ session }).catch((e) => e);
       expect(error.message).to.equal('"str" is required');
       await session.commitTransaction();
-      expect(await ModelC.count()).to.equal(0);
+      expect(await ModelC.count({}, { allowGlobalQuery: true })).to.equal(0);
     });
 
     it('multiple models, save', async () => {
@@ -307,8 +307,8 @@ describe('Sessions', () => {
       await ModelA.create({ str: 'hello' }).save({ session });
       await ModelA.create({ str: 'world' }).save({ session });
       await session.commitTransaction();
-      expect(await ModelA.count()).to.equal(2);
-      expect(await ModelB.count()).to.equal(1);
+      expect(await ModelA.count({}, { allowGlobalQuery: true })).to.equal(2);
+      expect(await ModelB.count({}, { allowGlobalQuery: true })).to.equal(1);
 
       expect(callTracking).to.eql([
         ['afterSave', 'ModelA', 'hello'],
@@ -332,8 +332,8 @@ describe('Sessions', () => {
       await two.remove({ session });
       await session.commitTransaction();
 
-      expect(await ModelA.count()).to.equal(0);
-      expect(await ModelB.count()).to.equal(0);
+      expect(await ModelA.count({}, { allowGlobalQuery: true })).to.equal(0);
+      expect(await ModelB.count({}, { allowGlobalQuery: true })).to.equal(0);
 
       expect(callTracking).to.eql([
         ['afterSave', 'ModelA', 'hello'],
@@ -362,8 +362,8 @@ describe('Sessions', () => {
       await ModelAError.create({ str: 'hello' }).save({ session });
       await ModelAError.create({ str: 'world' }).save({ session });
       const { errors } = await session.commitTransaction();
-      expect(await ModelAError.count()).to.equal(2);
-      expect(await ModelB.count()).to.equal(1);
+      expect(await ModelAError.count({}, { allowGlobalQuery: true })).to.equal(2);
+      expect(await ModelB.count({}, { allowGlobalQuery: true })).to.equal(1);
       expect(errors.length).to.equal(2);
       expect(errors[0].message).to.equal('Error after commit...');
       expect(errors[1].message).to.equal('Error after commit...');
