@@ -851,6 +851,21 @@ describe('Model', () => {
     });
   });
 
+  describe('.exists()', () => {
+    it('should return true if at least one object matches the query', async () => {
+      await FullTestModel.create({
+        str: 'test string'
+      }).save();
+      expect(await FullTestModel.exists({})).to.equal(true);
+    });
+    it('should return false if no object matches the query', async () => {
+      await FullTestModel.create({
+        str: 'abc'
+      }).save();
+      expect(await FullTestModel.exists({ str: 'not a valid string' })).to.equal(false);
+    });
+  });
+
   describe('.findOne()', () => {
     let model;
 
