@@ -856,7 +856,7 @@ describe('Model', () => {
       await FullTestModel.create({
         str: 'test string'
       }).save();
-      expect(await FullTestModel.exists({})).to.equal(true);
+      expect(await FullTestModel.exists({ str: { $exists: true } })).to.equal(true);
     });
     it('should return false if no object matches the query', async () => {
       await FullTestModel.create({
@@ -1018,6 +1018,13 @@ describe('Model', () => {
       await expect(FullTestModel.findOne([])).to.be.rejectedWith('Query must be an object.');
       await expect(FullTestModel.findOne({})).to.be.rejectedWith('To make an unrestricted query, please set the allowGlobalQuery option.');
       await expect(FullTestModel.findOne({}, { allowGlobalQuery: true })).to.eventually.deep.equal(null);
+    });
+
+    it('should validate query on exists', async () => {
+      await expect(FullTestModel.exists()).to.be.rejectedWith('Query must be an object.');
+      await expect(FullTestModel.exists([])).to.be.rejectedWith('Query must be an object.');
+      await expect(FullTestModel.exists({})).to.be.rejectedWith('To make an unrestricted query, please set the allowGlobalQuery option.');
+      await expect(FullTestModel.exists({}, { allowGlobalQuery: true })).to.eventually.deep.equal(false);
     });
 
     it('should validate query on update', async () => {
