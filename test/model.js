@@ -183,6 +183,18 @@ describe('Model', () => {
       expect(model3.get('obj.deep.blah')).to.be.oneOf([ null, undefined ]);
     });
 
+    it('should delete multiple vars when an array is given', () => {
+      const model = FullTestModel.create({
+        str: 'foo',
+        obj: { deep: { blah: 'blah' } }
+      });
+      const model2 = model.del(['str', 'obj.deep.blah']);
+      expect(FullTestModel.isA(model2)).to.equal(true);
+      expect(model.get('str')).to.equal('foo');
+      expect(model2.get('str')).to.be.oneOf([ null, undefined ]);
+      expect(model.get('obj.deep.blah')).to.equal('blah');
+      expect(model2.get('obj.deep.blah')).to.be.oneOf([ null, undefined ]);
+    });
   });
 
   describe('.has()', () => {
