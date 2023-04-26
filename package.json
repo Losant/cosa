@@ -43,7 +43,7 @@
     "joi": "^17.9.1",
     "mongodb": "~4.16.0",
     "object-path": "^0.11.8",
-    "omnibelt": "Losant/omnibelt#upgrade-ramda"
+    "omnibelt": "^3.1.0"
   },
   "devDependencies": {
     "@losant/eslint-config-losant": "^1.6.1",
