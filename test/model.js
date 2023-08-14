@@ -311,6 +311,27 @@ describe('Model', () => {
       expect(error.name).to.equal('Error');
       expect(error.message).to.equal('saveWithId must receive a newly created object');
     });
+
+    it('should pass the explicit id into beforeSave', async () => {
+      let beforeSaveObj;
+      const BeforeSaveTestModel = Model.define({
+        name: 'BeforeSaveTestModel',
+        collection: 'before_save_test',
+        properties: {
+          str: { type: 'string', required: true }
+        },
+        methods: {
+          beforeSave: function() {
+            beforeSaveObj = this;
+          }
+        }
+      });
+      const id = new bson.ObjectID('1234abcd103f8e485c9d2019');
+      await BeforeSaveTestModel.create({
+        str: 'foo'
+      }).saveWithId(id);
+      expect(`${beforeSaveObj._id}`).to.equal(`${id}`);
+    });
   });
 
   describe('.isModified()', () => {
