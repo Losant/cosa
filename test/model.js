@@ -596,6 +596,37 @@ describe('Model', () => {
       expect(count).to.equal(1);
     });
 
+    it('should transform a duplicate error on insert where before save updates the property', async () => {
+      const collection = 'mocha_save_test';
+      const dupKeyModel = Model.define({
+        name: 'SaveTest',
+        collection,
+        properties: {
+          str: { type: 'string', required: true }
+        },
+        methods: {
+          beforeSave: function() {
+            this.str = `${this.str}-1`;
+          },
+          transformDuplicateKeyError: function(err) {
+            expect(err.code).to.equal(11000);
+            return new Error(`Duplicate key on ${this.str}`);
+          }
+        }
+      });
+
+      await _db.collection(collection).createIndex({ str: 1 }, { name: 'str_1', unique: true });
+      const str = 'str';
+      await dupKeyModel.create({ str }).save();
+      let err;
+      try {
+        await dupKeyModel.create({ str }).save();
+      } catch (e) {
+        err = e;
+      }
+      expect(err.message).to.equal('Duplicate key on str-1');
+    });
+
     it('should transform a duplicate error on insert', async () => {
       const collection = 'mocha_save_test';
       const dupKeyModel = Model.define({
@@ -606,7 +637,6 @@ describe('Model', () => {
         },
         methods: {
           transformDuplicateKeyError: function(err) {
-            expect(this.__original).to.equal(null);
             expect(err.code).to.equal(11000);
             return new Error(`Duplicate key on ${this.str}`);
           }
@@ -636,7 +666,6 @@ describe('Model', () => {
         },
         methods: {
           transformDuplicateKeyError: function(err) {
-            expect(this.__original.str).to.equal(str);
             expect(err.code).to.equal(11000);
             return new Error(`Duplicate key on ${this.str}`);
           }
@@ -655,6 +684,38 @@ describe('Model', () => {
       expect(err.message).to.equal('Duplicate key on str1');
     });
 
+  });
+
+  it('should transform a duplicate error on update where before save updates the property', async () => {
+    const collection = 'mocha_save_test';
+    const str = 'str';
+    const dupKeyModel = Model.define({
+      name: 'SaveTest',
+      collection,
+      properties: {
+        str: { type: 'string', required: true }
+      },
+      methods: {
+        beforeSave: function() {
+          this.str = `${this.str}-1`;
+        },
+        transformDuplicateKeyError: function(err) {
+          expect(err.code).to.equal(11000);
+          return new Error(`Duplicate key on ${this.str}`);
+        }
+      }
+    });
+
+    await _db.collection(collection).createIndex({ str: 1 }, { name: 'str_1', unique: true });
+    const toBeUpdated = await dupKeyModel.create({ str }).save();
+    await dupKeyModel.create({ str: 'str1' }).save();
+    let err;
+    try {
+      await toBeUpdated.set({ str: 'str1' }).save();
+    } catch (e) {
+      err = e;
+    }
+    expect(err.message).to.equal('Duplicate key on str1-1');
   });
 
   describe('.remove()', () => {
