@@ -293,17 +293,16 @@ describe('Model', () => {
 
   describe('.saveWithId()', function() {
     it('should save with a given ID', async () => {
-      const id = new bson.ObjectID('1234abcd103f8e485c9d2019');
+      const id = new bson.ObjectId('1234abcd103f8e485c9d2019');
       const model = await FullTestModel.create({
         str: 'foo'
       }).saveWithId(id);
-
       expect(model._id.toString()).to.equal('1234abcd103f8e485c9d2019');
     });
 
     it('should error when trying to update an object', async () => {
-      const id = new bson.ObjectID('1234abcd103f8e485c9d2019');
-      const newId = new bson.ObjectID('5678abcd103f8e485c9d9000');
+      const id = new bson.ObjectId('1234abcd103f8e485c9d2019');
+      const newId = new bson.ObjectId('5678abcd103f8e485c9d9000');
       const model = await FullTestModel.create({
         str: 'foo'
       }).saveWithId(id);
@@ -326,7 +325,7 @@ describe('Model', () => {
           }
         }
       });
-      const id = new bson.ObjectID('1234abcd103f8e485c9d2019');
+      const id = new bson.ObjectId('1234abcd103f8e485c9d2019');
       await BeforeSaveTestModel.create({
         str: 'foo'
       }).saveWithId(id);
@@ -382,8 +381,8 @@ describe('Model', () => {
       });
       const model = DeepArrayModel.create({
         arr: [
-          { oid: bson.ObjectId('abdfabdfabdfabdfabdfabdf') },
-          { oid: bson.ObjectId('abdfabdfabdfabdfabdfabdf') }
+          { oid: new bson.ObjectId('abdfabdfabdfabdfabdfabdf') },
+          { oid: new bson.ObjectId('abdfabdfabdfabdfabdfabdf') }
         ],
         nullVal: null
       });
@@ -407,8 +406,8 @@ describe('Model', () => {
       });
       const model = DeepArrayModel.create({
         arr: [
-          { oid: bson.ObjectId('abdfabdfabdfabdfabdfabdf') },
-          { oid: bson.ObjectId('abdfabdfabdfabdfabdfabdf') }
+          { oid: new bson.ObjectId('abdfabdfabdfabdfabdfabdf') },
+          { oid: new bson.ObjectId('abdfabdfabdfabdfabdfabdf') }
         ]
       });
       expect(JSON.stringify(model.toJSON({ extended: false }))).to.equal('{"arr":[{"oid":"abdfabdfabdfabdfabdfabdf"},{"oid":"abdfabdfabdfabdfabdfabdf"}]}');
@@ -899,10 +898,10 @@ describe('Model', () => {
           aDate: new Date(Number(new Date('2019-03-11T04:55:00.000Z')) - i),
           aString: 'a string',
           aNumber: 1234,
-          anArray: ['a', {}, 2, true, [], bson.ObjectId(), new Date()],
+          anArray: ['a', {}, 2, true, [], new bson.ObjectId(), new Date()],
           aBoolean: true,
           anObject: {
-            one: 1, two: false, three: {}, four: [], five: new Date(), six: bson.ObjectId(), seven: 'one two three four five six seven'
+            one: 1, two: false, three: {}, four: [], five: new Date(), six: new bson.ObjectId(), seven: 'one two three four five six seven'
           },
           _etag: '"1e0-ilC0ScG/I4BHBDUJQZFa+TEv+B0"'
         }));

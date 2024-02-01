@@ -35,20 +35,20 @@
     "lib"
   ],
   "dependencies": {
-    "bson": "~4.7.2",
+    "bson": "~5.5.1",
     "clone": "^2.1.2",
     "debug": "^4.3.4",
     "error": "^7.0.2",
     "etag": "^1.8.1",
     "joi": "^17.9.2",
-    "mongodb": "~4.17.1",
+    "mongodb": "~5.9.2",
     "object-path": "^0.11.8",
     "omnibelt": "^3.1.2"
   },
   "devDependencies": {
     "@losant/eslint-config-losant": "^1.6.1",
     "husky": "^8.0.3",
-    "lint-staged": "~15.0.2",
+    "lint-staged": "~15.2.1",
     "chai": "^4.3.10",
     "chai-as-promised": "^7.1.1",
     "chai-datetime": "^1.8.0",
