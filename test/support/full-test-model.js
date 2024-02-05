@@ -1,7 +1,7 @@
-const format = require('string-template');
-const Model = require('../../lib/model');
+import format from 'string-template';
+import Model from '../../lib/model.js';
 
-const FullTestModel = Model.define({
+export const FullTestModel = Model.define({
   name: 'FullTestModel',
   collection: 'mocha_test',
   properties: {
@@ -28,7 +28,8 @@ const FullTestModel = Model.define({
     arr: { type: 'array' },
     num: { type: 'number', default: 0 },
     bool: { type: 'boolean', default: false },
-    any: { type: 'any' }
+    any: { type: 'any' },
+    objId: { type: 'objectid' }
   },
   virtuals: {
     virt: function() {
@@ -41,5 +42,3 @@ const FullTestModel = Model.define({
     }
   }
 });
-
-module.exports = FullTestModel;

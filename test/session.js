@@ -1,11 +1,8 @@
-const chai = require('chai');
-chai.use(require('chai-as-promised'));
-chai.use(require('chai-datetime'));
-const expect = chai.expect;
-const Model = require('../lib/model');
-const { createSession } = require('../lib/session');
-const cosaDb = require('../lib/db');
-const { forEachSerialP } = require('omnibelt');
+import { expect } from './common.js';
+import Model from '../lib/model.js';
+import { createSession } from '../lib/session.js';
+import cosaDb from '../lib/db.js';
+import { forEachSerialP } from 'omnibelt';
 
 const callTracking = [];
 
