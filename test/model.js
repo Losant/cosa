@@ -369,7 +369,7 @@ describe('Model', () => {
             items: {
               type: 'object',
               properties: {
-                oid: { type: 'objectid' }
+                oid: { type: 'objectId' }
               }
             }
           },
@@ -395,7 +395,7 @@ describe('Model', () => {
             items: {
               type: 'object',
               properties: {
-                oid: { type: 'objectid' }
+                oid: { type: 'objectId' }
               }
             }
           }
@@ -922,7 +922,7 @@ describe('Model', () => {
               three: { type: 'object', properties: {} },
               four: { type: 'array', items: { type: 'any' } },
               five: { type: 'date' },
-              six: { type: 'objectid' },
+              six: { type: 'objectId' },
               seven: { type: 'string' }
             }
           }
