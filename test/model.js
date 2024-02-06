@@ -457,12 +457,11 @@ describe('Model', () => {
 
     it('should resolve promise if validation succeeds', async () => {
       const objId = new ObjectId();
-      const model = await FullTestModel.create({ str: 'bar', objId: new ObjectId() }).saveWithId(objId);
+      let model = await FullTestModel.create({ str: 'bar', objId }).save();
       await model.validate();
-      expect(model._id.toString()).to.deep.equal(objId.toString());
-      // expect(result).to.exist.and.to.be.an('object');
+      model = await model.reload();
+      expect(model.toObject().objId).to.deep.equal(objId);
     });
-
   });
 
   describe('db', function() {
