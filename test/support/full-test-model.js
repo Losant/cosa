@@ -29,7 +29,7 @@ export const FullTestModel = Model.define({
     num: { type: 'number', default: 0 },
     bool: { type: 'boolean', default: false },
     any: { type: 'any' },
-    objId: { type: 'objectid' }
+    objId: { type: 'objectId' }
   },
   virtuals: {
     virt: function() {

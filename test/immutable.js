@@ -1,6 +1,5 @@
 import { expect } from './common.js';
 import models from '../lib/model.js';
-// import Immutable from '../lib/immutable.js';
 import { clone } from 'omnibelt';
 
 describe('Immutable', function() {
