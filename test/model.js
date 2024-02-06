@@ -1,6 +1,5 @@
 import { expect } from './common.js';
-import { MongoClient } from 'mongodb';
-import { ObjectId } from 'bson';
+import { MongoClient, ObjectId } from 'mongodb';
 import Model from '../lib/model.js';
 import cosaDb from '../lib/db.js';
 import { createSession } from '../lib/session.js';
