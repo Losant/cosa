@@ -36,7 +36,6 @@
     "lib"
   ],
   "dependencies": {
-    "bson": "~5.5.1",
     "clone": "^2.1.2",
     "debug": "^4.3.4",
     "error": "^7.0.2",
