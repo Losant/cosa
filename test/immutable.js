@@ -1,15 +1,19 @@
-const chai = require('chai');
-chai.use(require('chai-datetime'));
-const expect = chai.expect;
-const models = require('../lib/model');
-const { clone } = require('omnibelt');
+import { expect } from './common.js';
+import models from '../lib/model.js';
+import { clone } from 'omnibelt';
 
 describe('Immutable', function() {
 
-  const Immutable = require('../lib/immutable');
-  Immutable.use('array', require('../lib/array'));
-  Immutable.use(Date, require('../lib/date'));
-  Immutable.use(require('../lib/object'));
+  let Immutable;
+  before(async () => {
+    Immutable = (await import('../lib/immutable.js')).default;
+    const ImmutableArray = (await import('../lib/array.js')).default;
+    const ImmutableDate = (await import('../lib/date.js')).default;
+    const ImmutableObject = (await import('../lib/object.js')).default;
+    Immutable.use('array', ImmutableArray);
+    Immutable.use(Date, ImmutableDate);
+    Immutable.use(ImmutableObject);
+  });
 
   const complexDef = {
     abstract: true,
@@ -160,8 +164,16 @@ describe('Immutable', function() {
 
     it('should freeze object', function() {
       const obj = Immutable.create({ x: 0, y: 0 });
-      obj.foo = 'bar';
-      delete obj.x;
+      let error;
+      try {
+        obj.foo = 'bar';
+      } catch (e) {
+        error = e;
+      }
+      expect(error.message).to.equal('Cannot add property foo, object is not extensible');
+      try {
+        delete obj.x;
+      } catch {}
       expect(obj.foo).to.equal(undefined);
       expect(obj.x).to.equal(0);
     });

@@ -17,7 +17,7 @@ yarn add cosa
 First define a model:
 
 ```javascript
-const { Model } = require('cosa');
+import { Model } from 'cosa';
 
 const UserModel = Model.define({
   name: 'UserModel',

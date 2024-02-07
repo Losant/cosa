@@ -1,13 +1,12 @@
-const chai               = require('chai');
-const { MongoClient }    = require('mongodb');
-const bson               = require('bson');
-chai.use(require('chai-as-promised'));
-chai.use(require('chai-datetime'));
-const expect             = chai.expect;
-const Model = require('../lib/model');
-const cosaDb = require('../lib/db');
-const { createSession } = require('../lib/session');
-const { sleep, times } = require('omnibelt');
+import { expect } from './common.js';
+import { MongoClient } from 'mongodb';
+import { ObjectId } from 'bson';
+import Model from '../lib/model.js';
+import cosaDb from '../lib/db.js';
+import { createSession } from '../lib/session.js';
+import { sleep, times } from 'omnibelt';
+import Immutable from '../lib/immutable.js';
+import { FullTestModel } from './support/full-test-model.js';
 
 const getMongoClient = async () => {
   const mongoClient = new MongoClient(process.env.COSA_DB_URI);
@@ -27,10 +26,6 @@ const cleanUpDb = async (client, db, close = true) => {
 
 
 describe('Model', () => {
-
-  const Immutable = require('../lib/immutable');
-  const FullTestModel = require('./support/full-test-model');
-
   after(async () => {
     if (cosaDb._client) {
       await cosaDb._client.close();
@@ -293,7 +288,7 @@ describe('Model', () => {
 
   describe('.saveWithId()', function() {
     it('should save with a given ID', async () => {
-      const id = new bson.ObjectID('1234abcd103f8e485c9d2019');
+      const id = new ObjectId('1234abcd103f8e485c9d2019');
       const model = await FullTestModel.create({
         str: 'foo'
       }).saveWithId(id);
@@ -302,8 +297,8 @@ describe('Model', () => {
     });
 
     it('should error when trying to update an object', async () => {
-      const id = new bson.ObjectID('1234abcd103f8e485c9d2019');
-      const newId = new bson.ObjectID('5678abcd103f8e485c9d9000');
+      const id = new ObjectId('1234abcd103f8e485c9d2019');
+      const newId = new ObjectId('5678abcd103f8e485c9d9000');
       const model = await FullTestModel.create({
         str: 'foo'
       }).saveWithId(id);
@@ -326,7 +321,8 @@ describe('Model', () => {
           }
         }
       });
-      const id = new bson.ObjectID('1234abcd103f8e485c9d2019');
+
+      const id = new ObjectId('1234abcd103f8e485c9d2019');
       await BeforeSaveTestModel.create({
         str: 'foo'
       }).saveWithId(id);
@@ -373,7 +369,7 @@ describe('Model', () => {
             items: {
               type: 'object',
               properties: {
-                oid: { type: 'objectid' }
+                oid: { type: 'objectId' }
               }
             }
           },
@@ -382,8 +378,8 @@ describe('Model', () => {
       });
       const model = DeepArrayModel.create({
         arr: [
-          { oid: bson.ObjectId('abdfabdfabdfabdfabdfabdf') },
-          { oid: bson.ObjectId('abdfabdfabdfabdfabdfabdf') }
+          { oid: new ObjectId('abdfabdfabdfabdfabdfabdf') },
+          { oid: new ObjectId('abdfabdfabdfabdfabdfabdf') }
         ],
         nullVal: null
       });
@@ -399,7 +395,7 @@ describe('Model', () => {
             items: {
               type: 'object',
               properties: {
-                oid: { type: 'objectid' }
+                oid: { type: 'objectId' }
               }
             }
           }
@@ -407,8 +403,8 @@ describe('Model', () => {
       });
       const model = DeepArrayModel.create({
         arr: [
-          { oid: bson.ObjectId('abdfabdfabdfabdfabdfabdf') },
-          { oid: bson.ObjectId('abdfabdfabdfabdfabdfabdf') }
+          { oid: new ObjectId('abdfabdfabdfabdfabdfabdf') },
+          { oid: new ObjectId('abdfabdfabdfabdfabdfabdf') }
         ]
       });
       expect(JSON.stringify(model.toJSON({ extended: false }))).to.equal('{"arr":[{"oid":"abdfabdfabdfabdfabdfabdf"},{"oid":"abdfabdfabdfabdfabdfabdf"}]}');
@@ -460,15 +456,15 @@ describe('Model', () => {
     });
 
     it('should resolve promise if validation succeeds', async () => {
-      const model = FullTestModel.create({ str: 'bar' });
-      const result = await model.validate();
-      expect(result).to.exist.and.to.be.an('object');
+      const objId = new ObjectId();
+      let model = await FullTestModel.create({ str: 'bar', objId }).save();
+      await model.validate();
+      model = await model.reload();
+      expect(model.toObject().objId).to.deep.equal(objId);
     });
-
   });
 
   describe('db', function() {
-    const db = require('../lib/db');
 
     it('should auto connect to db if connection lost', async () => {
       const model = FullTestModel.create({
@@ -478,7 +474,7 @@ describe('Model', () => {
       const updatedModel = await model.save();
       let count = await FullTestModel.count({ _id: updatedModel._id });
       expect(count).to.equal(1);
-      await db._client.close();
+      await cosaDb._client.close();
       count = await FullTestModel.count({ _id: updatedModel._id });
       expect(count).to.equal(1);
     });
@@ -899,10 +895,10 @@ describe('Model', () => {
           aDate: new Date(Number(new Date('2019-03-11T04:55:00.000Z')) - i),
           aString: 'a string',
           aNumber: 1234,
-          anArray: ['a', {}, 2, true, [], bson.ObjectId(), new Date()],
+          anArray: ['a', {}, 2, true, [], new ObjectId(), new Date()],
           aBoolean: true,
           anObject: {
-            one: 1, two: false, three: {}, four: [], five: new Date(), six: bson.ObjectId(), seven: 'one two three four five six seven'
+            one: 1, two: false, three: {}, four: [], five: new Date(), six: new ObjectId(), seven: 'one two three four five six seven'
           },
           _etag: '"1e0-ilC0ScG/I4BHBDUJQZFa+TEv+B0"'
         }));
@@ -926,7 +922,7 @@ describe('Model', () => {
               three: { type: 'object', properties: {} },
               four: { type: 'array', items: { type: 'any' } },
               five: { type: 'date' },
-              six: { type: 'objectid' },
+              six: { type: 'objectId' },
               seven: { type: 'string' }
             }
           }
