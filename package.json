@@ -47,9 +47,9 @@
   },
   "devDependencies": {
     "@losant/eslint-config-losant": "^1.6.1",
-    "husky": "^8.0.3",
+    "husky": "^9.0.10",
     "lint-staged": "~15.2.1",
-    "chai": "^4.3.10",
+    "chai": "^5.0.3",
     "chai-as-promised": "^7.1.1",
     "chai-datetime": "^1.8.0",
     "documentation": "^14.0.2",

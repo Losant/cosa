@@ -3,104 +3,104 @@
 ### Table of Contents
 
 *   [cosa][1]
-    *   [db][2]
-    *   [init][3]
-        *   [Parameters][4]
-*   [Model][5]
-    *   [define][6]
+*   [db][2]
+*   [init][3]
+    *   [Parameters][4]
+*   [Database][5]
+    *   [init][6]
         *   [Parameters][7]
-*   [Cursor][8]
-    *   [Parameters][9]
-    *   [forEach][10]
+    *   [collection][8]
+        *   [Parameters][9]
+    *   [find][10]
         *   [Parameters][11]
-    *   [forEachParallelLimitP][12]
+    *   [insert][12]
         *   [Parameters][13]
-    *   [count][14]
+    *   [update][14]
         *   [Parameters][15]
-    *   [close][16]
-    *   [isClosed][17]
-    *   [filter][18]
+    *   [remove][16]
+        *   [Parameters][17]
+    *   [aggregate][18]
         *   [Parameters][19]
-    *   [limit][20]
+    *   [distinct][20]
         *   [Parameters][21]
-    *   [map][22]
+    *   [replace][22]
         *   [Parameters][23]
-    *   [max][24]
-        *   [Parameters][25]
-    *   [min][26]
-        *   [Parameters][27]
-    *   [next][28]
-    *   [serialForEach][29]
+*   [Model][24]
+    *   [define][25]
+        *   [Parameters][26]
+*   [Cursor][27]
+    *   [Parameters][28]
+    *   [forEach][29]
         *   [Parameters][30]
-    *   [skip][31]
+    *   [forEachParallelLimitP][31]
         *   [Parameters][32]
-    *   [sort][33]
+    *   [count][33]
         *   [Parameters][34]
-    *   [toArray][35]
-*   [errors][36]
-    *   [Conflict][37]
-    *   [Validation][38]
-*   [ImmutableDefinedObject][39]
-    *   [Parameters][40]
-*   [ImmutableArray][41]
-    *   [Parameters][42]
-*   [ImmutableDate][43]
-    *   [Parameters][44]
-*   [ImmutableBSONObjectID][45]
-    *   [Parameters][46]
-*   [ImmutableObject][47]
-    *   [Parameters][48]
-*   [Immutable][49]
-*   [use][50]
-    *   [Parameters][51]
-*   [isImmutable][52]
-    *   [Parameters][53]
-*   [isImmutableType][54]
-    *   [Parameters][55]
-*   [create][56]
-    *   [Parameters][57]
-*   [Database][58]
-    *   [init][59]
-        *   [Parameters][60]
-    *   [collection][61]
-        *   [Parameters][62]
-    *   [find][63]
-        *   [Parameters][64]
-    *   [insert][65]
-        *   [Parameters][66]
-    *   [update][67]
-        *   [Parameters][68]
-    *   [remove][69]
-        *   [Parameters][70]
-    *   [aggregate][71]
-        *   [Parameters][72]
-    *   [distinct][73]
-        *   [Parameters][74]
-    *   [replace][75]
-        *   [Parameters][76]
+    *   [close][35]
+    *   [isClosed][36]
+    *   [filter][37]
+        *   [Parameters][38]
+    *   [limit][39]
+        *   [Parameters][40]
+    *   [map][41]
+        *   [Parameters][42]
+    *   [max][43]
+        *   [Parameters][44]
+    *   [min][45]
+        *   [Parameters][46]
+    *   [next][47]
+    *   [serialForEach][48]
+        *   [Parameters][49]
+    *   [skip][50]
+        *   [Parameters][51]
+    *   [sort][52]
+        *   [Parameters][53]
+    *   [toArray][54]
+*   [errors][55]
+    *   [Conflict][56]
+    *   [Validation][57]
+*   [ImmutableDefinedObject][58]
+    *   [Parameters][59]
+*   [ImmutableArray][60]
+    *   [Parameters][61]
+*   [ImmutableDate][62]
+    *   [Parameters][63]
+*   [ImmutableBSONObjectId][64]
+    *   [Parameters][65]
+*   [ImmutableObject][66]
+    *   [Parameters][67]
+*   [Immutable][68]
+*   [use][69]
+    *   [Parameters][70]
+*   [isImmutable][71]
+    *   [Parameters][72]
+*   [isImmutableType][73]
+    *   [Parameters][74]
+*   [create][75]
+    *   [Parameters][76]
 
 ## cosa
 
-[lib/index.js:9-34][77]
+[lib/index.js:10-10][77]
 
 Main module that provides access to library classes and functions.
 
-### db
+## db
 
-[lib/index.js:19-19][78]
+[lib/index.js:16-16][78]
 
-*   **See**: [Database][58]
+*   **See**: [Database][5]
 
 Database connection instance.
 
-### init
+## init
 
-[lib/index.js:30-33][79]
+[lib/index.js:26-29][79]
 
 Initialize cosa and connect to the database. Explicitly calling the
 function is not needed if `process.env.COSA_DB_URI` is properly set.
 
-#### Parameters
+### Parameters
 
 *   `uri` **[string][80]?** URI to the database. If no URI is provided, the value
     of `process.env.COSA_DB_URI` is used. See
@@ -109,390 +109,17 @@ function is not needed if `process.env.COSA_DB_URI` is properly set.
 
 Returns **[Promise][82]** db.init promise
 
-## Model
-
-[lib/model.js:386-537][83]
-
-Static class for working with Models
-
-### define
-
-[lib/model.js:386-537][83]
-
-#### Parameters
-
-*   `definition` **[Object][84]** the model in object form, properties, methods, virtuals
-
-Returns **[Object][84]** an instance of Model
-
-## Cursor
-
-[lib/cursor.js:8-204][85]
-
-Wrapper around MongoDB Cursor to convert results to Models.
-
-### Parameters
-
-*   `cursor` **[object][84]** MongoDB cursor object
-*   `factory` **[function][86]** Factory function used to create Models based on document from cursor.
-
-### forEach
-
-[lib/cursor.js:20-29][87]
-
-*   **See**: [https://mongodb.github.io/node-mongodb-native/4.0/classes/findcursor.html#foreach][88]
-
-Iterates over cursor and executes the iterator for each model returned.
-
-#### Parameters
-
-*   `iterator` **[function][86]** a function that will be called for each doc
-
-Returns **[Promise][82]** resolves when list is exhausted.
-
-### forEachParallelLimitP
-
-[lib/cursor.js:37-60][89]
-
-Executes the iterator for the max number of items in parallel.
-
-#### Parameters
-
-*   `maxParallel` **[number][90]** the max number of items to run in parallel
-*   `iterator` **[function][86]** a function that will be called for each doc
-
-Returns **[Promise][82]** resolves when list is exhausted.
-
-### count
-
-[lib/cursor.js:69-71][91]
-
-*   **See**: [https://mongodb.github.io/node-mongodb-native/4.0/classes/findcursor.html#count][92]
-
-Returns the count of documents on the cursor.
-
-#### Parameters
-
-*   `applySkipLimit` **[boolean][93]** the number of docs to skip over in the count
-*   `options` **[object][84]** mongo cursor count options
-
-Returns **[number][90]** the count of items in the list
-
-### close
-
-[lib/cursor.js:78-80][94]
-
-*   **See**: [https://mongodb.github.io/node-mongodb-native/4.0/classes/findcursor.html#close][95]
-
-Close the underlying MongoDB cursor.
-
-Returns **[boolean][93]** `true` if cursor is successfully closed
-
-### isClosed
-
-[lib/cursor.js:87-89][96]
-
-*   **See**: [https://mongodb.github.io/node-mongodb-native/4.0/classes/findcursor.html#close][95]
-
-Returns `true` if the cursor is closed.
-
-Returns **[boolean][93]** `true` if the cursor is closed.
-
-### filter
-
-[lib/cursor.js:97-100][97]
-
-*   **See**: [https://mongodb.github.io/node-mongodb-native/4.0/classes/findcursor.html#filter][98]
-
-Sets the cursor query filter.
-
-#### Parameters
-
-*   `filter` **[object][84]** The filter object used for the cursor.
-
-Returns **[Cursor][8]** the cursor instance
-
-### limit
-
-[lib/cursor.js:108-111][99]
-
-*   **See**: [https://mongodb.github.io/node-mongodb-native/4.0/classes/findcursor.html#limit][100]
-
-Sets the cursor limit.
-
-#### Parameters
-
-*   `limit` **[number][90]** A number to limit the cursor by.
-
-Returns **[Cursor][8]** the cursor instance
-
-### map
-
-[lib/cursor.js:119-123][101]
-
-*   **See**: [https://mongodb.github.io/node-mongodb-native/4.0/classes/findcursor.html#map][102]
-
-Maps cursor results using the provided function.
-
-#### Parameters
-
-*   `transform` **[function][86]** A function that will be called by each document in the cursor.
-
-Returns **[Cursor][8]** the cursor instance
-
-### max
-
-[lib/cursor.js:131-134][103]
-
-*   **See**: [https://mongodb.github.io/node-mongodb-native/4.0/classes/findcursor.html#max][104]
-
-Sets the cursor max.
-
-#### Parameters
-
-*   `max` **[number][90]** Specify a $max value to specify the exclusive upper bound for a specific index in order to constrain the results of find().
-
-Returns **[Cursor][8]** the cursor instance
-
-### min
-
-[lib/cursor.js:142-145][105]
-
-*   **See**: [https://mongodb.github.io/node-mongodb-native/4.0/classes/findcursor.html#min][106]
-
-Sets the cursor min.
-
-#### Parameters
-
-*   `min` **[number][90]** Specify a $min value to specify the inclusive lower bound for a specific index in order to constrain the results of find().
-
-Returns **[Cursor][8]** the cursor instance
-
-### next
-
-[lib/cursor.js:152-155][107]
-
-*   **See**: [https://mongodb.github.io/node-mongodb-native/4.0/classes/findcursor.html#next][108]
-
-Get the next available document from the cursor.
-
-Returns **[Promise][82]** resolves with the next document from the cursor.
-
-### serialForEach
-
-[lib/cursor.js:163-171][109]
-
-*   **See**: [https://mongodb.github.io/node-mongodb-native/4.0/classes/findcursor.html#forEach][110]
-
-Like `Cursor.forEach` but guarantees non-parallel execution of iterator.
-
-#### Parameters
-
-*   `iterator` **[function][86]** the function that will be called by each document serially.
-
-Returns **[Promise][82]** resolves when each item in the cursor has been passed to the iterator function
-
-### skip
-
-[lib/cursor.js:179-182][111]
-
-*   **See**: [https://mongodb.github.io/node-mongodb-native/4.0/classes/findcursor.html#skip][112]
-
-Sets the cursor skip.
-
-#### Parameters
-
-*   `value` **[number][90]** The skip for the cursor query.
-
-Returns **[Cursor][8]** the cursor instance
-
-### sort
-
-[lib/cursor.js:191-194][113]
-
-*   **See**: [https://mongodb.github.io/node-mongodb-native/4.0/classes/findcursor.html#sort][114]
-
-Sets the cursor sort.
-
-#### Parameters
-
-*   `sortOrList` **([string][80] | [Array][115])** The key or keys set for the sort.
-*   `direction` **[number][90]** `1` or `-1` for ascending or descending
-
-Returns **[Cursor][8]** the cursor instance
-
-### toArray
-
-[lib/cursor.js:201-203][116]
-
-*   **See**: [https://mongodb.github.io/node-mongodb-native/4.0/classes/findcursor.html#toArray][117]
-
-Returns the cursor results as an array.
-
-Returns **[Promise][82]** that resolves into an array from the cursor
-
-## errors
-
-[lib/errors.js:19-39][118]
-
-Custom errors.
-
-### Conflict
-
-[lib/errors.js:24-28][119]
-
-Error used when an action results in a conflict between documents.
-
-### Validation
-
-[lib/errors.js:33-37][120]
-
-Error used when validation of a document fails.
-
-## ImmutableDefinedObject
-
-[lib/defined-object.js:16-58][121]
-
-Immutable handler used to create an immutable object based on definition
-describing the object properties and methods.
-
-### Parameters
-
-*   `data` **[object][84]** Underlying defined object
-*   `builder` **[object][84]** Builder instance
-*   `options` **[object][84]** Optional settings
-
-    *   `options.definition` **[object][84]** Defintion settings
-
-        *   `options.definition.properties` **[object][84]?** Describes the properties of the immutable object.
-        *   `options.definition.virtuals` **[object][84]?** Describes the virtual properties of the immutable object.
-        *   `options.definition.methods` **[object][84]?** Describes the methods of the immutable object.
-
-Returns **[undefined][122]** no return value
-
-## ImmutableArray
-
-[lib/array.js:12-76][123]
-
-Immutable handler used to wrap a javascript array.
-
-### Parameters
-
-*   `data` **[object][84]** Underlying array
-*   `builder` **[object][84]** Builder instance
-*   `options` **[object][84]** Optional settings
-
-Returns **[undefined][122]** no return value
-
-## ImmutableDate
-
-[lib/date.js:11-43][124]
-
-Immutable handler used to wrap javascript Dates.
-
-### Parameters
-
-*   `data` **[object][84]** Underlying date
-*   `builder` **[object][84]** Builder instance
-*   `options` **[object][84]** Optional settings
-
-Returns **[undefined][122]** no return value
-
-## ImmutableBSONObjectID
-
-[lib/bson-objectId.js:8-34][125]
-
-Immutable handler used to wrap bson ObjectID.
-
-### Parameters
-
-*   `data` **[object][84]** the object id
-*   `builder` **[object][84]** the immutable handler to wrapper the object id.
-
-Returns **[undefined][122]** this adds methods on to the builder.
-
-## ImmutableObject
-
-[lib/object.js:20-26][126]
-
-Immutable handler used to wrap a simple javascript object.
-
-### Parameters
-
-*   `data` **[object][84]** Underlying array
-*   `builder` **[object][84]** Builder instance
-
-Returns **[undefined][122]** no return value
-
-## Immutable
-
-[lib/immutable.js:35-126][127]
-
-Static class for working with immutable data types.
-
-## use
-
-[lib/immutable.js:44-53][128]
-
-Registers an immutable handler for the given data type. Handlers are used
-to wrap specific data types. For example BSON ObjectIds or Dates.
-
-### Parameters
-
-*   `type` **[string][80]** the name of the type (optional, default `*`)
-*   `handler` **[function][86]** the handler for the type
-
-Returns **[undefined][122]** no return value
-
-## isImmutable
-
-[lib/immutable.js:60-63][129]
-
-Returns `true` if the given value is an Immutable.
-
-### Parameters
-
-*   `value` **[object][84]** a value to check
-
-Returns **[boolean][93]** if it is an immutable instance
-
-## isImmutableType
-
-[lib/immutable.js:71-73][130]
-
-Returns `true` if the given value is an Immutable of the given type.
-
-### Parameters
-
-*   `value` **[object][84]** a value to check
-*   `type` **[string][80]** type to check against
-
-Returns **[boolean][93]** if the value is an immutable instance of that type
-
-## create
-
-[lib/immutable.js:81-125][131]
-
-Creates an immutable object based on the given data.
-
-### Parameters
-
-*   `data` **[object][84]** Object to make immutable.
-*   `options` **[object][84]?** Options passed to the immutable handler for the given data type. (optional, default `{}`)
-
-Returns **[object][84]** the immutable wrapped object
-
 ## Database
 
-[lib/db.js:75-404][132]
+[lib/db.js:75-403][83]
 
 Singleton that provides methods for connecting to a MongoDB collection.
 
 ### init
 
-[lib/db.js:99-137][133]
+[lib/db.js:99-137][84]
 
-*   **See**: [init][134]
+*   **See**: [init][3]
 
 Initialize the database connection.
 
@@ -502,159 +129,159 @@ Initialize the database connection.
     of `process.env.COSA_DB_URI` is used. See
     [https://docs.mongodb.com/manual/reference/connection-string/][81] for
     information on the URI format.
-*   `options` **[object][84]?** Optional collection settings.
+*   `options` **[object][85]?** Optional collection settings.
 
 Returns **[Promise][82]** returns the db when connected
 
 ### collection
 
-[lib/db.js:146-167][135]
+[lib/db.js:146-167][86]
 
-*   **See**: [https://mongodb.github.io/node-mongodb-native/4.0/classes/db.html#collection][136]
+*   **See**: [https://mongodb.github.io/node-mongodb-native/6.3/classes/Db.html#collection][87]
 
 Fetch a specific database collection.
 
 #### Parameters
 
 *   `name` **[string][80]** Collection name.
-*   `options` **[object][84]?** Optional collection settings.
+*   `options` **[object][85]?** Optional collection settings.
 
 Returns **[Promise][82]** resolves with the connection
 
 ### find
 
-[lib/db.js:196-247][137]
+[lib/db.js:196-247][88]
 
-*   **See**: [https://mongodb.github.io/node-mongodb-native/4.0/classes/findcursor.html][138]
-*   **See**: [https://mongodb.github.io/node-mongodb-native/4.0/classes/collection.html#find][139]
-*   **See**: [https://mongodb.github.io/node-mongodb-native/4.0/classes/collection.html#findOne][140]
-*   **See**: [https://mongodb.github.io/node-mongodb-native/4.0/classes/collection.html#count][141]
-*   **See**: [https://mongodb.github.io/node-mongodb-native/4.0/interfaces/findoptions.html#readpreference][142]
-*   **See**: [https://mongodb.github.io/node-mongodb-native/4.0/interfaces/findoptions.html#batchsize][143]
-*   **See**: [https://mongodb.github.io/node-mongodb-native/4.0/interfaces/findoptions.html#nocursortimeout][144]
-*   **See**: [https://mongodb.github.io/node-mongodb-native/4.0/interfaces/findoptions.html#maxtimems][145]
+*   **See**: [https://mongodb.github.io/node-mongodb-native/6.3/classes/Collection.html][89]
+*   **See**: [https://mongodb.github.io/node-mongodb-native/6.3/classes/Collection.html#find][90]
+*   **See**: [https://mongodb.github.io/node-mongodb-native/6.3/classes/Collection.html#findOne][91]
+*   **See**: [https://mongodb.github.io/node-mongodb-native/6.3/classes/Collection.html#count][92]
+*   **See**: [https://mongodb.github.io/node-mongodb-native/6.3/interfaces/FindOptions.html#readPreference][93]
+*   **See**: [https://mongodb.github.io/node-mongodb-native/6.3/interfaces/FindOptions.html#batchSize][94]
+*   **See**: [https://mongodb.github.io/node-mongodb-native/6.3/interfaces/FindOptions.html#noCursorTimeout][95]
+*   **See**: [https://mongodb.github.io/node-mongodb-native/6.3/interfaces/FindOptions.html#maxTimeMS][96]
 
 Fetches documents from a collection with the given query.
 
 #### Parameters
 
 *   `collectionName` **[string][80]** Name of the collection.
-*   `query` **[object][84]** MongoDB query object.
-*   `options` **[object][84]?** MongoDB query options. (optional, default `{}`)
+*   `query` **[object][85]** MongoDB query object.
+*   `options` **[object][85]?** MongoDB query options. (optional, default `{}`)
 
-    *   `options.fields` **[object][84]?** (deprecated, will be mapped to projection) The fields to return in the query. Object of fields to include or exclude (not both), {'a':1
-    *   `options.projection` **[object][84]?** The projection to return in the query. Object of projection to include or exclude (not both), {'a':1
-    *   `options.sort` **([object][84] | [Array][115])?** Set to sort the documents coming back from the query. Array of indexes, \[\['a', 1]] etc.
-    *   `options.skip` **[number][90]** Set to skip N documents ahead in your query (useful for pagination). (optional, default `0`)
-    *   `options.limit` **[object][84]** Sets the limit of documents returned in the query. (optional, default `1000`)
-    *   `options.count` **[object][84]** get a count of the items, instead of the items themselves. (optional, default `false`)
-    *   `options.findOne` **[object][84]** Should a single item be returned. (optional, default `false`)
-    *   `options.readPreference` **[object][84]?** the read preference for the query with one of the read constants
-    *   `options.batchSize` **[number][90]?** number of items per batch (default in mongo driver is 1000)
-    *   `options.noCursorTimeout` **[boolean][93]?** boolan, if the cursor can time out after being idle, mongo driver default is false
-    *   `options.maxTimeMS` **[number][90]?** maximum amount of time (in ms) this cursor is allowed to live
-    *   `options.session` **[object][84]?** Mongo session or Cosa Mongo session wrapper
+    *   `options.fields` **[object][85]?** (deprecated, will be mapped to projection) The fields to return in the query. Object of fields to include or exclude (not both), {'a':1
+    *   `options.projection` **[object][85]?** The projection to return in the query. Object of projection to include or exclude (not both), {'a':1
+    *   `options.sort` **([object][85] | [Array][97])?** Set to sort the documents coming back from the query. Array of indexes, \[\['a', 1]] etc.
+    *   `options.skip` **[number][98]** Set to skip N documents ahead in your query (useful for pagination). (optional, default `0`)
+    *   `options.limit` **[object][85]** Sets the limit of documents returned in the query. (optional, default `1000`)
+    *   `options.count` **[object][85]** get a count of the items, instead of the items themselves. (optional, default `false`)
+    *   `options.findOne` **[object][85]** Should a single item be returned. (optional, default `false`)
+    *   `options.readPreference` **[object][85]?** the read preference for the query with one of the read constants
+    *   `options.batchSize` **[number][98]?** number of items per batch (default in mongo driver is 1000)
+    *   `options.noCursorTimeout` **[boolean][99]?** boolan, if the cursor can time out after being idle, mongo driver default is false
+    *   `options.maxTimeMS` **[number][98]?** maximum amount of time (in ms) this cursor is allowed to live
+    *   `options.session` **[object][85]?** Mongo session or Cosa Mongo session wrapper
 
-Returns **[Cursor][8]** returns Cursor object
+Returns **[Cursor][27]** returns Cursor object
 
 ### insert
 
-[lib/db.js:261-279][146]
+[lib/db.js:261-278][100]
 
-*   **See**: [https://mongodb.github.io/node-mongodb-native/4.0/classes/collection.html#insertmany][147]
-*   **See**: [https://mongodb.github.io/node-mongodb-native/4.0/classes/collection.html#insertOne][148]
-*   **See**: [https://mongodb.github.io/node-mongodb-native/4.0/interfaces/insertoneoptions.html#writeconcern][149]
+*   **See**: [https://mongodb.github.io/node-mongodb-native/6.3/classes/Collection.html#insertMany][101]
+*   **See**: [https://mongodb.github.io/node-mongodb-native/6.3/classes/Collection.html#insertOne][102]
+*   **See**: [https://mongodb.github.io/node-mongodb-native/6.3/interfaces/BulkWriteOptions.html#writeConcern][103]
 
 Inserts the given docs into a collection.
 
 #### Parameters
 
 *   `collectionName` **[string][80]** Name of the collection.
-*   `docs` **([object][84] | [Array][115])** Documents objects to insert.
-*   `options` **[object][84]** options on insert (optional, default `{}`)
+*   `docs` **([object][85] | [Array][97])** Documents objects to insert.
+*   `options` **[object][85]** options on insert (optional, default `{}`)
 
-    *   `options.writeConcern` **[object][84]?** the write concern
-    *   `options.session` **[object][84]?** Mongo session or Cosa Mongo session wrapper
+    *   `options.writeConcern` **[object][85]?** the write concern
+    *   `options.session` **[object][85]?** Mongo session or Cosa Mongo session wrapper
 
 Returns **[Promise][82]** resolves with an object with results, and ops as keys
 
 ### update
 
-[lib/db.js:296-305][150]
+[lib/db.js:295-304][104]
 
-*   **See**: [https://mongodb.github.io/node-mongodb-native/4.0/classes/collection.html#updateMany][151]
-*   **See**: [https://mongodb.github.io/node-mongodb-native/4.0/classes/collection.html#updateOne][152]
-*   **See**: [https://mongodb.github.io/node-mongodb-native/4.0/interfaces/updateoptions.html#writeconcern][153]
+*   **See**: [https://mongodb.github.io/node-mongodb-native/6.3/classes/Collection.html#updateMany][105]
+*   **See**: [https://mongodb.github.io/node-mongodb-native/6.3/classes/Collection.html#updateOne][106]
+*   **See**: [https://mongodb.github.io/node-mongodb-native/6.3/interfaces/BulkWriteOptions.html#writeConcern][103]
 
 Updates docs in a collection.
 
 #### Parameters
 
 *   `collectionName` **[string][80]** Name of the collection.
-*   `query` **[object][84]** Query to find which documents to update.
-*   `update` **[object][84]** Document properties to update.
-*   `options` **[object][84]?** Optional settings see mongo documentation (optional, default `{}`)
+*   `query` **[object][85]** Query to find which documents to update.
+*   `update` **[object][85]** Document properties to update.
+*   `options` **[object][85]?** Optional settings see mongo documentation (optional, default `{}`)
 
-    *   `options.multiple` **[boolean][93]** Should multiple documents be updated. (optional, default `false`)
-    *   `options.upsert` **[boolean][93]** Should documents be inserted if they don't already exist. (optional, default `false`)
-    *   `options.writeConcern` **[object][84]?** the write concern options
-    *   `options.session` **[object][84]?** Mongo session or Cosa Mongo session wrapper
+    *   `options.multiple` **[boolean][99]** Should multiple documents be updated. (optional, default `false`)
+    *   `options.upsert` **[boolean][99]** Should documents be inserted if they don't already exist. (optional, default `false`)
+    *   `options.writeConcern` **[object][85]?** the write concern options
+    *   `options.session` **[object][85]?** Mongo session or Cosa Mongo session wrapper
 
 Returns **[Promise][82]** resolves with an object with results, and ops as keys
 
 ### remove
 
-[lib/db.js:320-327][154]
+[lib/db.js:319-326][107]
 
-*   **See**: [https://mongodb.github.io/node-mongodb-native/4.0/classes/collection.html#deleteMany][155]
-*   **See**: [https://mongodb.github.io/node-mongodb-native/4.0/classes/collection.html#deleteOne][156]
-*   **See**: [https://mongodb.github.io/node-mongodb-native/4.0/interfaces/deleteoptions.html#writeconcern][157]
+*   **See**: [https://mongodb.github.io/node-mongodb-native/6.3/classes/Collection.html#deleteMany][108]
+*   **See**: [https://mongodb.github.io/node-mongodb-native/6.3/classes/Collection.html#deleteOne][109]
+*   **See**: [https://mongodb.github.io/node-mongodb-native/6.3/interfaces/DeleteOptions.html#writeConcern][110]
 
 Removes docs from a collection.
 
 #### Parameters
 
 *   `collectionName` **[string][80]** Name of the collection.
-*   `query` **[object][84]** Query to find which documents to remove.
-*   `options` **[object][84]?** Optional settings see mongo documentation (optional, default `{}`)
+*   `query` **[object][85]** Query to find which documents to remove.
+*   `options` **[object][85]?** Optional settings see mongo documentation (optional, default `{}`)
 
-    *   `options.multiple` **[boolean][93]** Should multiple documents be removed. (optional, default `false`)
-    *   `options.writeConcern` **[object][84]?** the write concern options
-    *   `options.session` **[object][84]?** Mongo session or Cosa Mongo session wrapper
+    *   `options.multiple` **[boolean][99]** Should multiple documents be removed. (optional, default `false`)
+    *   `options.writeConcern` **[object][85]?** the write concern options
+    *   `options.session` **[object][85]?** Mongo session or Cosa Mongo session wrapper
 
 Returns **[Promise][82]** resolves with an object with results, and ops as keys
 
 ### aggregate
 
-[lib/db.js:344-353][158]
+[lib/db.js:343-352][111]
 
-*   **See**: [https://mongodb.github.io/node-mongodb-native/4.0/classes/collection.html#aggregate][159]
-*   **See**: [https://mongodb.github.io/node-mongodb-native/4.0/interfaces/aggregateoptions.html#readpreference][160]
-*   **See**: [https://mongodb.github.io/node-mongodb-native/4.0/interfaces/aggregateoptions.html#batchsize][161]
-*   **See**: [https://mongodb.github.io/node-mongodb-native/4.0/interfaces/aggregateoptions.html#maxtimems][162]
+*   **See**: [https://mongodb.github.io/node-mongodb-native/6.3/classes/Collection.html#aggregate][112]
+*   **See**: [https://mongodb.github.io/node-mongodb-native/6.3/interfaces/AggregateOptions.html#readPreference][113]
+*   **See**: [https://mongodb.github.io/node-mongodb-native/6.3/interfaces/AggregateOptions.html#batchSize][114]
+*   **See**: [https://mongodb.github.io/node-mongodb-native/6.3/interfaces/AggregateOptions.html#maxTimeMS][115]
 
 Executes aggregation pipeline against a collection.
 
 #### Parameters
 
 *   `collectionName` **[string][80]** Name of the collection.
-*   `pipeline` **[object][84]** Aggregation pipeline.
-*   `options` **[object][84]?** Optional settings see mongo documentation (optional, default `{}`)
+*   `pipeline` **[object][85]** Aggregation pipeline.
+*   `options` **[object][85]?** Optional settings see mongo documentation (optional, default `{}`)
 
-    *   `options.readPreference` **[object][84]?** the read preference for the query with one of the read constants
-    *   `options.batchSize` **[number][90]?** number of items per batch (default in mongo driver is 1000)
-    *   `options.maxTimeMS` **[number][90]?** maximum amount of time (in ms) this cursor is allowed to live
-    *   `options.session` **[object][84]?** Mongo session or Cosa Mongo session wrapper
+    *   `options.readPreference` **[object][85]?** the read preference for the query with one of the read constants
+    *   `options.batchSize` **[number][98]?** number of items per batch (default in mongo driver is 1000)
+    *   `options.maxTimeMS` **[number][98]?** maximum amount of time (in ms) this cursor is allowed to live
+    *   `options.session` **[object][85]?** Mongo session or Cosa Mongo session wrapper
 
 Returns **[Promise][82]** resolves with the result of the aggregation from mongo
 
 ### distinct
 
-[lib/db.js:369-377][163]
+[lib/db.js:368-376][116]
 
-*   **See**: [https://mongodb.github.io/node-mongodb-native/4.0/classes/collection.html#distinct][164]
-*   **See**: [https://mongodb.github.io/node-mongodb-native/4.0/interfaces/commandoperationoptions.html#readpreference][165]
-*   **See**: [https://mongodb.github.io/node-mongodb-native/4.0/interfaces/commandoperationoptions.html#maxtimems][166]
+*   **See**: [https://mongodb.github.io/node-mongodb-native/6.3/classes/Collection.html#distinct][117]
+*   **See**: [https://mongodb.github.io/node-mongodb-native/6.3/interfaces/CommandOperationOptions.html#readPreference][118]
+*   **See**: [https://mongodb.github.io/node-mongodb-native/6.3/interfaces/CommandOperationOptions.html#maxTimeMS][119]
 
 Returns list of unique values for the given key across a collection.
 
@@ -662,35 +289,408 @@ Returns list of unique values for the given key across a collection.
 
 *   `collectionName` **[string][80]** Name of the collection.
 *   `key` **[string][80]** Document property.
-*   `query` **[object][84]** Query to find which documents evaluate.
-*   `options` **[object][84]?** Optional settings see mongo documentation (optional, default `{}`)
+*   `query` **[object][85]** Query to find which documents evaluate.
+*   `options` **[object][85]?** Optional settings see mongo documentation (optional, default `{}`)
 
     *   `options.readPreference` **[string][80]?** the read preference for the query
-    *   `options.maxTimeMS` **[number][90]?** maximum amount of time (in ms) this cursor is allowed to live
-    *   `options.session` **[object][84]?** Mongo session or Cosa Mongo session wrapper
+    *   `options.maxTimeMS` **[number][98]?** maximum amount of time (in ms) this cursor is allowed to live
+    *   `options.session` **[object][85]?** Mongo session or Cosa Mongo session wrapper
 
 Returns **[Promise][82]** resolves with the result of the distinct query from mongo
 
 ### replace
 
-[lib/db.js:391-402][167]
+[lib/db.js:390-401][120]
 
-*   **See**: [http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#replace][168]
-*   **See**: [https://mongodb.github.io/node-mongodb-native/4.0/interfaces/replaceoptions.html#writeconcern][169]
+*   **See**: [https://mongodb.github.io/node-mongodb-native/6.3/classes/Collection.html#replaceOne][121]
+*   **See**: [https://mongodb.github.io/node-mongodb-native/6.3/interfaces/ReplaceOptions.html#writeConcern][122]
 
 Replace a doc in a collection.
 
 #### Parameters
 
 *   `collectionName` **[string][80]** Name of the collection.
-*   `query` **[object][84]** Query to find which documents evaluate.
-*   `replace` **[object][84]** doc to save on the collection
-*   `options` **[object][84]?** Optional settings see mongo documentation (optional, default `{}`)
+*   `query` **[object][85]** Query to find which documents evaluate.
+*   `replace` **[object][85]** doc to save on the collection
+*   `options` **[object][85]?** Optional settings see mongo documentation (optional, default `{}`)
 
-    *   `options.writeConcern` **[object][84]?** the write concern options
-    *   `options.session` **[object][84]?** Mongo session or Cosa Mongo session wrapper
+    *   `options.writeConcern` **[object][85]?** the write concern options
+    *   `options.session` **[object][85]?** Mongo session or Cosa Mongo session wrapper
 
 Returns **[Promise][82]** resolves with the result of the distinct query from mongo
+
+## Model
+
+[lib/model.js:392-543][123]
+
+Static class for working with Models
+
+### define
+
+[lib/model.js:392-543][123]
+
+#### Parameters
+
+*   `definition` **[Object][85]** the model in object form, properties, methods, virtuals
+
+Returns **[Object][85]** an instance of Model
+
+## Cursor
+
+[lib/cursor.js:8-199][124]
+
+Wrapper around MongoDB Cursor to convert results to Models.
+
+### Parameters
+
+*   `cursor` **[object][85]** MongoDB cursor object
+*   `factory` **[function][125]** Factory function used to create Models based on document from cursor.
+
+### forEach
+
+[lib/cursor.js:20-24][126]
+
+*   **See**: [https://mongodb.github.io/node-mongodb-native/6.3/classes/FindCursor.html#forEach][127]
+
+Iterates over cursor and executes the iterator for each model returned.
+
+#### Parameters
+
+*   `iterator` **[function][125]** a function that will be called for each doc
+
+Returns **[Promise][82]** resolves when list is exhausted.
+
+### forEachParallelLimitP
+
+[lib/cursor.js:32-55][128]
+
+Executes the iterator for the max number of items in parallel.
+
+#### Parameters
+
+*   `maxParallel` **[number][98]** the max number of items to run in parallel
+*   `iterator` **[function][125]** a function that will be called for each doc
+
+Returns **[Promise][82]** resolves when list is exhausted.
+
+### count
+
+[lib/cursor.js:64-66][129]
+
+*   **See**: [https://mongodb.github.io/node-mongodb-native/6.3/classes/FindCursor.html#count][130]
+
+Returns the count of documents on the cursor.
+
+#### Parameters
+
+*   `applySkipLimit` **[boolean][99]** the number of docs to skip over in the count
+*   `options` **[object][85]** mongo cursor count options
+
+Returns **[number][98]** the count of items in the list
+
+### close
+
+[lib/cursor.js:73-75][131]
+
+*   **See**: [https://mongodb.github.io/node-mongodb-native/6.3/classes/FindCursor.html#close-1][132]
+
+Close the underlying MongoDB cursor.
+
+Returns **[boolean][99]** `true` if cursor is successfully closed
+
+### isClosed
+
+[lib/cursor.js:82-84][133]
+
+*   **See**: [https://mongodb.github.io/node-mongodb-native/6.3/classes/FindCursor.html#closed][134]
+
+Returns `true` if the cursor is closed.
+
+Returns **[boolean][99]** `true` if the cursor is closed.
+
+### filter
+
+[lib/cursor.js:92-95][135]
+
+*   **See**: [https://mongodb.github.io/node-mongodb-native/6.3/classes/FindCursor.html#filter][136]
+
+Sets the cursor query filter.
+
+#### Parameters
+
+*   `filter` **[object][85]** The filter object used for the cursor.
+
+Returns **[Cursor][27]** the cursor instance
+
+### limit
+
+[lib/cursor.js:103-106][137]
+
+*   **See**: [https://mongodb.github.io/node-mongodb-native/6.3/classes/FindCursor.html#limit][138]
+
+Sets the cursor limit.
+
+#### Parameters
+
+*   `limit` **[number][98]** A number to limit the cursor by.
+
+Returns **[Cursor][27]** the cursor instance
+
+### map
+
+[lib/cursor.js:114-118][139]
+
+*   **See**: [https://mongodb.github.io/node-mongodb-native/6.3/classes/FindCursor.html#map][140]
+
+Maps cursor results using the provided function.
+
+#### Parameters
+
+*   `transform` **[function][125]** A function that will be called by each document in the cursor.
+
+Returns **[Cursor][27]** the cursor instance
+
+### max
+
+[lib/cursor.js:126-129][141]
+
+*   **See**: [https://mongodb.github.io/node-mongodb-native/6.3/classes/FindCursor.html#max][142]
+
+Sets the cursor max.
+
+#### Parameters
+
+*   `max` **[number][98]** Specify a $max value to specify the exclusive upper bound for a specific index in order to constrain the results of find().
+
+Returns **[Cursor][27]** the cursor instance
+
+### min
+
+[lib/cursor.js:137-140][143]
+
+*   **See**: [https://mongodb.github.io/node-mongodb-native/6.3/classes/FindCursor.html#min][144]
+
+Sets the cursor min.
+
+#### Parameters
+
+*   `min` **[number][98]** Specify a $min value to specify the inclusive lower bound for a specific index in order to constrain the results of find().
+
+Returns **[Cursor][27]** the cursor instance
+
+### next
+
+[lib/cursor.js:147-150][145]
+
+*   **See**: [https://mongodb.github.io/node-mongodb-native/6.3/classes/FindCursor.html#next][146]
+
+Get the next available document from the cursor.
+
+Returns **[Promise][82]** resolves with the next document from the cursor.
+
+### serialForEach
+
+[lib/cursor.js:158-166][147]
+
+*   **See**: [https://mongodb.github.io/node-mongodb-native/6.3/classes/FindCursor.html#forEach][127]
+
+Like `Cursor.forEach` but guarantees non-parallel execution of iterator.
+
+#### Parameters
+
+*   `iterator` **[function][125]** the function that will be called by each document serially.
+
+Returns **[Promise][82]** resolves when each item in the cursor has been passed to the iterator function
+
+### skip
+
+[lib/cursor.js:174-177][148]
+
+*   **See**: [https://mongodb.github.io/node-mongodb-native/6.3/classes/FindCursor.html#skip][149]
+
+Sets the cursor skip.
+
+#### Parameters
+
+*   `value` **[number][98]** The skip for the cursor query.
+
+Returns **[Cursor][27]** the cursor instance
+
+### sort
+
+[lib/cursor.js:186-189][150]
+
+*   **See**: [https://mongodb.github.io/node-mongodb-native/6.3/classes/FindCursor.html#sort][151]
+
+Sets the cursor sort.
+
+#### Parameters
+
+*   `sortOrList` **([string][80] | [Array][97])** The key or keys set for the sort.
+*   `direction` **[number][98]** `1` or `-1` for ascending or descending
+
+Returns **[Cursor][27]** the cursor instance
+
+### toArray
+
+[lib/cursor.js:196-198][152]
+
+*   **See**: [https://mongodb.github.io/node-mongodb-native/6.3/classes/FindCursor.html#toArray][153]
+
+Returns the cursor results as an array.
+
+Returns **[Promise][82]** that resolves into an array from the cursor
+
+## errors
+
+[lib/errors.js:19-39][154]
+
+Custom errors.
+
+### Conflict
+
+[lib/errors.js:24-28][155]
+
+Error used when an action results in a conflict between documents.
+
+### Validation
+
+[lib/errors.js:33-37][156]
+
+Error used when validation of a document fails.
+
+## ImmutableDefinedObject
+
+[lib/defined-object.js:16-58][157]
+
+Immutable handler used to create an immutable object based on definition
+describing the object properties and methods.
+
+### Parameters
+
+*   `data` **[object][85]** Underlying defined object
+*   `builder` **[object][85]** Builder instance
+*   `options` **[object][85]** Optional settings
+
+    *   `options.definition` **[object][85]** Defintion settings
+
+        *   `options.definition.properties` **[object][85]?** Describes the properties of the immutable object.
+        *   `options.definition.virtuals` **[object][85]?** Describes the virtual properties of the immutable object.
+        *   `options.definition.methods` **[object][85]?** Describes the methods of the immutable object.
+
+Returns **[undefined][158]** no return value
+
+## ImmutableArray
+
+[lib/array.js:12-76][159]
+
+Immutable handler used to wrap a javascript array.
+
+### Parameters
+
+*   `data` **[object][85]** Underlying array
+*   `builder` **[object][85]** Builder instance
+*   `options` **[object][85]** Optional settings
+
+Returns **[undefined][158]** no return value
+
+## ImmutableDate
+
+[lib/date.js:11-43][160]
+
+Immutable handler used to wrap javascript Dates.
+
+### Parameters
+
+*   `data` **[object][85]** Underlying date
+*   `builder` **[object][85]** Builder instance
+*   `options` **[object][85]** Optional settings
+
+Returns **[undefined][158]** no return value
+
+## ImmutableBSONObjectId
+
+[lib/bson-objectId.js:9-35][161]
+
+Immutable handler used to wrap bson ObjectId.
+
+### Parameters
+
+*   `data` **[object][85]** the object id
+*   `builder` **[object][85]** the immutable handler to wrapper the object id.
+
+Returns **[undefined][158]** this adds methods on to the builder.
+
+## ImmutableObject
+
+[lib/object.js:20-26][162]
+
+Immutable handler used to wrap a simple javascript object.
+
+### Parameters
+
+*   `data` **[object][85]** Underlying array
+*   `builder` **[object][85]** Builder instance
+
+Returns **[undefined][158]** no return value
+
+## Immutable
+
+[lib/immutable.js:35-126][163]
+
+Static class for working with immutable data types.
+
+## use
+
+[lib/immutable.js:44-53][164]
+
+Registers an immutable handler for the given data type. Handlers are used
+to wrap specific data types. For example BSON ObjectIds or Dates.
+
+### Parameters
+
+*   `type` **[string][80]** the name of the type (optional, default `*`)
+*   `handler` **[function][125]** the handler for the type
+
+Returns **[undefined][158]** no return value
+
+## isImmutable
+
+[lib/immutable.js:60-63][165]
+
+Returns `true` if the given value is an Immutable.
+
+### Parameters
+
+*   `value` **[object][85]** a value to check
+
+Returns **[boolean][99]** if it is an immutable instance
+
+## isImmutableType
+
+[lib/immutable.js:71-73][166]
+
+Returns `true` if the given value is an Immutable of the given type.
+
+### Parameters
+
+*   `value` **[object][85]** a value to check
+*   `type` **[string][80]** type to check against
+
+Returns **[boolean][99]** if the value is an immutable instance of that type
+
+## create
+
+[lib/immutable.js:81-125][167]
+
+Creates an immutable object based on the given data.
+
+### Parameters
+
+*   `data` **[object][85]** Object to make immutable.
+*   `options` **[object][85]?** Options passed to the immutable handler for the given data type. (optional, default `{}`)
+
+Returns **[object][85]** the immutable wrapped object
 
 [1]: #cosa
 
@@ -700,155 +700,155 @@ Returns **[Promise][82]** resolves with the result of the distinct query from mo
 
 [4]: #parameters
 
-[5]: #model
+[5]: #database
 
-[6]: #define
+[6]: #init-1
 
 [7]: #parameters-1
 
-[8]: #cursor
+[8]: #collection
 
 [9]: #parameters-2
 
-[10]: #foreach
+[10]: #find
 
 [11]: #parameters-3
 
-[12]: #foreachparallellimitp
+[12]: #insert
 
 [13]: #parameters-4
 
-[14]: #count
+[14]: #update
 
 [15]: #parameters-5
 
-[16]: #close
+[16]: #remove
 
-[17]: #isclosed
+[17]: #parameters-6
 
-[18]: #filter
+[18]: #aggregate
 
-[19]: #parameters-6
+[19]: #parameters-7
 
-[20]: #limit
+[20]: #distinct
 
-[21]: #parameters-7
+[21]: #parameters-8
 
-[22]: #map
+[22]: #replace
 
-[23]: #parameters-8
+[23]: #parameters-9
 
-[24]: #max
+[24]: #model
 
-[25]: #parameters-9
+[25]: #define
 
-[26]: #min
+[26]: #parameters-10
 
-[27]: #parameters-10
+[27]: #cursor
 
-[28]: #next
+[28]: #parameters-11
 
-[29]: #serialforeach
+[29]: #foreach
 
-[30]: #parameters-11
+[30]: #parameters-12
 
-[31]: #skip
+[31]: #foreachparallellimitp
 
-[32]: #parameters-12
+[32]: #parameters-13
 
-[33]: #sort
+[33]: #count
 
-[34]: #parameters-13
+[34]: #parameters-14
 
-[35]: #toarray
+[35]: #close
 
-[36]: #errors
+[36]: #isclosed
 
-[37]: #conflict
+[37]: #filter
 
-[38]: #validation
+[38]: #parameters-15
 
-[39]: #immutabledefinedobject
+[39]: #limit
 
-[40]: #parameters-14
+[40]: #parameters-16
 
-[41]: #immutablearray
+[41]: #map
 
-[42]: #parameters-15
+[42]: #parameters-17
 
-[43]: #immutabledate
+[43]: #max
 
-[44]: #parameters-16
+[44]: #parameters-18
 
-[45]: #immutablebsonobjectid
+[45]: #min
 
-[46]: #parameters-17
+[46]: #parameters-19
 
-[47]: #immutableobject
+[47]: #next
 
-[48]: #parameters-18
+[48]: #serialforeach
 
-[49]: #immutable
+[49]: #parameters-20
 
-[50]: #use
+[50]: #skip
 
-[51]: #parameters-19
+[51]: #parameters-21
 
-[52]: #isimmutable
+[52]: #sort
 
-[53]: #parameters-20
+[53]: #parameters-22
 
-[54]: #isimmutabletype
+[54]: #toarray
 
-[55]: #parameters-21
+[55]: #errors
 
-[56]: #create
+[56]: #conflict
 
-[57]: #parameters-22
+[57]: #validation
 
-[58]: #database
+[58]: #immutabledefinedobject
 
-[59]: #init-1
+[59]: #parameters-23
 
-[60]: #parameters-23
+[60]: #immutablearray
 
-[61]: #collection
+[61]: #parameters-24
 
-[62]: #parameters-24
+[62]: #immutabledate
 
-[63]: #find
+[63]: #parameters-25
 
-[64]: #parameters-25
+[64]: #immutablebsonobjectid
 
-[65]: #insert
+[65]: #parameters-26
 
-[66]: #parameters-26
+[66]: #immutableobject
 
-[67]: #update
+[67]: #parameters-27
 
-[68]: #parameters-27
+[68]: #immutable
 
-[69]: #remove
+[69]: #use
 
 [70]: #parameters-28
 
-[71]: #aggregate
+[71]: #isimmutable
 
 [72]: #parameters-29
 
-[73]: #distinct
+[73]: #isimmutabletype
 
 [74]: #parameters-30
 
-[75]: #replace
+[75]: #create
 
 [76]: #parameters-31
 
-[77]: https://github.com/Losant/cosa/blob/6b36fe309462751564b037e19a11a81e61b077d1/lib/index.js#L9-L34 "Source code on GitHub"
+[77]: https://github.com/Losant/cosa/blob/79e238b194b935ab31308226575fd6efcafa0aeb/lib/index.js#L10-L10 "Source code on GitHub"
 
-[78]: https://github.com/Losant/cosa/blob/6b36fe309462751564b037e19a11a81e61b077d1/lib/index.js#L19-L19 "Source code on GitHub"
+[78]: https://github.com/Losant/cosa/blob/79e238b194b935ab31308226575fd6efcafa0aeb/lib/index.js#L16-L16 "Source code on GitHub"
 
-[79]: https://github.com/Losant/cosa/blob/6b36fe309462751564b037e19a11a81e61b077d1/lib/index.js#L30-L33 "Source code on GitHub"
+[79]: https://github.com/Losant/cosa/blob/79e238b194b935ab31308226575fd6efcafa0aeb/lib/index.js#L26-L29 "Source code on GitHub"
 
 [80]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
 
@@ -856,176 +856,172 @@ Returns **[Promise][82]** resolves with the result of the distinct query from mo
 
 [82]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise
 
-[83]: https://github.com/Losant/cosa/blob/6b36fe309462751564b037e19a11a81e61b077d1/lib/model.js#L386-L537 "Source code on GitHub"
+[83]: https://github.com/Losant/cosa/blob/79e238b194b935ab31308226575fd6efcafa0aeb/lib/db.js#L75-L403 "Source code on GitHub"
 
-[84]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
+[84]: https://github.com/Losant/cosa/blob/79e238b194b935ab31308226575fd6efcafa0aeb/lib/db.js#L99-L137 "Source code on GitHub"
 
-[85]: https://github.com/Losant/cosa/blob/6b36fe309462751564b037e19a11a81e61b077d1/lib/cursor.js#L8-L204 "Source code on GitHub"
+[85]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
 
-[86]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function
+[86]: https://github.com/Losant/cosa/blob/79e238b194b935ab31308226575fd6efcafa0aeb/lib/db.js#L146-L167 "Source code on GitHub"
 
-[87]: https://github.com/Losant/cosa/blob/6b36fe309462751564b037e19a11a81e61b077d1/lib/cursor.js#L20-L29 "Source code on GitHub"
+[87]: https://mongodb.github.io/node-mongodb-native/6.3/classes/Db.html#collection
 
-[88]: https://mongodb.github.io/node-mongodb-native/4.0/classes/findcursor.html#foreach
+[88]: https://github.com/Losant/cosa/blob/79e238b194b935ab31308226575fd6efcafa0aeb/lib/db.js#L196-L247 "Source code on GitHub"
 
-[89]: https://github.com/Losant/cosa/blob/6b36fe309462751564b037e19a11a81e61b077d1/lib/cursor.js#L37-L60 "Source code on GitHub"
+[89]: https://mongodb.github.io/node-mongodb-native/6.3/classes/Collection.html
 
-[90]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number
+[90]: https://mongodb.github.io/node-mongodb-native/6.3/classes/Collection.html#find
 
-[91]: https://github.com/Losant/cosa/blob/6b36fe309462751564b037e19a11a81e61b077d1/lib/cursor.js#L69-L71 "Source code on GitHub"
+[91]: https://mongodb.github.io/node-mongodb-native/6.3/classes/Collection.html#findOne
 
-[92]: https://mongodb.github.io/node-mongodb-native/4.0/classes/findcursor.html#count
+[92]: https://mongodb.github.io/node-mongodb-native/6.3/classes/Collection.html#count
 
-[93]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
+[93]: https://mongodb.github.io/node-mongodb-native/6.3/interfaces/FindOptions.html#readPreference
 
-[94]: https://github.com/Losant/cosa/blob/6b36fe309462751564b037e19a11a81e61b077d1/lib/cursor.js#L78-L80 "Source code on GitHub"
+[94]: https://mongodb.github.io/node-mongodb-native/6.3/interfaces/FindOptions.html#batchSize
 
-[95]: https://mongodb.github.io/node-mongodb-native/4.0/classes/findcursor.html#close
+[95]: https://mongodb.github.io/node-mongodb-native/6.3/interfaces/FindOptions.html#noCursorTimeout
 
-[96]: https://github.com/Losant/cosa/blob/6b36fe309462751564b037e19a11a81e61b077d1/lib/cursor.js#L87-L89 "Source code on GitHub"
+[96]: https://mongodb.github.io/node-mongodb-native/6.3/interfaces/FindOptions.html#maxTimeMS
 
-[97]: https://github.com/Losant/cosa/blob/6b36fe309462751564b037e19a11a81e61b077d1/lib/cursor.js#L97-L100 "Source code on GitHub"
+[97]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
 
-[98]: https://mongodb.github.io/node-mongodb-native/4.0/classes/findcursor.html#filter
+[98]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number
 
-[99]: https://github.com/Losant/cosa/blob/6b36fe309462751564b037e19a11a81e61b077d1/lib/cursor.js#L108-L111 "Source code on GitHub"
+[99]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
 
-[100]: https://mongodb.github.io/node-mongodb-native/4.0/classes/findcursor.html#limit
+[100]: https://github.com/Losant/cosa/blob/79e238b194b935ab31308226575fd6efcafa0aeb/lib/db.js#L261-L278 "Source code on GitHub"
 
-[101]: https://github.com/Losant/cosa/blob/6b36fe309462751564b037e19a11a81e61b077d1/lib/cursor.js#L119-L123 "Source code on GitHub"
+[101]: https://mongodb.github.io/node-mongodb-native/6.3/classes/Collection.html#insertMany
 
-[102]: https://mongodb.github.io/node-mongodb-native/4.0/classes/findcursor.html#map
+[102]: https://mongodb.github.io/node-mongodb-native/6.3/classes/Collection.html#insertOne
 
-[103]: https://github.com/Losant/cosa/blob/6b36fe309462751564b037e19a11a81e61b077d1/lib/cursor.js#L131-L134 "Source code on GitHub"
+[103]: https://mongodb.github.io/node-mongodb-native/6.3/interfaces/BulkWriteOptions.html#writeConcern
 
-[104]: https://mongodb.github.io/node-mongodb-native/4.0/classes/findcursor.html#max
+[104]: https://github.com/Losant/cosa/blob/79e238b194b935ab31308226575fd6efcafa0aeb/lib/db.js#L295-L304 "Source code on GitHub"
 
-[105]: https://github.com/Losant/cosa/blob/6b36fe309462751564b037e19a11a81e61b077d1/lib/cursor.js#L142-L145 "Source code on GitHub"
+[105]: https://mongodb.github.io/node-mongodb-native/6.3/classes/Collection.html#updateMany
 
-[106]: https://mongodb.github.io/node-mongodb-native/4.0/classes/findcursor.html#min
+[106]: https://mongodb.github.io/node-mongodb-native/6.3/classes/Collection.html#updateOne
 
-[107]: https://github.com/Losant/cosa/blob/6b36fe309462751564b037e19a11a81e61b077d1/lib/cursor.js#L152-L155 "Source code on GitHub"
+[107]: https://github.com/Losant/cosa/blob/79e238b194b935ab31308226575fd6efcafa0aeb/lib/db.js#L319-L326 "Source code on GitHub"
 
-[108]: https://mongodb.github.io/node-mongodb-native/4.0/classes/findcursor.html#next
+[108]: https://mongodb.github.io/node-mongodb-native/6.3/classes/Collection.html#deleteMany
 
-[109]: https://github.com/Losant/cosa/blob/6b36fe309462751564b037e19a11a81e61b077d1/lib/cursor.js#L163-L171 "Source code on GitHub"
+[109]: https://mongodb.github.io/node-mongodb-native/6.3/classes/Collection.html#deleteOne
 
-[110]: https://mongodb.github.io/node-mongodb-native/4.0/classes/findcursor.html#forEach
+[110]: https://mongodb.github.io/node-mongodb-native/6.3/interfaces/DeleteOptions.html#writeConcern
 
-[111]: https://github.com/Losant/cosa/blob/6b36fe309462751564b037e19a11a81e61b077d1/lib/cursor.js#L179-L182 "Source code on GitHub"
+[111]: https://github.com/Losant/cosa/blob/79e238b194b935ab31308226575fd6efcafa0aeb/lib/db.js#L343-L352 "Source code on GitHub"
 
-[112]: https://mongodb.github.io/node-mongodb-native/4.0/classes/findcursor.html#skip
+[112]: https://mongodb.github.io/node-mongodb-native/6.3/classes/Collection.html#aggregate
 
-[113]: https://github.com/Losant/cosa/blob/6b36fe309462751564b037e19a11a81e61b077d1/lib/cursor.js#L191-L194 "Source code on GitHub"
+[113]: https://mongodb.github.io/node-mongodb-native/6.3/interfaces/AggregateOptions.html#readPreference
 
-[114]: https://mongodb.github.io/node-mongodb-native/4.0/classes/findcursor.html#sort
+[114]: https://mongodb.github.io/node-mongodb-native/6.3/interfaces/AggregateOptions.html#batchSize
 
-[115]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
+[115]: https://mongodb.github.io/node-mongodb-native/6.3/interfaces/AggregateOptions.html#maxTimeMS
 
-[116]: https://github.com/Losant/cosa/blob/6b36fe309462751564b037e19a11a81e61b077d1/lib/cursor.js#L201-L203 "Source code on GitHub"
+[116]: https://github.com/Losant/cosa/blob/79e238b194b935ab31308226575fd6efcafa0aeb/lib/db.js#L368-L376 "Source code on GitHub"
 
-[117]: https://mongodb.github.io/node-mongodb-native/4.0/classes/findcursor.html#toArray
+[117]: https://mongodb.github.io/node-mongodb-native/6.3/classes/Collection.html#distinct
 
-[118]: https://github.com/Losant/cosa/blob/6b36fe309462751564b037e19a11a81e61b077d1/lib/errors.js#L19-L39 "Source code on GitHub"
+[118]: https://mongodb.github.io/node-mongodb-native/6.3/interfaces/CommandOperationOptions.html#readPreference
 
-[119]: https://github.com/Losant/cosa/blob/6b36fe309462751564b037e19a11a81e61b077d1/lib/errors.js#L24-L28 "Source code on GitHub"
+[119]: https://mongodb.github.io/node-mongodb-native/6.3/interfaces/CommandOperationOptions.html#maxTimeMS
 
-[120]: https://github.com/Losant/cosa/blob/6b36fe309462751564b037e19a11a81e61b077d1/lib/errors.js#L33-L37 "Source code on GitHub"
+[120]: https://github.com/Losant/cosa/blob/79e238b194b935ab31308226575fd6efcafa0aeb/lib/db.js#L390-L401 "Source code on GitHub"
 
-[121]: https://github.com/Losant/cosa/blob/6b36fe309462751564b037e19a11a81e61b077d1/lib/defined-object.js#L16-L58 "Source code on GitHub"
+[121]: https://mongodb.github.io/node-mongodb-native/6.3/classes/Collection.html#replaceOne
 
-[122]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/undefined
+[122]: https://mongodb.github.io/node-mongodb-native/6.3/interfaces/ReplaceOptions.html#writeConcern
 
-[123]: https://github.com/Losant/cosa/blob/6b36fe309462751564b037e19a11a81e61b077d1/lib/array.js#L12-L76 "Source code on GitHub"
+[123]: https://github.com/Losant/cosa/blob/79e238b194b935ab31308226575fd6efcafa0aeb/lib/model.js#L392-L543 "Source code on GitHub"
 
-[124]: https://github.com/Losant/cosa/blob/6b36fe309462751564b037e19a11a81e61b077d1/lib/date.js#L11-L43 "Source code on GitHub"
+[124]: https://github.com/Losant/cosa/blob/79e238b194b935ab31308226575fd6efcafa0aeb/lib/cursor.js#L8-L199 "Source code on GitHub"
 
-[125]: https://github.com/Losant/cosa/blob/6b36fe309462751564b037e19a11a81e61b077d1/lib/bson-objectId.js#L8-L34 "Source code on GitHub"
+[125]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function
 
-[126]: https://github.com/Losant/cosa/blob/6b36fe309462751564b037e19a11a81e61b077d1/lib/object.js#L20-L26 "Source code on GitHub"
+[126]: https://github.com/Losant/cosa/blob/79e238b194b935ab31308226575fd6efcafa0aeb/lib/cursor.js#L20-L24 "Source code on GitHub"
 
-[127]: https://github.com/Losant/cosa/blob/6b36fe309462751564b037e19a11a81e61b077d1/lib/immutable.js#L35-L126 "Source code on GitHub"
+[127]: https://mongodb.github.io/node-mongodb-native/6.3/classes/FindCursor.html#forEach
 
-[128]: https://github.com/Losant/cosa/blob/6b36fe309462751564b037e19a11a81e61b077d1/lib/immutable.js#L44-L53 "Source code on GitHub"
+[128]: https://github.com/Losant/cosa/blob/79e238b194b935ab31308226575fd6efcafa0aeb/lib/cursor.js#L32-L55 "Source code on GitHub"
 
-[129]: https://github.com/Losant/cosa/blob/6b36fe309462751564b037e19a11a81e61b077d1/lib/immutable.js#L60-L63 "Source code on GitHub"
+[129]: https://github.com/Losant/cosa/blob/79e238b194b935ab31308226575fd6efcafa0aeb/lib/cursor.js#L64-L66 "Source code on GitHub"
 
-[130]: https://github.com/Losant/cosa/blob/6b36fe309462751564b037e19a11a81e61b077d1/lib/immutable.js#L71-L73 "Source code on GitHub"
+[130]: https://mongodb.github.io/node-mongodb-native/6.3/classes/FindCursor.html#count
 
-[131]: https://github.com/Losant/cosa/blob/6b36fe309462751564b037e19a11a81e61b077d1/lib/immutable.js#L81-L125 "Source code on GitHub"
+[131]: https://github.com/Losant/cosa/blob/79e238b194b935ab31308226575fd6efcafa0aeb/lib/cursor.js#L73-L75 "Source code on GitHub"
 
-[132]: https://github.com/Losant/cosa/blob/6b36fe309462751564b037e19a11a81e61b077d1/lib/db.js#L75-L404 "Source code on GitHub"
+[132]: https://mongodb.github.io/node-mongodb-native/6.3/classes/FindCursor.html#close-1
 
-[133]: https://github.com/Losant/cosa/blob/6b36fe309462751564b037e19a11a81e61b077d1/lib/db.js#L99-L137 "Source code on GitHub"
+[133]: https://github.com/Losant/cosa/blob/79e238b194b935ab31308226575fd6efcafa0aeb/lib/cursor.js#L82-L84 "Source code on GitHub"
 
-[134]: init
+[134]: https://mongodb.github.io/node-mongodb-native/6.3/classes/FindCursor.html#closed
 
-[135]: https://github.com/Losant/cosa/blob/6b36fe309462751564b037e19a11a81e61b077d1/lib/db.js#L146-L167 "Source code on GitHub"
+[135]: https://github.com/Losant/cosa/blob/79e238b194b935ab31308226575fd6efcafa0aeb/lib/cursor.js#L92-L95 "Source code on GitHub"
 
-[136]: https://mongodb.github.io/node-mongodb-native/4.0/classes/db.html#collection
+[136]: https://mongodb.github.io/node-mongodb-native/6.3/classes/FindCursor.html#filter
 
-[137]: https://github.com/Losant/cosa/blob/6b36fe309462751564b037e19a11a81e61b077d1/lib/db.js#L196-L247 "Source code on GitHub"
+[137]: https://github.com/Losant/cosa/blob/79e238b194b935ab31308226575fd6efcafa0aeb/lib/cursor.js#L103-L106 "Source code on GitHub"
 
-[138]: https://mongodb.github.io/node-mongodb-native/4.0/classes/findcursor.html
+[138]: https://mongodb.github.io/node-mongodb-native/6.3/classes/FindCursor.html#limit
 
-[139]: https://mongodb.github.io/node-mongodb-native/4.0/classes/collection.html#find
+[139]: https://github.com/Losant/cosa/blob/79e238b194b935ab31308226575fd6efcafa0aeb/lib/cursor.js#L114-L118 "Source code on GitHub"
 
-[140]: https://mongodb.github.io/node-mongodb-native/4.0/classes/collection.html#findOne
+[140]: https://mongodb.github.io/node-mongodb-native/6.3/classes/FindCursor.html#map
 
-[141]: https://mongodb.github.io/node-mongodb-native/4.0/classes/collection.html#count
+[141]: https://github.com/Losant/cosa/blob/79e238b194b935ab31308226575fd6efcafa0aeb/lib/cursor.js#L126-L129 "Source code on GitHub"
 
-[142]: https://mongodb.github.io/node-mongodb-native/4.0/interfaces/findoptions.html#readpreference
+[142]: https://mongodb.github.io/node-mongodb-native/6.3/classes/FindCursor.html#max
 
-[143]: https://mongodb.github.io/node-mongodb-native/4.0/interfaces/findoptions.html#batchsize
+[143]: https://github.com/Losant/cosa/blob/79e238b194b935ab31308226575fd6efcafa0aeb/lib/cursor.js#L137-L140 "Source code on GitHub"
 
-[144]: https://mongodb.github.io/node-mongodb-native/4.0/interfaces/findoptions.html#nocursortimeout
+[144]: https://mongodb.github.io/node-mongodb-native/6.3/classes/FindCursor.html#min
 
-[145]: https://mongodb.github.io/node-mongodb-native/4.0/interfaces/findoptions.html#maxtimems
+[145]: https://github.com/Losant/cosa/blob/79e238b194b935ab31308226575fd6efcafa0aeb/lib/cursor.js#L147-L150 "Source code on GitHub"
 
-[146]: https://github.com/Losant/cosa/blob/6b36fe309462751564b037e19a11a81e61b077d1/lib/db.js#L261-L279 "Source code on GitHub"
+[146]: https://mongodb.github.io/node-mongodb-native/6.3/classes/FindCursor.html#next
 
-[147]: https://mongodb.github.io/node-mongodb-native/4.0/classes/collection.html#insertmany
+[147]: https://github.com/Losant/cosa/blob/79e238b194b935ab31308226575fd6efcafa0aeb/lib/cursor.js#L158-L166 "Source code on GitHub"
 
-[148]: https://mongodb.github.io/node-mongodb-native/4.0/classes/collection.html#insertOne
+[148]: https://github.com/Losant/cosa/blob/79e238b194b935ab31308226575fd6efcafa0aeb/lib/cursor.js#L174-L177 "Source code on GitHub"
 
-[149]: https://mongodb.github.io/node-mongodb-native/4.0/interfaces/insertoneoptions.html#writeconcern
+[149]: https://mongodb.github.io/node-mongodb-native/6.3/classes/FindCursor.html#skip
 
-[150]: https://github.com/Losant/cosa/blob/6b36fe309462751564b037e19a11a81e61b077d1/lib/db.js#L296-L305 "Source code on GitHub"
+[150]: https://github.com/Losant/cosa/blob/79e238b194b935ab31308226575fd6efcafa0aeb/lib/cursor.js#L186-L189 "Source code on GitHub"
 
-[151]: https://mongodb.github.io/node-mongodb-native/4.0/classes/collection.html#updateMany
+[151]: https://mongodb.github.io/node-mongodb-native/6.3/classes/FindCursor.html#sort
 
-[152]: https://mongodb.github.io/node-mongodb-native/4.0/classes/collection.html#updateOne
+[152]: https://github.com/Losant/cosa/blob/79e238b194b935ab31308226575fd6efcafa0aeb/lib/cursor.js#L196-L198 "Source code on GitHub"
 
-[153]: https://mongodb.github.io/node-mongodb-native/4.0/interfaces/updateoptions.html#writeconcern
+[153]: https://mongodb.github.io/node-mongodb-native/6.3/classes/FindCursor.html#toArray
 
-[154]: https://github.com/Losant/cosa/blob/6b36fe309462751564b037e19a11a81e61b077d1/lib/db.js#L320-L327 "Source code on GitHub"
+[154]: https://github.com/Losant/cosa/blob/79e238b194b935ab31308226575fd6efcafa0aeb/lib/errors.js#L19-L39 "Source code on GitHub"
 
-[155]: https://mongodb.github.io/node-mongodb-native/4.0/classes/collection.html#deleteMany
+[155]: https://github.com/Losant/cosa/blob/79e238b194b935ab31308226575fd6efcafa0aeb/lib/errors.js#L24-L28 "Source code on GitHub"
 
-[156]: https://mongodb.github.io/node-mongodb-native/4.0/classes/collection.html#deleteOne
+[156]: https://github.com/Losant/cosa/blob/79e238b194b935ab31308226575fd6efcafa0aeb/lib/errors.js#L33-L37 "Source code on GitHub"
 
-[157]: https://mongodb.github.io/node-mongodb-native/4.0/interfaces/deleteoptions.html#writeconcern
+[157]: https://github.com/Losant/cosa/blob/79e238b194b935ab31308226575fd6efcafa0aeb/lib/defined-object.js#L16-L58 "Source code on GitHub"
 
-[158]: https://github.com/Losant/cosa/blob/6b36fe309462751564b037e19a11a81e61b077d1/lib/db.js#L344-L353 "Source code on GitHub"
+[158]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/undefined
 
-[159]: https://mongodb.github.io/node-mongodb-native/4.0/classes/collection.html#aggregate
+[159]: https://github.com/Losant/cosa/blob/79e238b194b935ab31308226575fd6efcafa0aeb/lib/array.js#L12-L76 "Source code on GitHub"
 
-[160]: https://mongodb.github.io/node-mongodb-native/4.0/interfaces/aggregateoptions.html#readpreference
+[160]: https://github.com/Losant/cosa/blob/79e238b194b935ab31308226575fd6efcafa0aeb/lib/date.js#L11-L43 "Source code on GitHub"
 
-[161]: https://mongodb.github.io/node-mongodb-native/4.0/interfaces/aggregateoptions.html#batchsize
+[161]: https://github.com/Losant/cosa/blob/79e238b194b935ab31308226575fd6efcafa0aeb/lib/bson-objectId.js#L9-L35 "Source code on GitHub"
 
-[162]: https://mongodb.github.io/node-mongodb-native/4.0/interfaces/aggregateoptions.html#maxtimems
+[162]: https://github.com/Losant/cosa/blob/79e238b194b935ab31308226575fd6efcafa0aeb/lib/object.js#L20-L26 "Source code on GitHub"
 
-[163]: https://github.com/Losant/cosa/blob/6b36fe309462751564b037e19a11a81e61b077d1/lib/db.js#L369-L377 "Source code on GitHub"
+[163]: https://github.com/Losant/cosa/blob/79e238b194b935ab31308226575fd6efcafa0aeb/lib/immutable.js#L35-L126 "Source code on GitHub"
 
-[164]: https://mongodb.github.io/node-mongodb-native/4.0/classes/collection.html#distinct
+[164]: https://github.com/Losant/cosa/blob/79e238b194b935ab31308226575fd6efcafa0aeb/lib/immutable.js#L44-L53 "Source code on GitHub"
 
-[165]: https://mongodb.github.io/node-mongodb-native/4.0/interfaces/commandoperationoptions.html#readpreference
+[165]: https://github.com/Losant/cosa/blob/79e238b194b935ab31308226575fd6efcafa0aeb/lib/immutable.js#L60-L63 "Source code on GitHub"
 
-[166]: https://mongodb.github.io/node-mongodb-native/4.0/interfaces/commandoperationoptions.html#maxtimems
+[166]: https://github.com/Losant/cosa/blob/79e238b194b935ab31308226575fd6efcafa0aeb/lib/immutable.js#L71-L73 "Source code on GitHub"
 
-[167]: https://github.com/Losant/cosa/blob/6b36fe309462751564b037e19a11a81e61b077d1/lib/db.js#L391-L402 "Source code on GitHub"
-
-[168]: http://mongodb.github.io/node-mongodb-native/3.0/api/Collection.html#replace
-
-[169]: https://mongodb.github.io/node-mongodb-native/4.0/interfaces/replaceoptions.html#writeconcern
+[167]: https://github.com/Losant/cosa/blob/79e238b194b935ab31308226575fd6efcafa0aeb/lib/immutable.js#L81-L125 "Source code on GitHub"
