@@ -1,6 +1,5 @@
 import { expect } from './common.js';
-import { MongoClient } from 'mongodb';
-import { ObjectId } from 'bson';
+import { MongoClient, ObjectId } from 'mongodb';
 import Model from '../lib/model.js';
 import cosaDb from '../lib/db.js';
 import { createSession } from '../lib/session.js';
@@ -292,7 +291,6 @@ describe('Model', () => {
       const model = await FullTestModel.create({
         str: 'foo'
       }).saveWithId(id);
-
       expect(model._id.toString()).to.equal('1234abcd103f8e485c9d2019');
     });
 
