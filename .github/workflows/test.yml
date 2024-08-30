@@ -12,6 +12,7 @@ jobs:
     strategy:
       matrix:
         nodejs: [ '18', '20', '22' ]
+        mongodb-version: ['6.0', '7.0' ]
     runs-on: ubuntu-latest
     permissions:
       actions: write
@@ -31,7 +32,7 @@ jobs:
     - name: Start MongoDB
       uses: supercharge/mongodb-github-action@1.11.0
       with:
-        mongodb-version: '6.0'
+        mongodb-version: ${{ matrix.mongodb-version }}
         mongodb-replica-set: rs0
     - run: npm install -g yarn@1.22.22
     - run: yarn install --frozen-lockfile
