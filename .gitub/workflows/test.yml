@@ -11,12 +11,22 @@ jobs:
   test:
     strategy:
       matrix:
-        nodejs: [ '18', '19', '20', '21', '22' ]
+        nodejs: [ '18', '20', '22' ]
     runs-on: ubuntu-latest
+    container: ubuntu:latest
     permissions:
       actions: write
       contents: read
       pull-requests: write
+    services:
+      mongo:
+        image: mongo
+        options: >-
+          --bind_ip_all --replSet rs0
+          --health-cmd "echo "try { rs.status() } catch (e) { rs.initiate() }" | mongosh --quiet"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
     - name: Cancel Previous Runs
       uses: styfle/cancel-workflow-action@0.11.0
@@ -28,5 +38,6 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.nodejs }}
+    - run: npm install -g yarn@1.22.22
     - run: yarn install --frozen-lockfile
     - run: yarn test

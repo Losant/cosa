@@ -1,6 +1,6 @@
 {
   "name": "cosa",
-  "version": "8.1.0",
+  "version": "9.0.0",
   "description": "Cosa Models for MongoDB",
   "main": "lib/index.js",
   "type": "module",
@@ -16,8 +16,7 @@
     "reinstall": "rm -rf node_modules && yarn install",
     "test": "NODE_ENV='test' COSA_DB_URI='mongodb://localhost:27017/test' mocha",
     "test-debug": "yarn test --debug-brk",
-    "doc": "documentation build lib/index.js -f md --github > API.md",
-    "prepare": "husky"
+    "doc": "documentation build lib/index.js -f md --github > API.md"
   },
   "author": "Losant <hello@losant.com>",
   "license": "MIT",
