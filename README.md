@@ -1,6 +1,6 @@
 # Cosa
 
-[![Build Status](https://travis-ci.com/Losant/cosa.svg?branch=master)](https://travis-ci.com/Losant/cosa) [![npm version](https://badge.fury.io/js/cosa.svg)](https://badge.fury.io/js/cosa)
+![Build Status](https://github.com/Losant/cosa/actions/workflows/test.yml/badge.svg?branch=master) [![npm version](https://badge.fury.io/js/cosa.svg)](https://badge.fury.io/js/cosa)
 
 Simplified object modeling for MongoDB
 
