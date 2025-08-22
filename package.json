@@ -33,9 +33,7 @@
     "lib"
   ],
   "dependencies": {
-    "clone": "^2.1.2",
     "debug": "^4.4.1",
-    "error": "^7.0.2",
     "etag": "^1.8.1",
     "joi": "^18.0.1",
     "mongodb": "~6.18.0",
@@ -46,12 +44,11 @@
     "@losant/eslint-config-losant": "^2.0.1",
     "husky": "^9.1.5",
     "lint-staged": "^16.1.5",
-    "chai": "^5.3.1",
-    "chai-as-promised": "^8.0.1",
+    "chai": "^6.0.1",
+    "chai-as-promised": "^8.0.2",
     "chai-datetime": "^1.8.1",
     "documentation": "^14.0.3",
-    "mocha": "^11.7.1",
-    "string-template": "^1.0.0"
+    "mocha": "^11.7.1"
   },
   "mocha": {
     "require": "chai",

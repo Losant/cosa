@@ -1,4 +1,3 @@
-import format from 'string-template';
 import Model from '../../lib/model.js';
 
 export const FullTestModel = Model.define({
@@ -37,8 +36,8 @@ export const FullTestModel = Model.define({
     }
   },
   methods: {
-    fooString: function(message) {
-      return format(message, this);
+    fooString: function() {
+      return `str is set to ${this.str}`;
     }
   }
 });

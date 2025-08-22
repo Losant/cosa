@@ -151,7 +151,7 @@ describe('Model', () => {
         obj: { deep: { blah: 'blah' } }
       });
       expect(FullTestModel.isA(model2)).to.equal(true);
-      expect(model2.fooString('str is set to {str}')).to.equal('str is set to foo');
+      expect(model2.fooString()).to.equal('str is set to foo');
       expect(model.get('str')).to.be.oneOf([ null, undefined ]);
       expect(model.get('obj.deep.blah')).to.be.oneOf([ null, undefined ]);
       expect(model2.get('str')).to.equal('foo');
@@ -567,7 +567,7 @@ describe('Model', () => {
       expect(count).to.equal(1);
     });
 
-    it('should not wait after save when globally set but overrided as a save option', async () => {
+    it('should not wait after save when globally set but overridden as a save option', async () => {
       let afterSaveCalled = false;
       const afterSaveModel = Model.define({
         name: 'SaveTest',
@@ -676,6 +676,16 @@ describe('Model', () => {
         err = e;
       }
       expect(err.message).to.equal('Duplicate key on str1');
+    });
+
+    it('should throw a conflict error when saving an outdated doc', async () => {
+      const updatedModel = await model.save();
+      await updatedModel.set('str', 'a').save();
+      const error = await updatedModel.set('str', 'b').save().catch((e) => e);
+      expect(error.type).to.equal('Conflict');
+      expect(error.name).to.equal('ConflictError');
+      expect(error.statusCode).to.equal(409);
+      expect(error.message).to.equal('Document update conflict');
     });
 
   });
