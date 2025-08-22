@@ -787,7 +787,7 @@ describe('Model', () => {
       expect(count).to.equal(0);
     });
 
-    it('should not wait for the after remove when globally set but overriden by remove options', async () => {
+    it('should not wait for the after remove when globally set but overridden by remove options', async () => {
       let afterRemoveCalled = false;
       const afterRemoveModel = Model.define({
         name: 'RemoveTest',
