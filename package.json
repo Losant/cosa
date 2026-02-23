@@ -1,20 +1,20 @@
 {
   "name": "cosa",
-  "version": "10.0.0",
+  "version": "10.1.0",
   "description": "Cosa Models for MongoDB",
   "main": "lib/index.js",
   "type": "module",
   "engines": {
-    "node": ">=20",
-    "yarn": ">=1.2.1"
+    "node": ">=20"
   },
+  "packageManager": "pnpm@10.30.0",
   "scripts": {
     "lint": "eslint . --ext .js",
-    "lint:fix": "yarn lint --fix",
+    "lint:fix": "pnpm lint --fix",
     "lint:changed": "lint-staged",
-    "reinstall": "rm -rf node_modules && yarn install",
+    "reinstall": "rm -rf node_modules && pnpm install",
     "test": "NODE_ENV='test' COSA_DB_URI='mongodb://localhost:27017/test' mocha",
-    "test-debug": "yarn test --debug-brk",
+    "test-debug": "pnpm test --debug-brk",
     "doc": "documentation build lib/index.js -f md --github > API.md"
   },
   "author": "Losant <hello@losant.com>",
@@ -33,22 +33,22 @@
     "lib"
   ],
   "dependencies": {
-    "debug": "^4.4.1",
+    "debug": "^4.4.3",
     "etag": "^1.8.1",
-    "joi": "^18.0.1",
-    "mongodb": "~6.18.0",
+    "joi": "^18.0.2",
+    "mongodb": "~7.1.0",
     "object-path": "^0.11.8",
     "omnibelt": "^4.0.0"
   },
   "devDependencies": {
     "@losant/eslint-config-losant": "^2.0.1",
-    "husky": "^9.1.5",
-    "lint-staged": "^16.1.5",
-    "chai": "^6.0.1",
+    "chai": "^6.2.2",
     "chai-as-promised": "^8.0.2",
     "chai-datetime": "^1.8.1",
     "documentation": "^14.0.3",
-    "mocha": "^11.7.1"
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
+    "mocha": "^11.7.5"
   },
   "mocha": {
     "require": "chai",

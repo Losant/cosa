@@ -9,7 +9,7 @@ Simplified object modeling for MongoDB
 Use your favorite package manager to add cosa to your project.
 
 ```bash
-yarn add cosa
+npm add cosa
 ```
 
 ## Usage
